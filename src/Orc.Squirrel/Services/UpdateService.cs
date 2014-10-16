@@ -42,6 +42,8 @@ namespace Orcomp.Squirrel
             Argument.IsNotNull(() => configurationService);
 
             _configurationService = configurationService;
+
+            AvailableChannels = new UpdateChannel[] { };
         }
 
         /// <summary>
@@ -96,6 +98,8 @@ namespace Orcomp.Squirrel
             {
                 InitializeConfigurationKey(Settings.Application.AutomaticUpdates.GetChannelSettingName(channel.Name), channel.DefaultUrl);
             }
+
+            AvailableChannels = availableChannels.ToArray();
 
             _initialized = true;
         }
