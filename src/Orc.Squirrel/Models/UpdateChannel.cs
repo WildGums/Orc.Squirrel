@@ -7,11 +7,13 @@
 
 namespace Orc.Squirrel
 {
+    using System.Diagnostics;
     using Catel;
 
     /// <summary>
     /// Update channel model.
     /// </summary>
+    [DebuggerDisplay("{Name} => {DefaultUrl}")]
     public class UpdateChannel
     {
         /// <summary>
@@ -39,5 +41,14 @@ namespace Orc.Squirrel
         /// </summary>
         /// <value>The default URL.</value>
         public string DefaultUrl { get; private set; }
+
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
