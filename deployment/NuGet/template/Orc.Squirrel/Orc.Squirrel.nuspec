@@ -1,0 +1,30 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Orc.Squirrel</id>
+    <version>[VERSION]</version>
+    <title>Orc.Squirrel</title>
+    <authors>OrchestraDevs</authors>
+    <owners>OrchestraDevs</owners>
+
+	<description>
+        Automation library of Squirrel to update with different channels.
+	</description>
+	<summary>
+	</summary>
+
+    <tags>squirrel orcomp update</tags>
+
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>Copyright Orchestra team 2014 - 2014</copyright>
+
+	<language>en-US</language>
+	<projectUrl>https://github.com/Orcomp/Orc.Squirrel</projectUrl>
+	<!--<licenseUrl>http://catel.codeplex.com/license</licenseUrl>-->
+	<!--<iconUrl>http://www.catenalogic.com/catel.png</iconUrl>-->
+    
+    <dependencies>
+      <dependency id="Catel.Core" version="[replaced]" />
+    </dependencies>    
+  </metadata>
+</package>
