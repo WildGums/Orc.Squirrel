@@ -160,6 +160,8 @@ namespace Orcomp.Squirrel
                     var startInfo = new ProcessStartInfo(updateExe);
                     startInfo.Arguments = string.Format("--update={0} --silent", channelUrl);
                     startInfo.WorkingDirectory = Path.GetFullPath("..", entryAssemblyDirectory);
+                    startInfo.UseShellExecute = true;
+                    startInfo.CreateNoWindow = true;
 
                     var process = Process.Start(startInfo);
                     process.WaitForExit();
