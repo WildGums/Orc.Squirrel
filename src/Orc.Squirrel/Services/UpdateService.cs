@@ -84,6 +84,17 @@ namespace Orcomp.Squirrel
         }
 
         /// <summary>
+        /// Gets a value indicating whether a new update has been installed.
+        /// </summary>
+        /// <value><c>true</c> if this instance is updated installed; otherwise, <c>false</c>.</value>
+        public bool IsUpdatedInstalled { get; private set; }
+
+        /// <summary>
+        /// Occurs when a new update has been installed.
+        /// </summary>
+        public event EventHandler<EventArgs> UpdateInstalled;
+
+        /// <summary>
         /// Initializes this instance.
         /// </summary>
         /// <param name="availableChannels">The available channels.</param>
@@ -154,6 +165,21 @@ namespace Orcomp.Squirrel
                     process.WaitForExit();
 
                     Log.Info("Update.exe exited with exit code '{0}'", process.ExitCode);
+
+                    // Possible exit codes:
+                    // -1 => An error occurred. Check the log file for more information about this error
+                    //  0 => No errors, no additional information available
+                    //  1 => New version available or new version is installed successfully (depending on switch /checkonly)
+                    //  2 => New version which is mandatory (forced) is available (for the future?)
+                    //  3 => No new version available
+
+                    switch (process.ExitCode)
+                    {
+                        case 1:
+                            IsUpdatedInstalled = true;
+                            UpdateInstalled.SafeInvoke(this);
+                            break;
+                    }
                 }
                 catch (Exception ex)
                 {

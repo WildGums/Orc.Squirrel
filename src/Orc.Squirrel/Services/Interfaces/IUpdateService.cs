@@ -7,6 +7,7 @@
 
 namespace Orcomp.Squirrel
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Orc.Squirrel;
@@ -16,6 +17,17 @@ namespace Orcomp.Squirrel
     /// </summary>
     public interface IUpdateService
     {
+        /// <summary>
+        /// Gets a value indicating whether a new update has been installed.
+        /// </summary>
+        /// <value><c>true</c> if this instance is updated installed; otherwise, <c>false</c>.</value>
+        bool IsUpdatedInstalled { get; }
+
+        /// <summary>
+        /// Occurs when a new update has been installed.
+        /// </summary>
+        event EventHandler<EventArgs> UpdateInstalled;
+
         /// <summary>
         /// Initializes this instance.
         /// </summary>
