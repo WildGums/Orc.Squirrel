@@ -86,6 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+    <Resource Include="Resources\Images\Squirrel-16.png" />
+    <Resource Include="Resources\Images\Squirrel-24.png" />
+    <Resource Include="Resources\Images\Squirrel-32.png" />
     <Resource Include="Resources\Images\Squirrel.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
