@@ -59,5 +59,11 @@ namespace Orcomp.Squirrel
         /// </summary>
         /// <value><c>true</c> if the check for updates is enabled; otherwise, <c>false</c>.</value>
         bool CheckForUpdates { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the update system is available.
+        /// </summary>
+        /// <value><c>true</c> if the is update system is available; otherwise, <c>false</c>.</value>
+        bool IsUpdateSystemAvailable { get; }
     }
 }

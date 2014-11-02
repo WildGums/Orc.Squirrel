@@ -84,6 +84,19 @@ namespace Orcomp.Squirrel
         }
 
         /// <summary>
+        /// Gets a value indicating whether the update system is available.
+        /// </summary>
+        /// <value><c>true</c> if the is update system is available; otherwise, <c>false</c>.</value>
+        public bool IsUpdateSystemAvailable
+        {
+            get
+            {
+                var updateExe = GetUpdateExecutable();
+                return File.Exists(updateExe);
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether a new update has been installed.
         /// </summary>
         /// <value><c>true</c> if this instance is updated installed; otherwise, <c>false</c>.</value>
@@ -144,7 +157,7 @@ namespace Orcomp.Squirrel
             }
 
             var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
-            var updateExe = Path.GetFullPath(UpdateExe, entryAssemblyDirectory);
+            var updateExe = GetUpdateExecutable();
             if (!File.Exists(updateExe))
             {
                 Log.Warning("Cannot check for updates, update.exe is not available");
@@ -166,7 +179,7 @@ namespace Orcomp.Squirrel
                     var process = Process.Start(startInfo);
                     process.WaitForExit();
 
-                    Log.Info("Update.exe exited with exit code '{0}'", process.ExitCode);
+                    Log.Debug("Update.exe exited with exit code '{0}'", process.ExitCode);
 
                     // Possible exit codes:
                     // -1 => An error occurred. Check the log file for more information about this error
@@ -180,14 +193,24 @@ namespace Orcomp.Squirrel
                         case 1:
                             IsUpdatedInstalled = true;
                             UpdateInstalled.SafeInvoke(this);
+
+                            Log.Info("Installed new update");
                             break;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Failed to check for updates, an error occurred");
+                    Log.Error(ex, "Failed to check for updates");
                 }
             });
+        }
+
+        private string GetUpdateExecutable()
+        {
+            var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
+            var updateExe = Path.GetFullPath(UpdateExe, entryAssemblyDirectory);
+
+            return updateExe;
         }
 
         private void InitializeConfigurationKey(string key, object defaultValue)
