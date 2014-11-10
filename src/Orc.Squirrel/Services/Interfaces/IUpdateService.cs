@@ -39,8 +39,9 @@ namespace Orcomp.Squirrel
         /// <summary>
         /// Handles the updates by installing them if there is an update available.
         /// </summary>
+        /// <param name="maximumReleaseDate">The maximum release date.</param>
         /// <returns>Task.</returns>
-        Task HandleUpdates();
+        Task HandleUpdates(DateTime? maximumReleaseDate = null);
 
         /// <summary>
         /// Gets the available availableChannels.
@@ -65,5 +66,16 @@ namespace Orcomp.Squirrel
         /// </summary>
         /// <value><c>true</c> if the is update system is available; otherwise, <c>false</c>.</value>
         bool IsUpdateSystemAvailable { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether an update outside the maintenance is available.
+        /// </summary>
+        /// <value><c>true</c> if an update outside the maintenance is available; otherwise, <c>false</c>.</value>
+        bool IsUpdateOutsideMaintenanceAvailable { get; }
+
+        /// <summary>
+        /// Occurs when an update is available but not installed because it is outside the maintenance window (specified by maximum release date).
+        /// </summary>
+        event EventHandler<EventArgs> UpdateOutsideMaintenanceAvailable;
     }
 }

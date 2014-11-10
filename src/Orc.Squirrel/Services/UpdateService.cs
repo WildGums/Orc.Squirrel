@@ -103,9 +103,20 @@ namespace Orcomp.Squirrel
         public bool IsUpdatedInstalled { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether an update outside the maintenance is available.
+        /// </summary>
+        /// <value><c>true</c> if an update outside the maintenance is available; otherwise, <c>false</c>.</value>
+        public bool IsUpdateOutsideMaintenanceAvailable { get; private set; }
+
+        /// <summary>
         /// Occurs when a new update has been installed.
         /// </summary>
         public event EventHandler<EventArgs> UpdateInstalled;
+
+        /// <summary>
+        /// Occurs when an update is available but not installed because it is outside the maintenance window (specified by maximum release date).
+        /// </summary>
+        public event EventHandler<EventArgs> UpdateOutsideMaintenanceAvailable;
 
         /// <summary>
         /// Initializes this instance.
@@ -131,8 +142,9 @@ namespace Orcomp.Squirrel
         /// <summary>
         /// Handles the updates by installing them if there is an update available.
         /// </summary>
+        /// <param name="maximumReleaseDate">The maximum release date.</param>
         /// <returns>Task.</returns>
-        public async Task HandleUpdates()
+        public async Task HandleUpdates(DateTime? maximumReleaseDate = null)
         {
             if (!_initialized)
             {
@@ -195,6 +207,13 @@ namespace Orcomp.Squirrel
                             UpdateInstalled.SafeInvoke(this);
 
                             Log.Info("Installed new update");
+                            break;
+
+                        case 4:
+                            IsUpdateOutsideMaintenanceAvailable = true;
+                            UpdateOutsideMaintenanceAvailable.SafeInvoke(this);
+
+                            Log.Info("New update is available but is outside maintenance, maintenance ended on '{0}'", maximumReleaseDate);
                             break;
                     }
                 }
