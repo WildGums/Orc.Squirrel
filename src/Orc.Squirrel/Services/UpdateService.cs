@@ -182,8 +182,13 @@ namespace Orcomp.Squirrel
             {
                 try
                 {
+                    if (!maximumReleaseDate.HasValue)
+                    {
+                        maximumReleaseDate = DateTime.MaxValue;
+                    }
+
                     var startInfo = new ProcessStartInfo(updateExe);
-                    startInfo.Arguments = string.Format("--update={0} --silent", channelUrl);
+                    startInfo.Arguments = string.Format("--update={0} --md={1} --silent", channelUrl, maximumReleaseDate.Value.ToString("yyyyMMddHHmmss"));
                     startInfo.WorkingDirectory = Path.GetFullPath("..", entryAssemblyDirectory);
                     startInfo.UseShellExecute = true;
                     startInfo.CreateNoWindow = true;
