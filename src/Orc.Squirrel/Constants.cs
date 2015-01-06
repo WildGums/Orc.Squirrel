@@ -44,4 +44,45 @@ namespace Orcomp.Squirrel
             }
         }
     }
+
+    /// <summary>
+    /// Class containing squirrel constants.
+    /// </summary>
+    public static class SquirrelArguments
+    {
+        /// <summary>
+        /// The application is ran for the first time after installation.
+        /// </summary>
+        public const string FirstRun = "--squirrel-firstrun";
+
+        /// <summary>
+        /// The install is installed.
+        /// </summary>
+        public const string Install = "--squirrel-install";
+
+        /// <summary>
+        /// The install is uninstalled.
+        /// </summary>
+        public const string Uninstall = "--squirrel-uninstall";
+
+        /// <summary>
+        /// The application is updated.
+        /// </summary>
+        public const string Updated = "--squirrel-updated";
+
+        /// <summary>
+        /// Determines whether the specified argument is a known squirrel argument.
+        /// </summary>
+        /// <param name="argument">The argument.</param>
+        /// <returns><c>true</c> if the argument is a known squirrel argument; otherwise, <c>false</c>.</returns>
+        public static bool IsSquirrelArgument(string argument)
+        {
+            if (string.IsNullOrWhiteSpace(argument))
+            {
+                return false;
+            }
+
+            return argument.ToLower().Contains("--squirrel-");
+        }
+    }
 }
