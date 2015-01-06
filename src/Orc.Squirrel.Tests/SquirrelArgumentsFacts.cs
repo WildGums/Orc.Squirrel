@@ -8,7 +8,6 @@
 namespace Orc.Squirrel.Tests
 {
     using NUnit.Framework;
-    using Orcomp.Squirrel;
 
     public class SquirrelArgumentsFacts
     {

@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace Orcomp.Squirrel
+namespace Orc.Squirrel
 {
     using System;
     using System.Collections.Generic;

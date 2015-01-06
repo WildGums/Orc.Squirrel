@@ -5,12 +5,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace Orcomp.Squirrel
+namespace Orc.Squirrel
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Orc.Squirrel;
 
     /// <summary>
     /// Update service.

@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace Orcomp.Squirrel
+namespace Orc.Squirrel
 {
     /// <summary>
     /// Settings class containing the settings information.
