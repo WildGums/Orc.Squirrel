@@ -13,7 +13,6 @@ namespace Orc.Squirrel.ViewModels
     using Catel.MVVM;
     using Catel.Reflection;
     using Catel.Services;
-    using Helpers;
 
     public class AppInstalledViewModel : ViewModelBase
     {
@@ -30,7 +29,7 @@ namespace Orc.Squirrel.ViewModels
             RunApplication = new Command(OnRunApplicationExecute);
 
             var appName = _entryAssembly.Title();
-            var appVersion = _entryAssembly.InformationalVersion();
+            var appVersion = _entryAssembly.InformationalVersion() ?? _entryAssembly.Version();
 
             Title = string.Format("{0} v{1} is installed", appName, appVersion);
 

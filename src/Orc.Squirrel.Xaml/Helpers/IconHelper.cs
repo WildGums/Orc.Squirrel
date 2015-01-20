@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace Orc.Squirrel.Helpers
+namespace Orc.Squirrel
 {
     using System;
     using System.Collections.Generic;
