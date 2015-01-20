@@ -27,7 +27,7 @@
                                   StrokeThickness="1.5" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
                             <TextBlock Grid.Column="1" x:Name="ButtonTextBlock" Text="{TemplateBinding Content}" FontSize="16" 
-                                       HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                       HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,-4,0,0" />
                         </Grid>
                         
                         <ControlTemplate.Triggers>
