@@ -8,10 +8,12 @@
 namespace Orc.Squirrel.ViewModels
 {
     using System.Reflection;
+    using System.Windows.Media.Imaging;
     using Catel;
     using Catel.MVVM;
     using Catel.Reflection;
     using Catel.Services;
+    using Helpers;
 
     public class AppInstalledViewModel : ViewModelBase
     {
@@ -31,11 +33,10 @@ namespace Orc.Squirrel.ViewModels
             var appVersion = _entryAssembly.InformationalVersion();
 
             Title = string.Format("{0} v{1} is installed", appName, appVersion);
+
+            AppIcon = ExtractLargestIcon();
             AppName = appName;
             AppVersion = appVersion;
-
-            Description = string.Format("{0} is successfully installed. You can now run the application via the shortcut that is created on the desktop.",
-                appName);
         }
 
         #region Properties
@@ -43,7 +44,7 @@ namespace Orc.Squirrel.ViewModels
 
         public string AppVersion { get; private set; }
 
-        public string Description { get; private set; }
+        public BitmapSource AppIcon { get; private set; }
         #endregion
 
         #region Commands
@@ -56,6 +57,10 @@ namespace Orc.Squirrel.ViewModels
         #endregion
 
         #region Methods
+        private BitmapImage ExtractLargestIcon()
+        {
+            return IconHelper.ExtractLargestIconFromFile(_entryAssembly.Location);
+        }
         #endregion
     }
 }

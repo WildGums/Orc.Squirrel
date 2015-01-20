@@ -2,26 +2,75 @@
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:catel="http://catel.codeplex.com"
-                  WindowStartupLocation="CenterScreen" ShowInTaskbar="True" Width="600" Height="400">
+                  ResizeMode="NoResize" MaxWidth="500" MaxHeight="300"
+                  WindowStartupLocation="CenterScreen" ShowInTaskbar="True">
     
-    <Grid>
+    <catel:DataWindow.Resources>
+        <Geometry x:Key="TriangleGeometry">M9.0,1.5 L19.5,8.75 L9.0,16.5 z</Geometry>
+        
+        <Style x:Key="RunButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Width" Value="60" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Grid >
+                            <Ellipse x:Name="ButonBorder" Width="40" Height="40" StrokeThickness="2" Fill="Transparent" Stroke="DarkGray" /> 
+                                <Path x:Name="ButtonPath" Data="{StaticResource TriangleGeometry}"
+                                      HorizontalAlignment="Center" Margin="0 0 3.5 0"
+                                      SnapsToDevicePixels="True"
+                                      UseLayoutRounding="True"
+                                      Stroke="DarkGray" Fill="DarkGray"
+                                      StrokeThickness="1.5" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Stroke" TargetName="ButtonPath" Value="#3ACA74"/>
+                                <Setter Property="Fill" TargetName="ButtonPath" Value="#3ACA74"/>
+                                <Setter Property="Stroke" TargetName="ButonBorder" Value="#3ACA74"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Stroke" TargetName="ButtonPath" Value="#3ACA74"/>
+                                <Setter Property="Fill" TargetName="ButtonPath" Value="#3ACA74"/>
+                                <Setter Property="Stroke" TargetName="ButonBorder" Value="#3ACA74"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Stroke" TargetName="ButonBorder" Value="#FFADADAD"/>
+                                <Setter Property="Stroke" TargetName="ButtonPath" Value="#FFADADAD"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+    </catel:DataWindow.Resources>
+    
+    <Grid Margin="25 20 25 25">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="120" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Text="{Binding Description}" TextWrapping="Wrap" />
-        
-        <TextBlock Grid.Row="1">
-            <Hyperlink Command="{Binding RunApplication}">Run the application now</Hyperlink>
-        </TextBlock>
-        
-        <!-- TODO: make pretty -->
-        
+        <Image Grid.Row="0" Grid.Column="0" Source="{Binding AppIcon}" HorizontalAlignment="Center"
+               VerticalAlignment="Center" Stretch="Uniform" Margin="5" />
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <TextBlock Text="{Binding AppName}" FontSize="18" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="10 15 10 0" FontWeight="Medium" />
+            <TextBlock Text="is successfully installed." FontSize="18" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="10 0 10 0" FontWeight="Medium" />
+            <TextBlock HorizontalAlignment="Left" Margin="10 5 10 10" TextWrapping="Wrap"
+                   Text="You can now run the application via the shortcut that is created on the desktop." />
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Text="Run the application now" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            <Button Style="{StaticResource RunButtonStyle}" Command="{Binding RunApplication}" />
+        </StackPanel>
     </Grid>
 
 </catel:DataWindow>

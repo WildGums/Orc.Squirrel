@@ -15,6 +15,7 @@ namespace Orc.Squirrel.Views
     /// </summary>
     public partial class AppInstalledWindow
     {
+        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="AppInstalledWindow"/> class.
         /// </summary>
@@ -31,9 +32,10 @@ namespace Orc.Squirrel.Views
         /// This constructor can be used to use view-model injection.
         /// </remarks>
         public AppInstalledWindow(AppInstalledViewModel viewModel)
-            : base(viewModel, DataWindowMode.Close)
+            : base(viewModel, DataWindowMode.Custom)
         {
             InitializeComponent();
         }
+        #endregion
     }
 }
