@@ -8,6 +8,7 @@
 namespace Orc.Squirrel.ViewModels
 {
     using System.Reflection;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using Catel;
     using Catel.MVVM;
@@ -36,6 +37,7 @@ namespace Orc.Squirrel.ViewModels
             AppIcon = ExtractLargestIcon();
             AppName = appName;
             AppVersion = appVersion;
+            AccentColorBrush = AccentColorHelper.GetAccentColor();
         }
 
         #region Properties
@@ -44,6 +46,8 @@ namespace Orc.Squirrel.ViewModels
         public string AppVersion { get; private set; }
 
         public BitmapSource AppIcon { get; private set; }
+
+        public SolidColorBrush AccentColorBrush { get; private set; }
         #endregion
 
         #region Commands
