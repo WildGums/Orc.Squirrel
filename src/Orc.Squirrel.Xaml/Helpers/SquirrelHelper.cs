@@ -20,7 +20,7 @@ namespace Orc.Squirrel
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-        public static async Task HandleSquirrelAutomatically()
+        public static void HandleSquirrelAutomatically()
         {
             Log.Debug("Handling squirrel");
 
@@ -42,7 +42,7 @@ namespace Orc.Squirrel
                     var dependencyResolver = IoCConfiguration.DefaultDependencyResolver;
                     var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
 
-                    await uiVisualizerService.ShowDialog<AppInstalledViewModel>();
+                    uiVisualizerService.ShowDialog<AppInstalledViewModel>();
 
                     Log.Info("Closing application");
 
