@@ -18,14 +18,17 @@ namespace Orc.Squirrel.ViewModels
     public class AppInstalledViewModel : ViewModelBase
     {
         private readonly IProcessService _processService;
+        private readonly IDispatcherService _dispatcherService;
 
         private readonly Assembly _entryAssembly = AssemblyHelper.GetEntryAssembly();
 
-        public AppInstalledViewModel(IProcessService processService)
+        public AppInstalledViewModel(IProcessService processService, IDispatcherService dispatcherService)
         {
             Argument.IsNotNull(() => processService);
+            Argument.IsNotNull(() => dispatcherService);
 
             _processService = processService;
+            _dispatcherService = dispatcherService;
 
             RunApplication = new Command(OnRunApplicationExecute);
 
@@ -55,7 +58,11 @@ namespace Orc.Squirrel.ViewModels
 
         private void OnRunApplicationExecute()
         {
-            _processService.StartProcess(_entryAssembly.Location);
+            _dispatcherService.BeginInvoke(async () =>
+            {
+                _processService.StartProcess(_entryAssembly.Location);
+                await CloseViewModel(null);
+            });
         }
         #endregion
 

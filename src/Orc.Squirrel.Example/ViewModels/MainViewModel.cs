@@ -16,12 +16,15 @@ namespace Orc.Squirrel.Example.ViewModels
     public class MainViewModel : ViewModelBase
     {
         private readonly IUIVisualizerService _uiVisualizerService;
+        private readonly IDispatcherService _dispatcherService;
 
-        public MainViewModel(IUIVisualizerService uiVisualizerService)
+        public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService)
         {
             Argument.IsNotNull(() => uiVisualizerService);
+            Argument.IsNotNull(() => dispatcherService);
 
             _uiVisualizerService = uiVisualizerService;
+            _dispatcherService = dispatcherService;
 
             ShowInstalledDialog = new Command(OnShowInstalledDialogExecute);
         }
@@ -38,7 +41,11 @@ namespace Orc.Squirrel.Example.ViewModels
 
         private void OnShowInstalledDialogExecute()
         {
-            _uiVisualizerService.ShowDialog<AppInstalledViewModel>();
+            _dispatcherService.BeginInvoke(async () =>
+            {
+                _uiVisualizerService.ShowDialog<AppInstalledViewModel>();
+                await CloseViewModel(null);
+            });
         }
         #endregion
 
