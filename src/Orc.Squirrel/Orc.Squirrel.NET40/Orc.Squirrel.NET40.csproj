@@ -77,6 +77,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="..\Orc.Squirrel.Shared\Resources\Images\Squirrel-16.png">
+      <Link>Resources\Images\Squirrel-16.png</Link>
+    </Resource>
+    <Resource Include="..\Orc.Squirrel.Shared\Resources\Images\Squirrel-24.png">
+      <Link>Resources\Images\Squirrel-24.png</Link>
+    </Resource>
+    <Resource Include="..\Orc.Squirrel.Shared\Resources\Images\Squirrel-32.png">
+      <Link>Resources\Images\Squirrel-32.png</Link>
+    </Resource>
+    <Resource Include="..\Orc.Squirrel.Shared\Resources\Images\Squirrel.png">
+      <Link>Resources\Images\Squirrel.png</Link>
+    </Resource>
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>

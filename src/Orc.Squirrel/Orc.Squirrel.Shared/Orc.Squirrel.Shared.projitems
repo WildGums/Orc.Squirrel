@@ -17,10 +17,4 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Interfaces\IUpdateService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\UpdateService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Resources\Images\Squirrel-16.png" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\Images\Squirrel-24.png" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\Images\Squirrel-32.png" />
-    <None Include="$(MSBuildThisFileDirectory)Resources\Images\Squirrel.png" />
-  </ItemGroup>
 </Project>
