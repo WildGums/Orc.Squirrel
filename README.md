@@ -1,14 +1,19 @@
-# Orc.Squirrel
+Orc.Squirrel
+===============
 
-Automation library of [Squirrel](https://github.com/Squirrel/Squirrel.Windows) to update with different channels.
+Is a library that adds a few extra features on top of [Squirrel](https://github.com/Squirrel/Squirrel.Windows) to allow updates to come from different channels.
 
-## Downloads
+You can setup "Alpha", "Beta" and "Stable" channels to release your software through.
 
-* **[Orc.Squirrel](http://www.nuget.org/packages/Orc.Squirrel/)** => contains **IUpdateService** and definition of **UpdateChannel** class
-* **[Orc.Squirrel.Xaml](http://www.nuget.org/packages/Orc.Squirrel.Xaml/)** => contains installation notification window
+Downloads
+-----------
 
-## Quick start
+- **[Orc.Squirrel](http://www.nuget.org/packages/Orc.Squirrel/)** => contains an **IUpdateService** and an **UpdateChannel** class
+- **[Orc.Squirrel.Xaml](http://www.nuget.org/packages/Orc.Squirrel.Xaml/)** => contains an installation notification window
 
-* use [Squirrel](https://github.com/Squirrel/Squirrel.Windows) for deploy your software
-* use **UpdateChannel** for setting up your update channels
-* use **IUpdateService** for handling updates of your software 
+Quick start
+------------
+
+- Use [Squirrel](https://github.com/Squirrel/Squirrel.Windows) to deploy your software
+- Use **UpdateChannel** for setting up your update channels
+- Use **IUpdateService** for handling updates (for your software)
