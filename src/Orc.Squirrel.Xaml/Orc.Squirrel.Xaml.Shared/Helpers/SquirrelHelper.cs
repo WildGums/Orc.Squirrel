@@ -9,7 +9,6 @@ namespace Orc.Squirrel
 {
     using System;
     using System.Linq;
-    using System.Threading.Tasks;
     using System.Windows;
     using Catel.IoC;
     using Catel.Logging;
@@ -20,7 +19,7 @@ namespace Orc.Squirrel
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-        public static void HandleSquirrelAutomatically()
+        public static SquirrelResult HandleSquirrelAutomatically()
         {
             Log.Debug("Handling squirrel");
 
@@ -28,7 +27,7 @@ namespace Orc.Squirrel
             if (application == null)
             {
                 Log.Warning("Application is null, cannot handle squirrel");
-                return;
+                return SquirrelResult.Unhandled;
             }
 
             var arguments = Environment.GetCommandLineArgs();
@@ -47,8 +46,11 @@ namespace Orc.Squirrel
                     Log.Info("Closing application");
 
                     application.Shutdown();
+                    return SquirrelResult.ClosingApplication;
                 }
             }
+
+            return SquirrelResult.Unhandled;
         }
     }
 }

@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)SquirrelResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AppInstalledViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\AppInstalledWindow.xaml.cs">
       <DependentUpon>AppInstalledWindow.xaml</DependentUpon>
