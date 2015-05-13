@@ -43,6 +43,12 @@ namespace Orc.Squirrel
         public string DefaultUrl { get; private set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this channel is a prerelease channel.
+        /// </summary>
+        /// <value><c>true</c> if this channel is a prerelease channel; otherwise, <c>false</c>.</value>
+        public bool IsPrerelease { get; set; }
+
+        /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
