@@ -27,6 +27,7 @@ namespace Orc.Squirrel
             Argument.IsNotNull(() => defaultUrl);
 
             Name = name;
+            Description = string.Empty;
             DefaultUrl = defaultUrl;
         }
 
@@ -35,6 +36,12 @@ namespace Orc.Squirrel
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        /// <value>The description.</value>
+        public string Description { get; set; }
 
         /// <summary>
         /// Gets the default URL.
