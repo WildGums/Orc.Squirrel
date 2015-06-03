@@ -17,6 +17,7 @@ namespace Orc.Squirrel
     using Catel.Configuration;
     using Catel.Logging;
     using Catel.Reflection;
+    using Catel.Threading;
     using Orc.Squirrel;
     using Path = Catel.IO.Path;
 
@@ -178,7 +179,7 @@ namespace Orc.Squirrel
 
             Log.Info("Calling update.exe for url '{0}'", channelUrl);
 
-            await Task.Factory.StartNew(() =>
+            await TaskHelper.Run(() =>
             {
                 try
                 {
