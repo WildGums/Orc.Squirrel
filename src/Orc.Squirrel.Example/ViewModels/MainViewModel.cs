@@ -49,9 +49,9 @@ namespace Orc.Squirrel.Example.ViewModels
         }
         #endregion
 
-        protected override async Task Initialize()
+        protected override async Task InitializeAsync()
         {
-            await base.Initialize();
+            await base.InitializeAsync();
         }
     }
 }

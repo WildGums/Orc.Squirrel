@@ -18,7 +18,6 @@ namespace Orc.Squirrel
     using Catel.Logging;
     using Catel.Reflection;
     using Catel.Threading;
-    using Orc.Squirrel;
     using Path = Catel.IO.Path;
 
     /// <summary>
@@ -145,7 +144,7 @@ namespace Orc.Squirrel
         /// </summary>
         /// <param name="maximumReleaseDate">The maximum release date.</param>
         /// <returns>Task.</returns>
-        public async Task HandleUpdates(DateTime? maximumReleaseDate = null)
+        public async Task HandleUpdatesAsync(DateTime? maximumReleaseDate = null)
         {
             if (!_initialized)
             {

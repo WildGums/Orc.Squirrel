@@ -24,9 +24,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Extensions\" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)Views\AppInstalledWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

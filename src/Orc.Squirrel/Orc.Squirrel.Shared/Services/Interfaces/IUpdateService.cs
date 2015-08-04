@@ -40,7 +40,7 @@ namespace Orc.Squirrel
         /// </summary>
         /// <param name="maximumReleaseDate">The maximum release date.</param>
         /// <returns>Task.</returns>
-        Task HandleUpdates(DateTime? maximumReleaseDate = null);
+        Task HandleUpdatesAsync(DateTime? maximumReleaseDate = null);
 
         /// <summary>
         /// Gets the available availableChannels.
