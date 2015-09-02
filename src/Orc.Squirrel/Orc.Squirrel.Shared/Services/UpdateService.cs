@@ -226,7 +226,7 @@ namespace Orc.Squirrel
                 {
                     Log.Error(ex, "Failed to check for updates");
                 }
-            });
+            }, true);
         }
 
         private string GetUpdateExecutable()

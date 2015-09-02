@@ -61,7 +61,7 @@ namespace Orc.Squirrel.ViewModels
             _dispatcherService.BeginInvoke(async () =>
             {
                 _processService.StartProcess(_entryAssembly.Location);
-                await CloseViewModel(null);
+                await CloseViewModelAsync(null);
             });
         }
         #endregion

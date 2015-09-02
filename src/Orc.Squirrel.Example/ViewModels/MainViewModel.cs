@@ -44,7 +44,7 @@ namespace Orc.Squirrel.Example.ViewModels
             _dispatcherService.BeginInvoke(async () =>
             {
                 _uiVisualizerService.ShowDialog<AppInstalledViewModel>();
-                await CloseViewModel(null);
+                await CloseViewModelAsync(null);
             });
         }
         #endregion
