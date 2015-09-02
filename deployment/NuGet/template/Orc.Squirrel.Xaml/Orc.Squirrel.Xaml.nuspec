@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Orc.Squirrel</id>
+    <id>Orc.Squirrel.Xaml</id>
     <version>[VERSION]</version>
-    <title>Orc.Squirrel</title>
+    <title>Orc.Squirrel.Xaml</title>
     <authors>OrchestraDevs</authors>
     <owners>OrchestraDevs</owners>
 
@@ -13,7 +13,7 @@
 	<summary>
 	</summary>
 
-    <tags>squirrel orcomp update</tags>
+    <tags>squirrel orcomp update xaml wpf</tags>
 
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <copyright>Copyright Wild Gums 2010 - 2015</copyright>
@@ -24,7 +24,8 @@
 	<!--<iconUrl>http://www.catenalogic.com/catel.png</iconUrl>-->
     
     <dependencies>
-      <dependency id="Catel.Core" version="[replaced]" />
+      <dependency id="Orc.Squirrel" version="[VERSION]" />
+      <dependency id="Catel.MVVM" version="[replaced]" />
     </dependencies>    
   </metadata>
 </package>
