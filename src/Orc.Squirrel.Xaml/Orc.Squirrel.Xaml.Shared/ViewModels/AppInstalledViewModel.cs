@@ -19,23 +19,26 @@ namespace Orc.Squirrel.ViewModels
     {
         private readonly IProcessService _processService;
         private readonly IDispatcherService _dispatcherService;
+        private readonly ILanguageService _languageService;
 
         private readonly Assembly _entryAssembly = AssemblyHelper.GetEntryAssembly();
 
-        public AppInstalledViewModel(IProcessService processService, IDispatcherService dispatcherService)
+        public AppInstalledViewModel(IProcessService processService, IDispatcherService dispatcherService, ILanguageService languageService)
         {
             Argument.IsNotNull(() => processService);
             Argument.IsNotNull(() => dispatcherService);
+            Argument.IsNotNull(() => languageService);
 
             _processService = processService;
             _dispatcherService = dispatcherService;
+            _languageService = languageService;
 
             RunApplication = new Command(OnRunApplicationExecute);
 
             var appName = _entryAssembly.Title();
             var appVersion = _entryAssembly.InformationalVersion() ?? _entryAssembly.Version();
 
-            Title = string.Format("{0} v{1} is installed", appName, appVersion);
+            Title = string.Format(languageService.GetString("Squirrel_AppInstalled"), appName, appVersion);
 
             AppIcon = ExtractLargestIcon();
             AppName = appName;

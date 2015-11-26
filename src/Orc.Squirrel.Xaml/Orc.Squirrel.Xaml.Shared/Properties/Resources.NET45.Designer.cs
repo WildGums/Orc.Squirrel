@@ -59,5 +59,32 @@ namespace Orc.Squirrel.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} v{1} is installed.
+        /// </summary>
+        internal static string Squirrel_AppInstalled {
+            get {
+                return ResourceManager.GetString("Squirrel_AppInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run the application now.
+        /// </summary>
+        internal static string Squirrel_RunApplicationNow {
+            get {
+                return ResourceManager.GetString("Squirrel_RunApplicationNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now run the application via the shortcut that is created on the desktop..
+        /// </summary>
+        internal static string Squirrel_RunViaShortcutOnDesktop {
+            get {
+                return ResourceManager.GetString("Squirrel_RunViaShortcutOnDesktop", resourceCulture);
+            }
+        }
     }
 }

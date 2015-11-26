@@ -73,15 +73,15 @@
                VerticalAlignment="Center" Stretch="Uniform" Margin="5" />
 
         <StackPanel Grid.Row="0" Grid.Column="1">
-            <TextBlock Text="{Binding AppName, StringFormat=\{0\} is successfully installed.}" FontSize="18" HorizontalAlignment="Left" 
+            <TextBlock Text="{Binding Title}" FontSize="18" HorizontalAlignment="Left" 
                        TextWrapping="Wrap" Margin="10 15 10 0" FontWeight="Medium" />
             <TextBlock HorizontalAlignment="Left" Margin="10 5 10 10" TextWrapping="Wrap"
-                   Text="You can now run the application via the shortcut that is created on the desktop." />
+                   Text="{catel:LanguageBinding Squirrel_RunViaShortcutOnDesktop}" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left"
                     Margin="10,0,0,0">
-            <Button Style="{StaticResource RunButtonStyle}" Command="{Binding RunApplication}" Content="Run the application now" />
+            <Button Style="{StaticResource RunButtonStyle}" Command="{Binding RunApplication}" Content="{catel:LanguageBinding Squirrel_RunApplicationNow}" />
         </StackPanel>
     </Grid>
 
