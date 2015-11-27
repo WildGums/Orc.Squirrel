@@ -148,8 +148,7 @@ namespace Orc.Squirrel
         {
             if (!_initialized)
             {
-                Log.ErrorAndThrowException<InvalidOperationException>("Service is not initialized, call Initialize first");
-                return;
+                throw Log.ErrorAndCreateException<InvalidOperationException>("Service is not initialized, call Initialize first");
             }
 
             var checkForUpdates = _configurationService.GetValue<bool>(Settings.Application.AutomaticUpdates.CheckForUpdates);
