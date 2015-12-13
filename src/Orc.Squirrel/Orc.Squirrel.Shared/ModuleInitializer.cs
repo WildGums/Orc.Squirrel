@@ -1,4 +1,6 @@
 ﻿using Catel.IoC;
+using Catel.Services;
+using Catel.Services.Models;
 using Orc.Squirrel;
 
 /// <summary>
@@ -14,5 +16,8 @@ public static class ModuleInitializer
         var serviceLocator = ServiceLocator.Default;
 
         serviceLocator.RegisterType<IUpdateService, UpdateService>();
+
+        var languageService = serviceLocator.ResolveType<ILanguageService>();
+        languageService.RegisterLanguageSource(new LanguageResourceSource("Orc.Squirrel", "Orc.Squirrel.Properties", "Resources"));
     }
 }
