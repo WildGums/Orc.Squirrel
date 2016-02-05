@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.NET40", "Orc.Squirrel\Orc.Squirrel.NET40\Orc.Squirrel.NET40.csproj", "{3CF2FF60-E13B-4976-A2E2-6E7519189EC6}"
 EndProject
@@ -12,11 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{AEC6D964-A
 		nuget.config = nuget.config
 		Orc.Squirrel.sln.DotSettings = Orc.Squirrel.sln.DotSettings
 		SolutionAssemblyInfo.cs = SolutionAssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{37DA5202-76A7-47B0-95E2-EED07CBDE12C}"
-	ProjectSection(SolutionItems) = preProject
-		..\lib\repositories.config = ..\lib\repositories.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Tests.NET40", "Orc.Squirrel.Tests\Orc.Squirrel.Tests.NET40\Orc.Squirrel.Tests.NET40.csproj", "{F3832371-4647-45C9-9153-D044DCAFB12C}"

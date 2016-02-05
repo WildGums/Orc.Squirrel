@@ -4,8 +4,8 @@
     <id>Orc.Squirrel</id>
     <version>[VERSION]</version>
     <title>Orc.Squirrel</title>
-    <authors>OrchestraDevs</authors>
-    <owners>OrchestraDevs</owners>
+    <authors>WildGums</authors>
+    <owners>WildGums</owners>
 
 	<description>
         Automation library of Squirrel to update with different channels.
@@ -16,7 +16,7 @@
     <tags>squirrel orcomp update</tags>
 
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <copyright>Copyright Wild Gums 2010 - 2015</copyright>
+    <copyright>Copyright WildGums 2010 - 2015</copyright>
 
 	<language>en-US</language>
 	<projectUrl>https://github.com/WildGums/Orc.Squirrel</projectUrl>
