@@ -61,7 +61,7 @@
     <Grid Margin="25 20 25 25">
         <Grid.RowDefinitions>
             <RowDefinition Height="120" />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="55" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>

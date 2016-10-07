@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UpdateService.cs" company="Orcomp development team">
-//   Copyright (c) 2008 - 2015 Orcomp development team. All rights reserved.
+// <copyright file="UpdateService.cs" company="WildGums">
+//   Copyright (c) 2008 - 2015 WildGums. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ namespace Orc.Squirrel
         {
             get
             {
-                var channelName = _configurationService.GetValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+                var channelName = _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
                 return (from channel in AvailableChannels
                         where string.Equals(channel.Name, channelName)
                         select channel).FirstOrDefault();
@@ -69,7 +69,7 @@ namespace Orc.Squirrel
             {
                 Argument.IsNotNull("value", value);
 
-                _configurationService.SetValue(Settings.Application.AutomaticUpdates.UpdateChannel, value.Name);
+                _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, value.Name);
             }
         }
 
@@ -79,8 +79,8 @@ namespace Orc.Squirrel
         /// <value><c>true</c> if the check for updates is enabled; otherwise, <c>false</c>.</value>
         public bool CheckForUpdates
         {
-            get { return _configurationService.GetValue(Settings.Application.AutomaticUpdates.CheckForUpdates, false); }
-            set { _configurationService.SetValue(Settings.Application.AutomaticUpdates.CheckForUpdates, value); }
+            get { return _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.CheckForUpdates, false); }
+            set { _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.CheckForUpdates, value); }
         }
 
         /// <summary>
@@ -151,16 +151,16 @@ namespace Orc.Squirrel
                 throw Log.ErrorAndCreateException<InvalidOperationException>("Service is not initialized, call Initialize first");
             }
 
-            var checkForUpdates = _configurationService.GetValue<bool>(Settings.Application.AutomaticUpdates.CheckForUpdates);
+            var checkForUpdates = _configurationService.GetRoamingValue<bool>(Settings.Application.AutomaticUpdates.CheckForUpdates);
             if (!checkForUpdates)
             {
                 Log.Info("Automatic updates are disabled");
                 return;
             }
 
-            var channelName = _configurationService.GetValue<string>(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+            var channelName = _configurationService.GetRoamingValue<string>(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
             var channelUrlSettingsName = Settings.Application.AutomaticUpdates.GetChannelSettingName(channelName);
-            var channelUrl = _configurationService.GetValue<string>(channelUrlSettingsName, string.Empty);
+            var channelUrl = _configurationService.GetRoamingValue<string>(channelUrlSettingsName, string.Empty);
             if (string.IsNullOrEmpty(channelUrl))
             {
                 Log.Warning("Cannot find url for channel '{0}'", channelName);
@@ -238,7 +238,7 @@ namespace Orc.Squirrel
 
         private void InitializeConfigurationKey(string key, object defaultValue)
         {
-            _configurationService.InitializeValue(key, defaultValue);
+            _configurationService.InitializeRoamingValue(key, defaultValue);
         }
     }
 }

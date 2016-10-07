@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.NET40", "Orc.Squirrel\Orc.Squirrel.NET40\Orc.Squirrel.NET40.csproj", "{3CF2FF60-E13B-4976-A2E2-6E7519189EC6}"
 EndProject
@@ -12,11 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{AEC6D964-A
 		nuget.config = nuget.config
 		Orc.Squirrel.sln.DotSettings = Orc.Squirrel.sln.DotSettings
 		SolutionAssemblyInfo.cs = SolutionAssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{37DA5202-76A7-47B0-95E2-EED07CBDE12C}"
-	ProjectSection(SolutionItems) = preProject
-		..\lib\repositories.config = ..\lib\repositories.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Tests.NET40", "Orc.Squirrel.Tests\Orc.Squirrel.Tests.NET40\Orc.Squirrel.Tests.NET40.csproj", "{F3832371-4647-45C9-9153-D044DCAFB12C}"
@@ -45,6 +40,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Xaml.NET45", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Tests.NET45", "Orc.Squirrel.Tests\Orc.Squirrel.Tests.NET45\Orc.Squirrel.Tests.NET45.csproj", "{12D1E261-54C2-4CF0-A87D-6B2867FA9C2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.NET46", "Orc.Squirrel\Orc.Squirrel.NET46\Orc.Squirrel.NET46.csproj", "{AE00EE4B-7B20-4FEE-87C5-8F4E8BA6C001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Xaml.NET46", "Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.NET46\Orc.Squirrel.Xaml.NET46.csproj", "{818985AB-4D23-41B6-AC7F-3CC3A8FAA2CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Tests.NET46", "Orc.Squirrel.Tests\Orc.Squirrel.Tests.NET46\Orc.Squirrel.Tests.NET46.csproj", "{6A30A148-6C18-4C6F-ADA4-D3CC6038D851}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Orc.Squirrel\Orc.Squirrel.Shared\Orc.Squirrel.Shared.projitems*{0c488b64-1b07-42f8-adf1-97248bf517a9}*SharedItemsImports = 13
@@ -52,9 +53,12 @@ Global
 		Orc.Squirrel\Orc.Squirrel.Shared\Orc.Squirrel.Shared.projitems*{3cf2ff60-e13b-4976-a2e2-6e7519189ec6}*SharedItemsImports = 4
 		Orc.Squirrel\Orc.Squirrel.Shared\Orc.Squirrel.Shared.projitems*{27c2dedc-3db9-4ff1-8c29-ac472591f100}*SharedItemsImports = 4
 		Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.Shared\Orc.Squirrel.Xaml.Shared.projitems*{e42f358a-7c09-4a65-9c1a-2fa6ab5c6ccd}*SharedItemsImports = 4
+		Orc.Squirrel.Tests\Orc.Squirrel.Tests.Shared\Orc.Squirrel.Tests.Shared.projitems*{6a30a148-6c18-4c6f-ada4-d3cc6038d851}*SharedItemsImports = 4
+		Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.Shared\Orc.Squirrel.Xaml.Shared.projitems*{818985ab-4d23-41b6-ac7f-3cc3a8faa2ca}*SharedItemsImports = 4
 		Orc.Squirrel.Tests\Orc.Squirrel.Tests.Shared\Orc.Squirrel.Tests.Shared.projitems*{12d1e261-54c2-4cf0-a87d-6b2867fa9c2f}*SharedItemsImports = 4
 		Orc.Squirrel.Tests\Orc.Squirrel.Tests.Shared\Orc.Squirrel.Tests.Shared.projitems*{0c62fc09-cfe4-4c1b-bb25-843070f6c61d}*SharedItemsImports = 13
 		Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.Shared\Orc.Squirrel.Xaml.Shared.projitems*{1340465c-3ab8-4a7e-b32d-706a22d7b9e9}*SharedItemsImports = 4
+		Orc.Squirrel\Orc.Squirrel.Shared\Orc.Squirrel.Shared.projitems*{ae00ee4b-7b20-4fee-87c5-8f4e8ba6c001}*SharedItemsImports = 4
 		Orc.Squirrel.Tests\Orc.Squirrel.Tests.Shared\Orc.Squirrel.Tests.Shared.projitems*{f3832371-4647-45c9-9153-d044dcafb12c}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +94,18 @@ Global
 		{12D1E261-54C2-4CF0-A87D-6B2867FA9C2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12D1E261-54C2-4CF0-A87D-6B2867FA9C2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12D1E261-54C2-4CF0-A87D-6B2867FA9C2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE00EE4B-7B20-4FEE-87C5-8F4E8BA6C001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE00EE4B-7B20-4FEE-87C5-8F4E8BA6C001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE00EE4B-7B20-4FEE-87C5-8F4E8BA6C001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE00EE4B-7B20-4FEE-87C5-8F4E8BA6C001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{818985AB-4D23-41B6-AC7F-3CC3A8FAA2CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{818985AB-4D23-41B6-AC7F-3CC3A8FAA2CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{818985AB-4D23-41B6-AC7F-3CC3A8FAA2CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{818985AB-4D23-41B6-AC7F-3CC3A8FAA2CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A30A148-6C18-4C6F-ADA4-D3CC6038D851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A30A148-6C18-4C6F-ADA4-D3CC6038D851}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A30A148-6C18-4C6F-ADA4-D3CC6038D851}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A30A148-6C18-4C6F-ADA4-D3CC6038D851}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,5 +125,8 @@ Global
 		{27C2DEDC-3DB9-4FF1-8C29-AC472591F100} = {6F73FD31-BED2-4B05-BC31-334A4130F00C}
 		{1340465C-3AB8-4A7E-B32D-706A22D7B9E9} = {9C0CBAFB-ADD9-4FFC-9123-D5B63C410FB9}
 		{12D1E261-54C2-4CF0-A87D-6B2867FA9C2F} = {4058534C-2289-4BAA-BBF9-DF3ABD788526}
+		{AE00EE4B-7B20-4FEE-87C5-8F4E8BA6C001} = {6F73FD31-BED2-4B05-BC31-334A4130F00C}
+		{818985AB-4D23-41B6-AC7F-3CC3A8FAA2CA} = {9C0CBAFB-ADD9-4FFC-9123-D5B63C410FB9}
+		{6A30A148-6C18-4C6F-ADA4-D3CC6038D851} = {4058534C-2289-4BAA-BBF9-DF3ABD788526}
 	EndGlobalSection
 EndGlobal
