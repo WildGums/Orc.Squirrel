@@ -61,10 +61,13 @@ namespace Orc.Squirrel.ViewModels
 
         private void OnRunApplicationExecute()
         {
-            _dispatcherService.BeginInvoke(async () =>
+            _dispatcherService.BeginInvoke(() =>
             {
                 _processService.StartProcess(_entryAssembly.Location);
-                await CloseViewModelAsync(null);
+
+#pragma warning disable 4014
+                CloseViewModelAsync(null);
+#pragma warning restore 4014
             });
         }
         #endregion
