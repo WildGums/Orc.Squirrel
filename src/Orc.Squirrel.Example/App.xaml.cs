@@ -11,6 +11,7 @@ namespace Orc.Squirrel.Example
     using System.Windows;
     using Catel.IoC;
     using Catel.Services;
+    using Orchestra;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -26,6 +27,8 @@ namespace Orc.Squirrel.Example
             // we use .CurrentCulture for the sake of the demo
             languageService.PreferredCulture = CultureInfo.CurrentCulture;
             languageService.FallbackCulture = new CultureInfo("en-US");
+
+            this.ApplyTheme();
 
             base.OnStartup(e);
         }

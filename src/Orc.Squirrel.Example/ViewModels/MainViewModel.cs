@@ -27,6 +27,8 @@ namespace Orc.Squirrel.Example.ViewModels
             _dispatcherService = dispatcherService;
 
             ShowInstalledDialog = new Command(OnShowInstalledDialogExecute);
+
+            Title = "Orc.Squirrel example";
         }
 
         #region Properties
