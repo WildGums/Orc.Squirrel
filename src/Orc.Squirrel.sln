@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26020.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.NET40", "Orc.Squirrel\Orc.Squirrel.NET40\Orc.Squirrel.NET40.csproj", "{3CF2FF60-E13B-4976-A2E2-6E7519189EC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.NET47", "Orc.Squirrel\Orc.Squirrel.NET47\Orc.Squirrel.NET47.csproj", "{3CF2FF60-E13B-4976-A2E2-6E7519189EC6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{37B66615-371C-4F66-9A02-DBF8D77B09D0}"
 EndProject
@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{AEC6D964-A
 		SolutionAssemblyInfo.cs = SolutionAssemblyInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Tests.NET40", "Orc.Squirrel.Tests\Orc.Squirrel.Tests.NET40\Orc.Squirrel.Tests.NET40.csproj", "{F3832371-4647-45C9-9153-D044DCAFB12C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Tests.NET47", "Orc.Squirrel.Tests\Orc.Squirrel.Tests.NET47\Orc.Squirrel.Tests.NET47.csproj", "{F3832371-4647-45C9-9153-D044DCAFB12C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Xaml.NET40", "Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.NET40\Orc.Squirrel.Xaml.NET40.csproj", "{E42F358A-7C09-4A65-9C1A-2FA6AB5C6CCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orc.Squirrel.Xaml.NET47", "Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.NET47\Orc.Squirrel.Xaml.NET47.csproj", "{E42F358A-7C09-4A65-9C1A-2FA6AB5C6CCD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6F73FD31-BED2-4B05-BC31-334A4130F00C}"
 EndProject
