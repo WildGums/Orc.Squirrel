@@ -9,6 +9,7 @@ namespace Orc.Squirrel
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows;
     using Catel.IoC;
     using Catel.Logging;
@@ -19,7 +20,7 @@ namespace Orc.Squirrel
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-        public static SquirrelResult HandleSquirrelAutomatically()
+        public static async Task<SquirrelResult> HandleSquirrelAutomaticallyAsync()
         {
             Log.Debug("Handling squirrel");
 
@@ -41,7 +42,7 @@ namespace Orc.Squirrel
                     var dependencyResolver = IoCConfiguration.DefaultDependencyResolver;
                     var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
 
-                    uiVisualizerService.ShowDialog<AppInstalledViewModel>();
+                    await uiVisualizerService.ShowDialogAsync<AppInstalledViewModel>();
 
                     Log.Info("Closing application");
 

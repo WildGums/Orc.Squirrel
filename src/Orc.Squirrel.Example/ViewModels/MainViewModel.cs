@@ -27,6 +27,8 @@ namespace Orc.Squirrel.Example.ViewModels
             _dispatcherService = dispatcherService;
 
             ShowInstalledDialog = new Command(OnShowInstalledDialogExecute);
+
+            Title = "Orc.Squirrel example";
         }
 
         #region Properties
@@ -41,9 +43,10 @@ namespace Orc.Squirrel.Example.ViewModels
 
         private void OnShowInstalledDialogExecute()
         {
+            // Dispatch since we close the vm
             _dispatcherService.BeginInvoke(async () =>
             {
-                _uiVisualizerService.ShowDialog<AppInstalledViewModel>();
+                await _uiVisualizerService.ShowDialogAsync<AppInstalledViewModel>();
                 await CloseViewModelAsync(null);
             });
         }
