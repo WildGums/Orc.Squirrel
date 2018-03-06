@@ -18,6 +18,7 @@ namespace Orc.Squirrel
     using Catel.Logging;
     using Catel.Reflection;
     using Catel.Threading;
+    using FileSystem;
     using Path = Catel.IO.Path;
 
     /// <summary>
@@ -30,18 +31,23 @@ namespace Orc.Squirrel
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         private readonly IConfigurationService _configurationService;
+        private readonly IFileService _fileService;
 
         private bool _initialized;
+        private string _updateExeLocation;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateService"/> class.
+        /// Initializes a new instance of the <see cref="UpdateService" /> class.
         /// </summary>
         /// <param name="configurationService">The configuration service.</param>
-        public UpdateService(IConfigurationService configurationService)
+        /// <param name="fileService">The file service.</param>
+        public UpdateService(IConfigurationService configurationService, IFileService fileService)
         {
             Argument.IsNotNull(() => configurationService);
+            Argument.IsNotNull(() => fileService);
 
             _configurationService = configurationService;
+            _fileService = fileService;
 
             AvailableChannels = new UpdateChannel[] { };
         }
@@ -61,8 +67,9 @@ namespace Orc.Squirrel
             get
             {
                 var channelName = _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+
                 return (from channel in AvailableChannels
-                        where string.Equals(channel.Name, channelName)
+                        where channel.Name.EqualsIgnoreCase(channelName)
                         select channel).FirstOrDefault();
             }
             set
@@ -92,7 +99,7 @@ namespace Orc.Squirrel
             get
             {
                 var updateExe = GetUpdateExecutable();
-                return File.Exists(updateExe);
+                return _fileService.Exists(updateExe);
             }
         }
 
@@ -129,12 +136,14 @@ namespace Orc.Squirrel
             InitializeConfigurationKey(Settings.Application.AutomaticUpdates.CheckForUpdates, defaultCheckForUpdatesValue);
             InitializeConfigurationKey(Settings.Application.AutomaticUpdates.UpdateChannel, defaultChannel.Name);
 
-            foreach (var channel in availableChannels)
+            var channels = availableChannels.ToArray();
+
+            foreach (var channel in channels)
             {
                 InitializeConfigurationKey(Settings.Application.AutomaticUpdates.GetChannelSettingName(channel.Name), channel.DefaultUrl);
             }
 
-            AvailableChannels = availableChannels.ToArray();
+            AvailableChannels = channels;
 
             _initialized = true;
         }
@@ -169,7 +178,7 @@ namespace Orc.Squirrel
 
             var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
             var updateExe = GetUpdateExecutable();
-            if (!File.Exists(updateExe))
+            if (!_fileService.Exists(updateExe))
             {
                 Log.Warning("Cannot check for updates, update.exe is not available");
                 return;
@@ -230,10 +239,15 @@ namespace Orc.Squirrel
 
         private string GetUpdateExecutable()
         {
-            var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
-            var updateExe = Path.GetFullPath(UpdateExe, entryAssemblyDirectory);
+            if (string.IsNullOrWhiteSpace(_updateExeLocation))
+            {
+                var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
+                _updateExeLocation = Path.GetFullPath(UpdateExe, entryAssemblyDirectory);
 
-            return updateExe;
+                Log.Debug($"Determined update executable path '{_updateExeLocation}', exists: {_fileService.Exists(_updateExeLocation)}");
+            }
+
+            return _updateExeLocation;
         }
 
         private void InitializeConfigurationKey(string key, object defaultValue)
