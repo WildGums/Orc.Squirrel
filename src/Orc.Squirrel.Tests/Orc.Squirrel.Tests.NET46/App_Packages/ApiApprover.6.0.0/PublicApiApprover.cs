@@ -27,7 +27,7 @@ namespace ApiApprover
                 name = $"{fileName}.{targetFx}";
             }
 
-            public new string Name
+            public override string Name
             {
                 get { return name; }
             }
