@@ -55,7 +55,7 @@ namespace Orc.Squirrel
     }
     public class UpdateService : Orc.Squirrel.IUpdateService
     {
-        public UpdateService(Catel.Configuration.IConfigurationService configurationService) { }
+        public UpdateService(Catel.Configuration.IConfigurationService configurationService, Orc.FileSystem.IFileService fileService) { }
         public Orc.Squirrel.UpdateChannel[] AvailableChannels { get; }
         public bool CheckForUpdates { get; set; }
         public Orc.Squirrel.UpdateChannel CurrentChannel { get; set; }
