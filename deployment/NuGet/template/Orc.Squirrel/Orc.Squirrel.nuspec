@@ -25,6 +25,7 @@
     
     <dependencies>
       <dependency id="Catel.Core" version="[replaced]" />
-    </dependencies>    
+      <dependency id="Orc.FileSystem" version="[replaced]" />
+    </dependencies>
   </metadata>
 </package>
