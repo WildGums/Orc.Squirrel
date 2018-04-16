@@ -1,6 +1,10 @@
 ﻿[assembly: System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleToAttribute("Orc.Squirrel.Tests")]
 [assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETFramework,Version=v4.6", FrameworkDisplayName=".NET Framework 4.6")]
+[assembly: System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.wildgums.com/orc/squirrel", "Orc.Squirrel")]
+[assembly: System.Windows.Markup.XmlnsDefinitionAttribute("http://schemas.wildgums.com/orc/squirrel", "Orc.Squirrel.Views")]
+[assembly: System.Windows.Markup.XmlnsPrefixAttribute("http://schemas.wildgums.com/orc/squirrel", "orcsquirrel")]
+[assembly: System.Windows.ThemeInfoAttribute(System.Windows.ResourceDictionaryLocation.None, System.Windows.ResourceDictionaryLocation.SourceAssembly)]
 public class static ModuleInitializer
 {
     public static void Initialize() { }
