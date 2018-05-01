@@ -7,6 +7,7 @@
 
 namespace Orc.Squirrel.Tests
 {
+    using System.Runtime.CompilerServices;
     using ApiApprover;
     using NUnit.Framework;
     using Views;
@@ -14,7 +15,7 @@ namespace Orc.Squirrel.Tests
     [TestFixture]
     public class PublicApiFacts
     {
-        [Test]
+        [Test, MethodImpl(MethodImplOptions.NoInlining)]
         public void Orc_Squirrel_HasNoBreakingChanges()
         {
             var assembly = typeof(UpdateService).Assembly;
@@ -22,7 +23,7 @@ namespace Orc.Squirrel.Tests
             PublicApiApprover.ApprovePublicApi(assembly);
         }
 
-        [Test]
+        [Test, MethodImpl(MethodImplOptions.NoInlining)]
         public void Orc_Squirrel_Xaml_HasNoBreakingChanges()
         {
             var assembly = typeof(AppInstalledWindow).Assembly;
