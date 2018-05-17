@@ -1,4 +1,5 @@
 #addin "nuget:?package=MagicChunks"
+#addin "nuget:?package=Cake.FileHelpers"
 
 Information("Running target '{0}'", target);
 Information("Using output directory '{0}'", outputRootDirectory);
@@ -126,6 +127,12 @@ Task("CodeSign")
     .ContinueOnError()
     .Does(() =>
 {
+    if (isCiBuild)
+    {
+        Information("Skipping code signing because this is a CI build");
+        return;
+    }
+
     var exeSignFilesSearchPattern = outputRootDirectory + string.Format("/**/*{0}*.exe", codeSignWildCard);
     var dllSignFilesSearchPattern = outputRootDirectory + string.Format("/**/*{0}*.dll", codeSignWildCard);
 
@@ -139,7 +146,7 @@ Task("CodeSign")
 
     filesToSign.AddRange(GetFiles(dllSignFilesSearchPattern));
 
-    Information("Found '{0}' files to code sign", filesToSign.Count);
+    Information("Found '{0}' files to code sign, this can take a few minutes", filesToSign.Count);
 
     Sign(filesToSign, new SignToolSignSettings 
     {
@@ -161,13 +168,47 @@ Task("Package")
 
         var projectFileName = string.Format("./src/{0}/{0}.csproj", projectToPackage);
 
-        var packSettings = new DotNetCorePackSettings
-        {
-            Configuration = configurationName,
-            NoBuild = true,
-        };
+        // Note: we have a bug where UAP10.0 cannot be packaged, for details see 
+        // https://github.com/dotnet/cli/issues/9303
+        // 
+        // Therefore we will use VS instead for packing and lose the ability to sign
+        var useDotNetPack = true;
 
-        DotNetCorePack(projectFileName, packSettings);
+        var projectFileContents = FileReadText(projectFileName);
+        if (!string.IsNullOrWhiteSpace(projectFileContents))
+        {
+            useDotNetPack = !projectFileContents.ToLower().Contains("uap10.0");
+        }
+
+        if (useDotNetPack)
+        {
+            var packSettings = new DotNetCorePackSettings
+            {
+                Configuration = configurationName,
+                NoBuild = true,
+            };
+
+            DotNetCorePack(projectFileName, packSettings);
+        }
+        else
+        {
+            Warning("Using Visual Studio to pack instead of 'dotnet pack' because UAP 10.0 project was detected. Unfortunately assemblies will not be signed inside the NuGet package");
+
+            var msBuildSettings = new MSBuildSettings 
+            {
+                Verbosity = Verbosity.Minimal, // Verbosity.Diagnostic
+                ToolVersion = MSBuildToolVersion.VS2017,
+                Configuration = configurationName,
+                MSBuildPlatform = MSBuildPlatform.x86, // Always require x86, see platform for actual target platform
+                PlatformTarget = PlatformTarget.MSIL
+            };
+
+            msBuildSettings.Properties["ConfigurationName"] = new List<string>(new [] { configurationName });
+            msBuildSettings.Properties["PackageVersion"] = new List<string>(new [] { versionNuGet });
+            msBuildSettings = msBuildSettings.WithTarget("pack");
+
+            MSBuild(projectFileName, msBuildSettings);
+        }
 	}
 });
 
