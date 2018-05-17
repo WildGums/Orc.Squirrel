@@ -5,17 +5,6 @@
   <Catel/>
   <Costura DisableCleanup="true">
     <IncludeAssemblies>
-      DeltaCompressionDotNet
-      DeltaCompressionDotNet.MsDelta
-      DeltaCompressionDotNet.PatchApi
-      Mono.Cecil
-      Mono.Cecil.Mdb
-      Mono.Cecil.Pdb
-      Mono.Cecil.Rocks
-      SharpCompress
-      Splat
-      NuGet.Squirrel
-      Squirrel
     </IncludeAssemblies>
   </Costura>
 </Weavers>
