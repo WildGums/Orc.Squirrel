@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MagicChunks</id>
+    <version>2.0.0.119</version>
+    <title>Magic Chunks</title>
+    <authors>Sergey Zwezdin</authors>
+    <owners>Sergey Zwezdin</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://raw.githubusercontent.com/sergeyzwezdin/magic-chunks/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/sergeyzwezdin/magic-chunks</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/sergeyzwezdin/magic-chunks/master/logo/logo64.png</iconUrl>
+    <description>Easy to use tool to config transformations for JSON, XML and YAML.</description>
+    <summary></summary>
+    <releaseNotes>https://github.com/sergeyzwezdin/magic-chunks/releases/</releaseNotes>
+    <copyright>Copyright © Sergey Zwezdin</copyright>
+    <tags>Configuration Transform JSON XML YAML YML web.config app.config appsetings.json</tags>
+  </metadata>
+</package>
