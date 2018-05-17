@@ -13,12 +13,12 @@ namespace Orc.Squirrel
         bool CheckForUpdates { get; set; }
         Orc.Squirrel.UpdateChannel CurrentChannel { get; set; }
         bool IsUpdatedInstalled { get; }
-        bool IsUpdateOutsideMaintenanceAvailable { get; }
         bool IsUpdateSystemAvailable { get; }
-        public event System.EventHandler<System.EventArgs> UpdateInstalled;
-        public event System.EventHandler<System.EventArgs> UpdateOutsideMaintenanceAvailable;
-        System.Threading.Tasks.Task HandleUpdatesAsync(System.Nullable<System.DateTime> maximumReleaseDate = null);
+        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
+        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
+        System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context);
         void Initialize(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
+        System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context);
     }
     public class static Settings
     {
@@ -40,6 +40,23 @@ namespace Orc.Squirrel
         public const string Updated = "--squirrel-updated";
         public static bool IsSquirrelArgument(string argument) { }
     }
+    public class SquirrelContext
+    {
+        public SquirrelContext() { }
+        public string ChannelName { get; set; }
+    }
+    public class SquirrelEventArgs : System.EventArgs
+    {
+        public SquirrelEventArgs(Orc.Squirrel.SquirrelResult result) { }
+        public Orc.Squirrel.SquirrelResult SquirrelResult { get; }
+    }
+    public class SquirrelResult
+    {
+        public SquirrelResult() { }
+        public string CurrentVersion { get; set; }
+        public bool IsUpdateInstalledOrAvailable { get; set; }
+        public string NewVersion { get; set; }
+    }
     [System.Diagnostics.DebuggerDisplayAttribute("{Name} => {DefaultUrl}")]
     public class UpdateChannel
     {
@@ -57,11 +74,13 @@ namespace Orc.Squirrel
         public bool CheckForUpdates { get; set; }
         public Orc.Squirrel.UpdateChannel CurrentChannel { get; set; }
         public bool IsUpdatedInstalled { get; }
-        public bool IsUpdateOutsideMaintenanceAvailable { get; }
         public bool IsUpdateSystemAvailable { get; }
-        public event System.EventHandler<System.EventArgs> UpdateInstalled;
-        public event System.EventHandler<System.EventArgs> UpdateOutsideMaintenanceAvailable;
-        public System.Threading.Tasks.Task HandleUpdatesAsync(System.Nullable<System.DateTime> maximumReleaseDate = null) { }
+        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
+        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
+        public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }
+        protected string GetChannelUrl(Orc.Squirrel.SquirrelContext context) { }
+        protected virtual string GetCurrentApplicationVersion() { }
         public void Initialize(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue) { }
+        public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }
     }
 }

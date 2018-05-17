@@ -17,9 +17,9 @@ namespace Orc.Squirrel
     }
     public class static SquirrelHelper
     {
-        public static System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> HandleSquirrelAutomaticallyAsync() { }
+        public static System.Threading.Tasks.Task<Orc.Squirrel.SquirrelLaunchResult> HandleSquirrelAutomaticallyAsync() { }
     }
-    public enum SquirrelResult
+    public enum SquirrelLaunchResult
     {
         Unhandled = 0,
         ClosingApplication = 1,

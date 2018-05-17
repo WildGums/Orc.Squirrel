@@ -9,16 +9,14 @@ namespace Orc.Squirrel
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using Catel;
     using Catel.Configuration;
     using Catel.Logging;
     using Catel.Reflection;
-    using Catel.Threading;
     using FileSystem;
+    using global::Squirrel;
     using Path = Catel.IO.Path;
 
     /// <summary>
@@ -110,20 +108,14 @@ namespace Orc.Squirrel
         public bool IsUpdatedInstalled { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether an update outside the maintenance is available.
+        /// Occurs when a new update has begun installing.
         /// </summary>
-        /// <value><c>true</c> if an update outside the maintenance is available; otherwise, <c>false</c>.</value>
-        public bool IsUpdateOutsideMaintenanceAvailable { get; private set; }
+        public event EventHandler<SquirrelEventArgs> UpdateInstalling;
 
         /// <summary>
         /// Occurs when a new update has been installed.
         /// </summary>
-        public event EventHandler<EventArgs> UpdateInstalled;
-
-        /// <summary>
-        /// Occurs when an update is available but not installed because it is outside the maintenance window (specified by maximum release date).
-        /// </summary>
-        public event EventHandler<EventArgs> UpdateOutsideMaintenanceAvailable;
+        public event EventHandler<SquirrelEventArgs> UpdateInstalled;
 
         /// <summary>
         /// Initializes this instance.
@@ -149,11 +141,115 @@ namespace Orc.Squirrel
         }
 
         /// <summary>
-        /// Handles the updates by installing them if there is an update available.
+        /// Checks for any available updates.
         /// </summary>
-        /// <param name="maximumReleaseDate">The maximum release date.</param>
+        /// <returns><c>true</c> if an update is available; otherwise <c>false</c>.</returns>
+        public async Task<SquirrelResult> CheckForUpdatesAsync(SquirrelContext context)
+        {
+            Argument.IsNotNull(() => context);
+
+            var result = new SquirrelResult
+            {
+                IsUpdateInstalledOrAvailable = false,
+                CurrentVersion = GetCurrentApplicationVersion()
+            };
+
+            var channelUrl = GetChannelUrl(context);
+            if (string.IsNullOrWhiteSpace(channelUrl))
+            {
+                return result;
+            }
+
+            using (var mgr = new UpdateManager(channelUrl))
+            {
+                Log.Info($"Checking for updates using url '{channelUrl}'");
+
+                var updateInfo = await mgr.CheckForUpdate();
+                if (updateInfo.ReleasesToApply.Count > 0)
+                {
+                    Log.Info($"Found new version '{updateInfo.FutureReleaseEntry?.Version}' using url '{channelUrl}'");
+
+                    result.IsUpdateInstalledOrAvailable = true;
+                    result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Installes the available updates if there is an update available.
+        /// </summary>
         /// <returns>Task.</returns>
-        public async Task HandleUpdatesAsync(DateTime? maximumReleaseDate = null)
+        public async Task<SquirrelResult> InstallAvailableUpdatesAsync(SquirrelContext context)
+        {
+            Argument.IsNotNull(() => context);
+
+            var result = new SquirrelResult
+            {
+                IsUpdateInstalledOrAvailable = false,
+                CurrentVersion = GetCurrentApplicationVersion()
+            };
+
+            var channelUrl = GetChannelUrl(context);
+            if (string.IsNullOrWhiteSpace(channelUrl))
+            {
+                return result;
+            }
+
+            try
+            {
+                using (var mgr = new UpdateManager(channelUrl))
+                {
+                    Log.Info($"Checking for updates using url '{channelUrl}'");
+
+                    var updateInfo = await mgr.CheckForUpdate();
+                    if (updateInfo.ReleasesToApply.Count > 0)
+                    {
+                        Log.Info($"Found new version '{updateInfo.FutureReleaseEntry?.Version}' using url '{channelUrl}', installing update...");
+
+                        result.IsUpdateInstalledOrAvailable = true;
+                        result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
+
+                        UpdateInstalling.SafeInvoke(this, () => new SquirrelEventArgs(result));
+
+                        var releaseEntry = await mgr.UpdateApp();
+                        if (releaseEntry != null)
+                        {
+                            Log.Info("Update installed successfully");
+
+                            result.IsUpdateInstalledOrAvailable = true;
+                            result.NewVersion = releaseEntry.Version?.ToString();
+
+                            IsUpdatedInstalled = true;
+
+                            UpdateInstalled.SafeInvoke(this, () => new SquirrelEventArgs(result));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while checking for or installing the latest updates");
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the current application version.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GetCurrentApplicationVersion()
+        {
+            return AssemblyHelper.GetEntryAssembly()?.InformationalVersion();
+        }
+
+        /// <summary>
+        /// Gets the channel url for the specified context.
+        /// </summary>
+        /// <returns>The channel url or <c>null</c> if no channel is available.</returns>
+        protected string GetChannelUrl(SquirrelContext context)
         {
             if (!_initialized)
             {
@@ -164,16 +260,16 @@ namespace Orc.Squirrel
             if (!checkForUpdates)
             {
                 Log.Info("Automatic updates are disabled");
-                return;
+                return null;
             }
 
-            var channelName = _configurationService.GetRoamingValue<string>(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+            var channelName = context.ChannelName ?? _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
             var channelUrlSettingsName = Settings.Application.AutomaticUpdates.GetChannelSettingName(channelName);
-            var channelUrl = _configurationService.GetRoamingValue<string>(channelUrlSettingsName, string.Empty);
+            var channelUrl = _configurationService.GetRoamingValue(channelUrlSettingsName, string.Empty);
             if (string.IsNullOrEmpty(channelUrl))
             {
                 Log.Warning("Cannot find url for channel '{0}'", channelName);
-                return;
+                return null;
             }
 
             var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
@@ -181,60 +277,10 @@ namespace Orc.Squirrel
             if (!_fileService.Exists(updateExe))
             {
                 Log.Warning("Cannot check for updates, update.exe is not available");
-                return;
+                return null;
             }
 
-            Log.Info("Calling update.exe for url '{0}'", channelUrl);
-
-            await TaskHelper.Run(() =>
-            {
-                try
-                {
-                    if (!maximumReleaseDate.HasValue)
-                    {
-                        maximumReleaseDate = DateTime.MaxValue;
-                    }
-
-                    var startInfo = new ProcessStartInfo(updateExe);
-                    startInfo.Arguments = string.Format("--update={0} --md={1} --silent", channelUrl, maximumReleaseDate.Value.ToString("yyyyMMddHHmmss"));
-                    startInfo.WorkingDirectory = Path.GetFullPath("..", entryAssemblyDirectory);
-                    startInfo.UseShellExecute = true;
-                    startInfo.CreateNoWindow = true;
-
-                    var process = Process.Start(startInfo);
-                    process.WaitForExit();
-
-                    Log.Debug("Update.exe exited with exit code '{0}'", process.ExitCode);
-
-                    // Possible exit codes:
-                    // -1 => An error occurred. Check the log file for more information about this error
-                    //  0 => No errors, no additional information available
-                    //  1 => New version available or new version is installed successfully (depending on switch /checkonly)
-                    //  2 => New version which is mandatory (forced) is available (for the future?)
-                    //  3 => No new version available
-
-                    switch (process.ExitCode)
-                    {
-                        case 1:
-                            IsUpdatedInstalled = true;
-                            UpdateInstalled.SafeInvoke(this);
-
-                            Log.Info("Installed new update");
-                            break;
-
-                        case 4:
-                            IsUpdateOutsideMaintenanceAvailable = true;
-                            UpdateOutsideMaintenanceAvailable.SafeInvoke(this);
-
-                            Log.Info("New update is available but is outside maintenance, maintenance ended on '{0}'", maximumReleaseDate);
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Failed to check for updates");
-                }
-            }, true);
+            return channelUrl;
         }
 
         private string GetUpdateExecutable()

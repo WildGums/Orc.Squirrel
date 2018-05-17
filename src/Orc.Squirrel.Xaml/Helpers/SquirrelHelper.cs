@@ -20,7 +20,7 @@ namespace Orc.Squirrel
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-        public static async Task<SquirrelResult> HandleSquirrelAutomaticallyAsync()
+        public static async Task<SquirrelLaunchResult> HandleSquirrelAutomaticallyAsync()
         {
             Log.Debug("Handling squirrel");
 
@@ -28,7 +28,7 @@ namespace Orc.Squirrel
             if (application == null)
             {
                 Log.Warning("Application is null, cannot handle squirrel");
-                return SquirrelResult.Unhandled;
+                return SquirrelLaunchResult.Unhandled;
             }
 
             var arguments = Environment.GetCommandLineArgs();
@@ -47,11 +47,11 @@ namespace Orc.Squirrel
                     Log.Info("Closing application");
 
                     application.Shutdown();
-                    return SquirrelResult.ClosingApplication;
+                    return SquirrelLaunchResult.ClosingApplication;
                 }
             }
 
-            return SquirrelResult.Unhandled;
+            return SquirrelLaunchResult.Unhandled;
         }
     }
 }

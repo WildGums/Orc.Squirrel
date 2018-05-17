@@ -17,32 +17,6 @@ namespace Orc.Squirrel
     public interface IUpdateService
     {
         /// <summary>
-        /// Gets a value indicating whether a new update has been installed.
-        /// </summary>
-        /// <value><c>true</c> if this instance is updated installed; otherwise, <c>false</c>.</value>
-        bool IsUpdatedInstalled { get; }
-
-        /// <summary>
-        /// Occurs when a new update has been installed.
-        /// </summary>
-        event EventHandler<EventArgs> UpdateInstalled;
-
-        /// <summary>
-        /// Initializes this instance.
-        /// </summary>
-        /// <param name="availableChannels">The available channels.</param>
-        /// <param name="defaultChannel">The default channel.</param>
-        /// <param name="defaultCheckForUpdatesValue">The default value for the check for updates setting.</param>
-        void Initialize(IEnumerable<UpdateChannel> availableChannels, UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
-
-        /// <summary>
-        /// Handles the updates by installing them if there is an update available.
-        /// </summary>
-        /// <param name="maximumReleaseDate">The maximum release date.</param>
-        /// <returns>Task.</returns>
-        Task HandleUpdatesAsync(DateTime? maximumReleaseDate = null);
-
-        /// <summary>
         /// Gets the available availableChannels.
         /// </summary>
         /// <value>The availableChannels.</value>
@@ -67,14 +41,39 @@ namespace Orc.Squirrel
         bool IsUpdateSystemAvailable { get; }
 
         /// <summary>
-        /// Gets a value indicating whether an update outside the maintenance is available.
+        /// Gets a value indicating whether a new update has been installed.
         /// </summary>
-        /// <value><c>true</c> if an update outside the maintenance is available; otherwise, <c>false</c>.</value>
-        bool IsUpdateOutsideMaintenanceAvailable { get; }
+        /// <value><c>true</c> if this instance is updated installed; otherwise, <c>false</c>.</value>
+        bool IsUpdatedInstalled { get; }
 
         /// <summary>
-        /// Occurs when an update is available but not installed because it is outside the maintenance window (specified by maximum release date).
+        /// Occurs when a new update has begun installing.
         /// </summary>
-        event EventHandler<EventArgs> UpdateOutsideMaintenanceAvailable;
+        event EventHandler<SquirrelEventArgs> UpdateInstalling;
+
+        /// <summary>
+        /// Occurs when a new update has been installed.
+        /// </summary>
+        event EventHandler<SquirrelEventArgs> UpdateInstalled;
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        /// <param name="availableChannels">The available channels.</param>
+        /// <param name="defaultChannel">The default channel.</param>
+        /// <param name="defaultCheckForUpdatesValue">The default value for the check for updates setting.</param>
+        void Initialize(IEnumerable<UpdateChannel> availableChannels, UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
+
+        /// <summary>
+        /// Checks for any available updates.
+        /// </summary>
+        /// <returns><c>true</c> if an update is available; otherwise <c>false</c>.</returns>
+        Task<SquirrelResult> CheckForUpdatesAsync(SquirrelContext context);
+
+        /// <summary>
+        /// Installes the available updates if there is an update available.
+        /// </summary>
+        /// <returns>Task.</returns>
+        Task<SquirrelResult> InstallAvailableUpdatesAsync(SquirrelContext context);
     }
 }

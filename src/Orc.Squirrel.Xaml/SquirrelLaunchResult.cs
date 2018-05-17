@@ -10,7 +10,7 @@ namespace Orc.Squirrel
     /// <summary>
     /// Squirrel result enum.
     /// </summary>
-    public enum SquirrelResult
+    public enum SquirrelLaunchResult
     {
         /// <summary>
         /// Unhandled, meaning no interaction took place.
