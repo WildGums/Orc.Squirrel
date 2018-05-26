@@ -218,13 +218,16 @@ namespace Orc.Squirrel
                         {
                             Log.Info("Update installed successfully");
 
-                            result.IsUpdateInstalledOrAvailable = true;
                             result.NewVersion = releaseEntry.Version?.ToString();
-
-                            IsUpdatedInstalled = true;
-
-                            UpdateInstalled.SafeInvoke(this, () => new SquirrelEventArgs(result));
                         }
+                        else
+                        {
+                            Log.Warning("Update finished, but no release entry was returned, falling back to previous update info");
+                        }
+
+                        IsUpdatedInstalled = true;
+
+                        UpdateInstalled.SafeInvoke(this, () => new SquirrelEventArgs(result));
                     }
                 }
             }
