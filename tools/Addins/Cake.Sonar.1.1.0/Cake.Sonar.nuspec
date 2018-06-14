@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Cake.Sonar</id>
+    <version>1.1.0</version>
+    <title>Cake.Sonar</title>
+    <authors>Tom Staijen</authors>
+    <owners>Tom Staijen,cake-contrib</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/AgileArchitect/Cake.Sonar/blob/master/LICENCE</licenseUrl>
+    <projectUrl>https://github.com/AgileArchitect/Cake.Sonar</projectUrl>
+    <iconUrl>https://cdn.rawgit.com/cake-contrib/graphics/a5cf0f881c390650144b2243ae551d5b9f836196/png/cake-contrib-medium.png</iconUrl>
+    <description>Run sonar for msbuild</description>
+    <summary>Run sonar for msbuild</summary>
+    <tags>Cake Sonar MSBuild</tags>
+  </metadata>
+</package>

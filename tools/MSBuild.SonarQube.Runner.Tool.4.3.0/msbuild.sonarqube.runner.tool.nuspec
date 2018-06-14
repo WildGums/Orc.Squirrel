@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>MSBuild.SonarQube.Runner.Tool</id>
+    <version>4.3.0</version>
+    <title>MSBuild.SonarQube.Runner.Tool</title>
+    <authors>Tom Staijen</authors>
+    <owners>Tom Staijen,cake-contrib</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/AgileArchitect/MSBuild.SonarQube.Runner.Tool/blob/master/LICENCE</licenseUrl>
+    <projectUrl>https://github.com/AgileArchitect/MSBuild.SonarQube.Runner.Tool</projectUrl>
+    <description>Nuget tool package for MSBUild.SonarQube.Runner</description>
+    <summary>Contains the runner with version 4.3.0.1333</summary>
+  </metadata>
+</package>
