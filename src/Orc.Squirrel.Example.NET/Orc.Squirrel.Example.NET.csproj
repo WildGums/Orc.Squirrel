@@ -4,6 +4,7 @@
     <AssemblyName>Orc.Squirrel.Example.NET</AssemblyName>
     <RootNamespace>Orc.Squirrel.Example</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
+    <SonarQubeExclude>true</SonarQubeExclude>
   </PropertyGroup>
 
   <PropertyGroup>

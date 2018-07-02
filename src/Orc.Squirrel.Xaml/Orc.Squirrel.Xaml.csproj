@@ -10,6 +10,11 @@
     <PackageTags>orc;squirrel;update;installation;install</PackageTags>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- SonarQube requires a project guid -->
+    <ProjectGuid>31BC299C-E2C4-49B1-A2C7-B19B7805B698</ProjectGuid>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Costura.Fody" Version="2.0.1" />
     <PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="all" />
