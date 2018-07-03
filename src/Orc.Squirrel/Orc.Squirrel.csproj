@@ -12,7 +12,7 @@
 
   <PropertyGroup>
     <!-- SonarQube requires a project guid -->
-    <ProjectGuid>34A7A8BF-AF39-412F-B3B5-F8E28F1877D6</ProjectGuid>
+    <ProjectGuid>C0F9BC1C-E178-4080-8BF8-951F1853FB4F</ProjectGuid>
   </PropertyGroup>
   
   <ItemGroup>
