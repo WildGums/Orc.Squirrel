@@ -160,18 +160,25 @@ namespace Orc.Squirrel
                 return result;
             }
 
-            using (var mgr = new UpdateManager(channelUrl))
+            try
             {
-                Log.Info($"Checking for updates using url '{channelUrl}'");
-
-                var updateInfo = await mgr.CheckForUpdate();
-                if (updateInfo.ReleasesToApply.Count > 0)
+                using (var mgr = new UpdateManager(channelUrl))
                 {
-                    Log.Info($"Found new version '{updateInfo.FutureReleaseEntry?.Version}' using url '{channelUrl}'");
+                    Log.Info($"Checking for updates using url '{channelUrl}'");
 
-                    result.IsUpdateInstalledOrAvailable = true;
-                    result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
+                    var updateInfo = await mgr.CheckForUpdate();
+                    if (updateInfo.ReleasesToApply.Count > 0)
+                    {
+                        Log.Info($"Found new version '{updateInfo.FutureReleaseEntry?.Version}' using url '{channelUrl}'");
+
+                        result.IsUpdateInstalledOrAvailable = true;
+                        result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while checking for the latest updates");
             }
 
             return result;
