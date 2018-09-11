@@ -23,47 +23,10 @@ Parameters["StartYear"] = "2014";
 // DEFINE COMPONENTS TO BUILD / PACKAGE
 //=======================================================
 
-var ComponentsToBuild = new string[]
-{
-    "Orc.Squirrel", 
-    "Orc.Squirrel.Xaml"
-};
+Components.Add("Orc.Squirrel");
+Components.Add("Orc.Squirrel.Xaml");
 
-//=======================================================
-// DEFINE WEB APPS TO BUILD / PACKAGE
-//=======================================================
-
-var WebAppsToBuild = new string[]
-{
-
-};
-
-//=======================================================
-// DEFINE WPF APPS TO BUILD / PACKAGE
-//=======================================================
-
-var WpfAppsToBuild = new string[]
-{
-
-};
-
-//=======================================================
-// DEFINE UWP APPS TO BUILD / PACKAGE
-//=======================================================
-
-var UwpAppsToBuild = new string[]
-{
-
-};
-
-//=======================================================
-// DEFINE TEST PROJECTS TO BUILD
-//=======================================================
-
-var TestProjectsToBuild = new string[]
-{
-    string.Format("{0}.Tests", GetBuildServerVariable("SolutionName"))
-};
+TestProjects.Add(string.Format("{0}.Tests", GetBuildServerVariable("SolutionName")));
 
 //=======================================================
 // REQUIRED INITIALIZATION, DO NOT CHANGE
