@@ -218,7 +218,7 @@ namespace Orc.Squirrel
                         result.IsUpdateInstalledOrAvailable = true;
                         result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
 
-                        UpdateInstalling.SafeInvoke(this, () => new SquirrelEventArgs(result));
+                        UpdateInstalling?.Invoke(this, new SquirrelEventArgs(result));
 
                         var releaseEntry = await mgr.UpdateApp();
                         if (releaseEntry != null)
@@ -234,7 +234,7 @@ namespace Orc.Squirrel
 
                         IsUpdatedInstalled = true;
 
-                        UpdateInstalled.SafeInvoke(this, () => new SquirrelEventArgs(result));
+                        UpdateInstalled?.Invoke(this, new SquirrelEventArgs(result));
                     }
                 }
             }
