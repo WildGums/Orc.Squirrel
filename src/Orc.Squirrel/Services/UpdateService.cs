@@ -174,6 +174,10 @@ namespace Orc.Squirrel
                         result.IsUpdateInstalledOrAvailable = true;
                         result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
                     }
+                    else
+                    {
+                        Log.Info("No updates available");
+                    }
                 }
             }
             catch (Exception ex)
