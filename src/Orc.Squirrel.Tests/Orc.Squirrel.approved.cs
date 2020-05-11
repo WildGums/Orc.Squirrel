@@ -1,7 +1,7 @@
-﻿[assembly: System.Resources.NeutralResourcesLanguageAttribute("en-US")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleToAttribute("Orc.Squirrel.Tests")]
-[assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETFramework,Version=v4.6", FrameworkDisplayName=".NET Framework 4.6")]
-public class static ModuleInitializer
+﻿[assembly: System.Resources.NeutralResourcesLanguage("en-US")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Orc.Squirrel.Tests")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETFramework,Version=v4.6", FrameworkDisplayName=".NET Framework 4.6")]
+public static class ModuleInitializer
 {
     public static void Initialize() { }
 }
@@ -12,19 +12,19 @@ namespace Orc.Squirrel
         Orc.Squirrel.UpdateChannel[] AvailableChannels { get; }
         bool CheckForUpdates { get; set; }
         Orc.Squirrel.UpdateChannel CurrentChannel { get; set; }
-        bool IsUpdatedInstalled { get; }
         bool IsUpdateSystemAvailable { get; }
-        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
-        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
+        bool IsUpdatedInstalled { get; }
+        event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
+        event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
         System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context);
         void Initialize(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
         System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context);
     }
-    public class static Settings
+    public static class Settings
     {
-        public class static Application
+        public static class Application
         {
-            public class static AutomaticUpdates
+            public static class AutomaticUpdates
             {
                 public const string CheckForUpdates = "AutomaticUpdates.CheckForUpdates";
                 public const string UpdateChannel = "AutomaticUpdates.UpdateChannel";
@@ -32,7 +32,7 @@ namespace Orc.Squirrel
             }
         }
     }
-    public class static SquirrelArguments
+    public static class SquirrelArguments
     {
         public const string FirstRun = "--squirrel-firstrun";
         public const string Install = "--squirrel-install";
@@ -57,7 +57,7 @@ namespace Orc.Squirrel
         public bool IsUpdateInstalledOrAvailable { get; set; }
         public string NewVersion { get; set; }
     }
-    [System.Diagnostics.DebuggerDisplayAttribute("{Name} => {DefaultUrl}")]
+    [System.Diagnostics.DebuggerDisplay("{Name} => {DefaultUrl}")]
     public class UpdateChannel
     {
         public UpdateChannel(string name, string defaultUrl) { }
@@ -73,8 +73,8 @@ namespace Orc.Squirrel
         public Orc.Squirrel.UpdateChannel[] AvailableChannels { get; }
         public bool CheckForUpdates { get; set; }
         public Orc.Squirrel.UpdateChannel CurrentChannel { get; set; }
-        public bool IsUpdatedInstalled { get; }
         public bool IsUpdateSystemAvailable { get; }
+        public bool IsUpdatedInstalled { get; }
         public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
         public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
         public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }

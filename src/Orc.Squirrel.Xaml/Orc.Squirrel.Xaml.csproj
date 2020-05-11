@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>net46;net47</TargetFrameworks>
+    <TargetFrameworks>net46;net47;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>Orc.Squirrel.Xaml</AssemblyName>
     <RootNamespace>Orc.Squirrel</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
@@ -31,21 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Orc.Squirrel\Orc.Squirrel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
