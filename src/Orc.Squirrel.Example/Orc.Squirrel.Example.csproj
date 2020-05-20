@@ -16,7 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Catel.Analyzers" Version="1.0.0" PrivateAssets="all" />
     <PackageReference Include="Catel.Fody" Version="4.4.2" PrivateAssets="all" />
     <PackageReference Include="Fody" Version="6.1.1" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -26,7 +25,6 @@
     <PackageReference Include="Obsolete.Fody" Version="5.2.1" PrivateAssets="all" />
     <PackageReference Include="Orc.Controls" Version="3.4.0" />
     <PackageReference Include="Orchestra.Core" Version="5.3.1" />
-    <PackageReference Include="WpfAnalyzers" Version="3.1.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,5 +36,6 @@
     <ProjectReference Include="..\Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.csproj" />
   </ItemGroup>
 
-  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
+  <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.mat.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.mat.props')" />
 </Project>
