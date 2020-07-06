@@ -55,6 +55,7 @@ namespace Orc.Squirrel
         /// Occurs when a new update has been installed.
         /// </summary>
         event EventHandler<SquirrelEventArgs> UpdateInstalled;
+        event EventHandler<SquirrelProgressEventArgs> UpdateProgress;
 
         /// <summary>
         /// Initializes this instance.

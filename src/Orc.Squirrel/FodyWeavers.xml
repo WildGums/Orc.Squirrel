@@ -4,6 +4,9 @@
   <Obsolete />
   <Catel />
   <Costura DisableCleanup="true">
-    <IncludeAssemblies></IncludeAssemblies>
+    <IncludeAssemblies>
+    </IncludeAssemblies>
+    <IncludeRuntimeAssemblies>
+    </IncludeRuntimeAssemblies>
   </Costura>
 </Weavers>

@@ -14,6 +14,7 @@ public static class ModuleInitializer
     {
         var serviceLocator = ServiceLocator.Default;
 
+        serviceLocator.RegisterType<IUpdateExecutableLocationService, UpdateExecutableLocationService>();
         serviceLocator.RegisterType<IUpdateService, UpdateService>();
 
         var languageService = serviceLocator.ResolveType<ILanguageService>();

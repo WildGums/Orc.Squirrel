@@ -8,6 +8,5 @@ public static class ModuleInitializer
     /// </summary>
     public static void Initialize()
     {
-
     }
 }

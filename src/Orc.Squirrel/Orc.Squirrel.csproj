@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>net46;net47</TargetFrameworks>
+    <TargetFrameworks>net46;net47;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>Orc.Squirrel</AssemblyName>
     <RootNamespace>Orc.Squirrel</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
@@ -23,8 +23,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="ModuleInit.Fody" Version="2.1.0" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Obsolete.Fody" Version="5.2.1" PrivateAssets="all" />
-    <PackageReference Include="Orc.FileSystem" Version="3.2.0" />
+    <PackageReference Include="Orc.FileSystem" Version="4.0.0-alpha0125" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
     <PackageReference Include="squirrel.windows" Version="1.9.1" />
   </ItemGroup>
 

@@ -1,12 +1,17 @@
 ﻿[assembly: System.Resources.NeutralResourcesLanguage("en-US")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Orc.Squirrel.Tests")]
-[assembly: System.Runtime.Versioning.TargetFramework(".NETFramework,Version=v4.6", FrameworkDisplayName=".NET Framework 4.6")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v3.1", FrameworkDisplayName="")]
 public static class ModuleInitializer
 {
     public static void Initialize() { }
 }
 namespace Orc.Squirrel
 {
+    public interface IUpdateExecutableLocationService
+    {
+        string FindUpdateExecutable();
+        string GetApplicationExecutable();
+    }
     public interface IUpdateService
     {
         Orc.Squirrel.UpdateChannel[] AvailableChannels { get; }
@@ -16,6 +21,7 @@ namespace Orc.Squirrel
         bool IsUpdatedInstalled { get; }
         event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
         event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
+        event System.EventHandler<Orc.Squirrel.SquirrelProgressEventArgs> UpdateProgress;
         System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context);
         void Initialize(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
         System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context);
@@ -50,6 +56,11 @@ namespace Orc.Squirrel
         public SquirrelEventArgs(Orc.Squirrel.SquirrelResult result) { }
         public Orc.Squirrel.SquirrelResult SquirrelResult { get; }
     }
+    public class SquirrelProgressEventArgs
+    {
+        public SquirrelProgressEventArgs(int percentage) { }
+        public int Percentage { get; }
+    }
     public class SquirrelResult
     {
         public SquirrelResult() { }
@@ -67,9 +78,15 @@ namespace Orc.Squirrel
         public string Name { get; }
         public override string ToString() { }
     }
+    public class UpdateExecutableLocationService : Orc.Squirrel.IUpdateExecutableLocationService
+    {
+        public UpdateExecutableLocationService(Orc.FileSystem.IFileService fileService) { }
+        public string FindUpdateExecutable() { }
+        public virtual string GetApplicationExecutable() { }
+    }
     public class UpdateService : Orc.Squirrel.IUpdateService
     {
-        public UpdateService(Catel.Configuration.IConfigurationService configurationService, Orc.FileSystem.IFileService fileService) { }
+        public UpdateService(Catel.Configuration.IConfigurationService configurationService, Orc.FileSystem.IFileService fileService, Orc.Squirrel.IUpdateExecutableLocationService updateExecutableLocationService) { }
         public Orc.Squirrel.UpdateChannel[] AvailableChannels { get; }
         public bool CheckForUpdates { get; set; }
         public Orc.Squirrel.UpdateChannel CurrentChannel { get; set; }
@@ -77,10 +94,12 @@ namespace Orc.Squirrel
         public bool IsUpdatedInstalled { get; }
         public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
         public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
+        public event System.EventHandler<Orc.Squirrel.SquirrelProgressEventArgs> UpdateProgress;
         public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }
         protected string GetChannelUrl(Orc.Squirrel.SquirrelContext context) { }
         protected virtual string GetCurrentApplicationVersion() { }
         public void Initialize(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue) { }
         public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }
+        protected virtual void RaiseProgressChanged(int percentage) { }
     }
 }

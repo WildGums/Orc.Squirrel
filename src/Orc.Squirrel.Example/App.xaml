@@ -4,6 +4,10 @@
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Orc.LogViewer;component/themes/generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
             <SolidColorBrush x:Key="AccentColorBrush" Color="Red" />
         </ResourceDictionary>
     </Application.Resources>

@@ -9,43 +9,46 @@ namespace Orc.Squirrel
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using Catel;
     using Catel.Configuration;
     using Catel.Logging;
     using Catel.Reflection;
+    using Catel.Services;
     using FileSystem;
-    using global::Squirrel;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using Path = Catel.IO.Path;
+
+#if !NETCORE
+    using global::Squirrel;
+#endif
 
     /// <summary>
     /// Update service.
     /// </summary>
     public class UpdateService : IUpdateService
     {
-        private const string UpdateExe = "..\\update.exe";
-
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         private readonly IConfigurationService _configurationService;
         private readonly IFileService _fileService;
+        private readonly IUpdateExecutableLocationService _updateExecutableLocationService;
 
         private bool _initialized;
-        private string _updateExeLocation;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateService" /> class.
-        /// </summary>
-        /// <param name="configurationService">The configuration service.</param>
-        /// <param name="fileService">The file service.</param>
-        public UpdateService(IConfigurationService configurationService, IFileService fileService)
+        public UpdateService(IConfigurationService configurationService, IFileService fileService,
+            IUpdateExecutableLocationService updateExecutableLocationService)
         {
             Argument.IsNotNull(() => configurationService);
             Argument.IsNotNull(() => fileService);
+            Argument.IsNotNull(() => updateExecutableLocationService);
 
             _configurationService = configurationService;
             _fileService = fileService;
+            _updateExecutableLocationService = updateExecutableLocationService;
 
             AvailableChannels = new UpdateChannel[] { };
         }
@@ -96,7 +99,7 @@ namespace Orc.Squirrel
         {
             get
             {
-                var updateExe = GetUpdateExecutable();
+                var updateExe = _updateExecutableLocationService.FindUpdateExecutable();
                 return _fileService.Exists(updateExe);
             }
         }
@@ -111,6 +114,11 @@ namespace Orc.Squirrel
         /// Occurs when a new update has begun installing.
         /// </summary>
         public event EventHandler<SquirrelEventArgs> UpdateInstalling;
+
+        /// <summary>
+        /// Occurs when a progress update happens.
+        /// </summary>
+        public event EventHandler<SquirrelProgressEventArgs> UpdateProgress;
 
         /// <summary>
         /// Occurs when a new update has been installed.
@@ -162,6 +170,50 @@ namespace Orc.Squirrel
 
             try
             {
+#if NETCORE
+                var startInfo = CreateUpdateProcessStartInfo($"--checkForUpdate={channelUrl}");
+                var process = Process.Start(startInfo);
+
+                var output = await process.StandardOutput.ReadToEndAsync();
+                process.WaitForExit();
+
+                var startIndex = output.IndexOf("{");
+                if (startIndex > 0)
+                {
+                    output = output.Substring(startIndex);
+                }
+
+                // Results similar to this:
+                //{
+                //    "currentVersion": "2.3.0-alpha1013",
+                //    "futureVersion": "2.3.0-alpha1094",
+                //    "releasesToApply": [
+                //        {
+                //            "version": "2.3.0-alpha1039",
+                //            "releaseNotes": ""
+                //        },
+                //        {
+                //            "version": "2.3.0-alpha1074",
+                //            "releaseNotes": ""
+                //        },
+                //        {
+                //            "version": "2.3.0-alpha1094",
+                //            "releaseNotes": ""
+                //        }
+                //    ]
+                //}
+
+                if (!string.IsNullOrWhiteSpace(output))
+                {
+                    dynamic releaseInfo = JObject.Parse(output);
+
+                    foreach (var releaseToApply in releaseInfo.releasesToApply)
+                    {
+                        result.IsUpdateInstalledOrAvailable = true;
+                        result.NewVersion = releaseToApply.version;
+                    }
+                }
+#else
                 using (var mgr = new UpdateManager(channelUrl))
                 {
                     Log.Info($"Checking for updates using url '{channelUrl}'");
@@ -169,15 +221,19 @@ namespace Orc.Squirrel
                     var updateInfo = await mgr.CheckForUpdate();
                     if (updateInfo.ReleasesToApply.Count > 0)
                     {
-                        Log.Info($"Found new version '{updateInfo.FutureReleaseEntry?.Version}' using url '{channelUrl}'");
-
                         result.IsUpdateInstalledOrAvailable = true;
                         result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
                     }
-                    else
-                    {
-                        Log.Info("No updates available");
-                    }
+                }
+#endif
+
+                if (!result.IsUpdateInstalledOrAvailable)
+                {
+                    Log.Info("No updates available");
+                }
+                else
+                {
+                    Log.Info($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
                 }
             }
             catch (Exception ex)
@@ -210,6 +266,55 @@ namespace Orc.Squirrel
 
             try
             {
+#if NETCORE
+                // Do we actually have an update? Do a quick one here
+                var checkResult = await CheckForUpdatesAsync(context);
+
+                // Note that we don't want the process to stop updating, we only want to invoke
+                if (checkResult.IsUpdateInstalledOrAvailable)
+                {
+                    Log.Info($"Found new version '{checkResult.NewVersion}' using url '{channelUrl}', installing update...");
+
+                    UpdateInstalling?.Invoke(this, new SquirrelEventArgs(result));
+                }
+                else
+                {
+                    Log.Info($"Could not determine whether a new version was available for certain, going to run update anyway...");
+                }
+
+                // Executable wrapper
+                var startInfo = CreateUpdateProcessStartInfo($"--update={channelUrl}");
+                var process = Process.Start(startInfo);
+
+                var line = "0";
+
+                while (!string.IsNullOrWhiteSpace(line))
+                {
+                    if (int.TryParse(line, out var progress))
+                    {
+                        RaiseProgressChanged(progress);
+                    }
+
+                    line = await process.StandardOutput.ReadLineAsync();
+                }
+
+                process.WaitForExit();
+
+                // Only when we knew there was an update pending, we notify
+                if (process.ExitCode == 0 && checkResult.IsUpdateInstalledOrAvailable)
+                {
+                    result.NewVersion = checkResult?.NewVersion ?? "unknown"; 
+                    result.IsUpdateInstalledOrAvailable = true;
+
+                    Log.Info("Update installed successfully");
+
+                    IsUpdatedInstalled = true;
+
+                    UpdateInstalled?.Invoke(this, new SquirrelEventArgs(result));
+
+                    Log.Info("Update installed successfully");
+                }
+#else
                 using (var mgr = new UpdateManager(channelUrl))
                 {
                     Log.Info($"Checking for updates using url '{channelUrl}'");
@@ -224,7 +329,7 @@ namespace Orc.Squirrel
 
                         UpdateInstalling?.Invoke(this, new SquirrelEventArgs(result));
 
-                        var releaseEntry = await mgr.UpdateApp();
+                        var releaseEntry = await mgr.UpdateApp(x => RaiseProgressChanged(x));
                         if (releaseEntry != null)
                         {
                             Log.Info("Update installed successfully");
@@ -241,6 +346,7 @@ namespace Orc.Squirrel
                         UpdateInstalled?.Invoke(this, new SquirrelEventArgs(result));
                     }
                 }
+#endif
             }
             catch (Exception ex)
             {
@@ -248,6 +354,32 @@ namespace Orc.Squirrel
             }
 
             return result;
+        }
+
+#if NETCORE
+        private ProcessStartInfo CreateUpdateProcessStartInfo(string arguments)
+        {
+            var updateExecutable = _updateExecutableLocationService.FindUpdateExecutable();
+            //var executableFileName = _updateExecutableLocationService.GetApplicationExecutable();
+
+            var startInfo = new ProcessStartInfo(updateExecutable)
+            {
+                Arguments = arguments,
+                WorkingDirectory = Path.GetDirectoryName(updateExecutable),
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            return startInfo;
+        }
+#endif
+
+        protected virtual void RaiseProgressChanged(int percentage)
+        {
+            Log.Debug($"Update progress: {percentage}%");
+
+            UpdateProgress?.Invoke(this, new SquirrelProgressEventArgs(percentage));
         }
 
         /// <summary>
@@ -287,7 +419,7 @@ namespace Orc.Squirrel
             }
 
             var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
-            var updateExe = GetUpdateExecutable();
+            var updateExe = _updateExecutableLocationService.FindUpdateExecutable();
             if (!_fileService.Exists(updateExe))
             {
                 Log.Warning("Cannot check for updates, update.exe is not available");
@@ -295,19 +427,6 @@ namespace Orc.Squirrel
             }
 
             return channelUrl;
-        }
-
-        private string GetUpdateExecutable()
-        {
-            if (string.IsNullOrWhiteSpace(_updateExeLocation))
-            {
-                var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
-                _updateExeLocation = Path.GetFullPath(UpdateExe, entryAssemblyDirectory);
-
-                Log.Debug($"Determined update executable path '{_updateExeLocation}', exists: {_fileService.Exists(_updateExeLocation)}");
-            }
-
-            return _updateExeLocation;
         }
 
         private void InitializeConfigurationKey(string key, object defaultValue)
