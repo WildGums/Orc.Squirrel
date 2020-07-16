@@ -1,0 +1,55 @@
+﻿<catel:Window x:Class="Orc.Squirrel.Example.Views.MainWindow"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:catel="http://schemas.catelproject.com" 
+              xmlns:orccontrols="http://schemas.wildgums.com/orc/controls" 
+              xmlns:orclogviewer="http://schemas.wildgums.com/orc/logviewer"
+              xmlns:orctheming="http://schemas.wildgums.com/orc/theming">
+    
+    <orccontrols:StackGrid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <orctheming:ThemeSwitcherView Grid.ColumnSpan="2" />
+
+        <orccontrols:OpenFilePicker Grid.ColumnSpan="2"
+                                    LabelText="Executable directory (optional)" 
+                                    SelectedFile="{Binding ExecutableFileName}" />
+
+        <Label Content="Update url" />
+        <TextBox Text="{Binding UpdateUrl}" />
+
+        <Button Grid.ColumnSpan="2"
+                Content="Check for updates" 
+                Command="{Binding CheckForUpdates}" />
+        <Button Grid.ColumnSpan="2"
+                Content="Update" 
+                Command="{Binding Update}" />
+        <Button Grid.ColumnSpan="2"
+                Content="Show installation window" 
+                Command="{Binding ShowInstalledDialog}" />
+
+        <ProgressBar Grid.ColumnSpan="2"
+                     Minimum="0" 
+                     Maximum="100" 
+                     Value="{Binding Progress}"
+                     Visibility="{Binding IsInstallingUpdate, Converter={catel:BooleanToHidingVisibilityConverter}}"/>
+
+        <orclogviewer:AdvancedLogViewerControl Grid.ColumnSpan="2"
+                                               Level="Debug,Info,Warning,Error" />
+    </orccontrols:StackGrid>
+    
+</catel:Window>

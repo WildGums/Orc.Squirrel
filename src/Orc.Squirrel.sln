@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orc.Squirrel", "Orc.Squirre
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orc.Squirrel.Xaml", "Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.csproj", "{BB5BB0BD-0673-4FFB-B1A6-16C1036771DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orc.Squirrel.Example.NET", "Orc.Squirrel.Example.NET\Orc.Squirrel.Example.NET.csproj", "{1A5B2F6B-E953-4795-BEA9-479B7AEB6542}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orc.Squirrel.Example", "Orc.Squirrel.Example\Orc.Squirrel.Example.csproj", "{1A5B2F6B-E953-4795-BEA9-479B7AEB6542}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orc.Squirrel.Tests", "Orc.Squirrel.Tests\Orc.Squirrel.Tests.csproj", "{DDD20F81-BC56-466F-B423-8A2C75713555}"
 EndProject
