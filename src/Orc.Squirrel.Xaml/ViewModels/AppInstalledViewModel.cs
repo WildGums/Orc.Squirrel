@@ -11,6 +11,7 @@ namespace Orc.Squirrel.ViewModels
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using Catel;
+    using Catel.IO;
     using Catel.MVVM;
     using Catel.Reflection;
     using Catel.Services;
@@ -63,7 +64,12 @@ namespace Orc.Squirrel.ViewModels
         {
             _dispatcherService.BeginInvoke(() =>
             {
-                _processService.StartProcess(_entryAssembly.Location);
+                var location = _entryAssembly.Location;
+
+                // Note: in .NET Core, entry assembly can be a .dll, make sure to enforce exe
+                location = System.IO.Path.ChangeExtension(location, ".exe");
+
+                _processService.StartProcess(location);
 
 #pragma warning disable 4014
                 CloseViewModelAsync(null);

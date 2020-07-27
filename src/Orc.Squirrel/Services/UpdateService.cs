@@ -275,6 +275,8 @@ namespace Orc.Squirrel
                 {
                     Log.Info($"Found new version '{checkResult.NewVersion}' using url '{channelUrl}', installing update...");
 
+                    result.NewVersion = checkResult.NewVersion;
+
                     UpdateInstalling?.Invoke(this, new SquirrelEventArgs(result));
                 }
                 else
