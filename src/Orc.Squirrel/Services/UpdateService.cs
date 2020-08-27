@@ -22,10 +22,6 @@ namespace Orc.Squirrel
     using Newtonsoft.Json.Linq;
     using Path = Catel.IO.Path;
 
-#if !NETCORE
-    using global::Squirrel;
-#endif
-
     /// <summary>
     /// Update service.
     /// </summary>
@@ -170,7 +166,6 @@ namespace Orc.Squirrel
 
             try
             {
-#if NETCORE
                 var startInfo = CreateUpdateProcessStartInfo($"--checkForUpdate={channelUrl}");
                 var process = Process.Start(startInfo);
 
@@ -213,19 +208,6 @@ namespace Orc.Squirrel
                         result.NewVersion = releaseToApply.version;
                     }
                 }
-#else
-                using (var mgr = new UpdateManager(channelUrl))
-                {
-                    Log.Info($"Checking for updates using url '{channelUrl}'");
-
-                    var updateInfo = await mgr.CheckForUpdate();
-                    if (updateInfo.ReleasesToApply.Count > 0)
-                    {
-                        result.IsUpdateInstalledOrAvailable = true;
-                        result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
-                    }
-                }
-#endif
 
                 if (!result.IsUpdateInstalledOrAvailable)
                 {
@@ -266,7 +248,6 @@ namespace Orc.Squirrel
 
             try
             {
-#if NETCORE
                 // Do we actually have an update? Do a quick one here
                 var checkResult = await CheckForUpdatesAsync(context);
 
@@ -316,39 +297,6 @@ namespace Orc.Squirrel
 
                     Log.Info("Update installed successfully");
                 }
-#else
-                using (var mgr = new UpdateManager(channelUrl))
-                {
-                    Log.Info($"Checking for updates using url '{channelUrl}'");
-
-                    var updateInfo = await mgr.CheckForUpdate();
-                    if (updateInfo.ReleasesToApply.Count > 0)
-                    {
-                        Log.Info($"Found new version '{updateInfo.FutureReleaseEntry?.Version}' using url '{channelUrl}', installing update...");
-
-                        result.IsUpdateInstalledOrAvailable = true;
-                        result.NewVersion = updateInfo.FutureReleaseEntry?.Version?.ToString();
-
-                        UpdateInstalling?.Invoke(this, new SquirrelEventArgs(result));
-
-                        var releaseEntry = await mgr.UpdateApp(x => RaiseProgressChanged(x));
-                        if (releaseEntry != null)
-                        {
-                            Log.Info("Update installed successfully");
-
-                            result.NewVersion = releaseEntry.Version?.ToString();
-                        }
-                        else
-                        {
-                            Log.Warning("Update finished, but no release entry was returned, falling back to previous update info");
-                        }
-
-                        IsUpdatedInstalled = true;
-
-                        UpdateInstalled?.Invoke(this, new SquirrelEventArgs(result));
-                    }
-                }
-#endif
             }
             catch (Exception ex)
             {
@@ -358,7 +306,6 @@ namespace Orc.Squirrel
             return result;
         }
 
-#if NETCORE
         private ProcessStartInfo CreateUpdateProcessStartInfo(string arguments)
         {
             var updateExecutable = _updateExecutableLocationService.FindUpdateExecutable();
@@ -375,7 +322,6 @@ namespace Orc.Squirrel
 
             return startInfo;
         }
-#endif
 
         protected virtual void RaiseProgressChanged(int percentage)
         {
