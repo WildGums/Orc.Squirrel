@@ -15,6 +15,7 @@
 
         private readonly IFileService _fileService;
         private string _updateExeLocation;
+        private bool _shownWarning = false;
 
         public UpdateExecutableLocationService(IFileService fileService)
         {
@@ -64,9 +65,11 @@
                         Log.Error(ex, "An error occurred while searching for the update executable");
                     }
 
-                    if (string.IsNullOrWhiteSpace(_updateExeLocation))
+                    if (!_shownWarning && string.IsNullOrWhiteSpace(_updateExeLocation))
                     {
-                        Log.Warning("Could not find the update executable");
+                        Log.Info("Could not find the update executable, updates are not supported");
+                        
+                        _shownWarning = true;
                     }
                 }
             }
