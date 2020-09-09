@@ -34,6 +34,14 @@ public static void SignFiles(BuildContext buildContext, string signToolCommand, 
 
 public static void SignFile(BuildContext buildContext, string signToolCommand, string fileName, string additionalCommandLineArguments = null)
 {
+    // Skip code signing in specific scenarios
+    if (buildContext.General.IsCiBuild ||
+        buildContext.General.IsLocalBuild)
+    {
+        buildContext.CakeContext.Information("Skipping signing because this is a local or CI build");
+        return;
+    }
+    
     if (string.IsNullOrWhiteSpace(signToolCommand))
     {
         return;
@@ -97,6 +105,9 @@ public static void SignFile(BuildContext buildContext, string signToolCommand, s
             }
 
             buildContext.CakeContext.Warning($"Failed to sign '{fileName}', retries left: '{safetyCounter}'");
+
+            // Important: add a delay!
+            System.Threading.Thread.Sleep(5 * 1000);
         }
 
         safetyCounter--;
