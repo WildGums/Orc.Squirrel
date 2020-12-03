@@ -170,7 +170,10 @@ namespace Orc.Squirrel
                 var process = Process.Start(startInfo);
 
                 var output = await process.StandardOutput.ReadToEndAsync();
+
+#pragma warning disable CL0001
                 process.WaitForExit();
+#pragma warning restore CL0001
 
                 var startIndex = output.IndexOf("{");
                 if (startIndex > 0)
@@ -281,7 +284,9 @@ namespace Orc.Squirrel
                     line = await process.StandardOutput.ReadLineAsync();
                 }
 
+#pragma warning disable CL0001
                 process.WaitForExit();
+#pragma warning restore CL0001
 
                 // Only when we knew there was an update pending, we notify
                 if (process.ExitCode == 0 && checkResult.IsUpdateInstalledOrAvailable)
