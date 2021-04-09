@@ -17,13 +17,13 @@ namespace Orc.Squirrel
             var brush = new SolidColorBrush(Color.FromArgb(255, 58, 202, 116));
 
             var application = Application.Current;
-            if (application == null)
+            if (application is null)
             {
                 return brush;
             }
 
             var accentBrush =  application.TryFindResource("AccentColorBrush") as SolidColorBrush;
-            if (accentBrush != null)
+            if (accentBrush is not null)
             {
                 brush = accentBrush;
             }

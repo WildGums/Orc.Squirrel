@@ -40,7 +40,7 @@ namespace Orc.Squirrel
             var icon = ExtractIconFromFile(filePath);
 
             var vistaIcon = ExtractVistaIcon(icon);
-            if (vistaIcon == null)
+            if (vistaIcon is null)
             {
                 var bitmap = ExtractIcon(icon);
                 return ToBitmapImageWithTransparency(bitmap);
@@ -220,7 +220,7 @@ namespace Orc.Squirrel
             /// <remarks>Always returns new copies of the Icons. They should be disposed by the user.</remarks>
             private void Initialize(string fileName)
             {
-                if (fileName == null)
+                if (fileName is null)
                 {
                     throw new ArgumentNullException("fileName");
                 }
