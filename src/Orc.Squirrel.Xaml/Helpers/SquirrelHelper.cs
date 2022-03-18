@@ -25,7 +25,7 @@ namespace Orc.Squirrel
             Log.Debug("Handling squirrel");
 
             var application = Application.Current;
-            if (application == null)
+            if (application is null)
             {
                 Log.Warning("Application is null, cannot handle squirrel");
                 return SquirrelLaunchResult.Unhandled;

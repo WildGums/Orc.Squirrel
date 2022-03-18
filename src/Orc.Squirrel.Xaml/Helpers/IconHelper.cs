@@ -37,14 +37,17 @@ namespace Orc.Squirrel
 
         public static BitmapImage ExtractLargestIconFromFile(string filePath)
         {
+#pragma warning disable IDISP001 // Dispose created.
             var icon = ExtractIconFromFile(filePath);
 
             var vistaIcon = ExtractVistaIcon(icon);
-            if (vistaIcon == null)
+            if (vistaIcon is null)
             {
                 var bitmap = ExtractIcon(icon);
                 return ToBitmapImageWithTransparency(bitmap);
             }
+#pragma warning restore IDISP001 // Dispose created.
+
             return ToBitmapImageWithTransparency(vistaIcon);
         }
 
@@ -76,12 +79,14 @@ namespace Orc.Squirrel
                         int imageOffset = BitConverter.ToInt32(srcBuf, SizeICONDIR + SizeICONDIRENTRY*iIndex + 12);
                         using (var destStream = new MemoryStream())
                         {
-                            var writer = new BinaryWriter(destStream);
-                            writer.Write(srcBuf, imageOffset, imageSize);
-                            destStream.Seek(0, SeekOrigin.Begin);
+                            using (var writer = new BinaryWriter(destStream))
+                            {
+                                writer.Write(srcBuf, imageOffset, imageSize);
+                                destStream.Seek(0, SeekOrigin.Begin);
 
-                            extractedIcon = new Bitmap(destStream); // This is PNG! :)
-                            return extractedIcon;
+                                extractedIcon = new Bitmap(destStream); // This is PNG! :)
+                                return extractedIcon;
+                            }
                         }
                     }
                 }
@@ -159,7 +164,7 @@ namespace Orc.Squirrel
             // Fields
 
             #region Fields
-            private byte[][] iconData = null; // Binary data of each icon.
+            private byte[][] _iconData = null; // Binary data of each icon.
             #endregion
 
             #region Constructors
@@ -187,7 +192,7 @@ namespace Orc.Squirrel
             /// </summary>
             public int Count
             {
-                get { return iconData.Length; }
+                get { return _iconData.Length; }
             }
             #endregion
 
@@ -207,7 +212,7 @@ namespace Orc.Squirrel
 
                 // Create an Icon based on a .ico file in memory.
 
-                using (var ms = new MemoryStream(iconData[index]))
+                using (var ms = new MemoryStream(_iconData[index]))
                 {
                     return new Icon(ms);
                 }
@@ -220,7 +225,7 @@ namespace Orc.Squirrel
             /// <remarks>Always returns new copies of the Icons. They should be disposed by the user.</remarks>
             private void Initialize(string fileName)
             {
-                if (fileName == null)
+                if (fileName is null)
                 {
                     throw new ArgumentNullException("fileName");
                 }
@@ -296,7 +301,7 @@ namespace Orc.Squirrel
                     };
                     NativeMethods.EnumResourceNames(hModule, RT_GROUP_ICON, callback, IntPtr.Zero);
 
-                    iconData = tmpData.ToArray();
+                    _iconData = tmpData.ToArray();
                 }
                 finally
                 {
