@@ -1,14 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UpdateChannel.cs" company="WildGums">
-//   Copyright (c) 2008 - 2015 WildGums. All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-namespace Orc.Squirrel
+﻿namespace Orc.Squirrel
 {
+    using System;
     using System.Diagnostics;
-    using Catel;
 
     /// <summary>
     /// Update channel model.
@@ -23,8 +16,8 @@ namespace Orc.Squirrel
         /// <param name="defaultUrl">The default URL.</param>
         public UpdateChannel(string name, string defaultUrl)
         {
-            Argument.IsNotNull(() => name);
-            Argument.IsNotNull(() => defaultUrl);
+            ArgumentNullException.ThrowIfNull(name);
+            ArgumentNullException.ThrowIfNull(defaultUrl);
 
             Name = name;
             Description = string.Empty;

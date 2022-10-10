@@ -1,11 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AppInstalledWindow.xaml.cs" company="WildGums">
-//   Copyright (c) 2008 - 2015 WildGums. All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-namespace Orc.Squirrel.Views
+﻿namespace Orc.Squirrel.Views
 {
     using Catel.Windows;
     using ViewModels;
@@ -15,7 +8,6 @@ namespace Orc.Squirrel.Views
     /// </summary>
     public partial class AppInstalledWindow
     {
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="AppInstalledWindow"/> class.
         /// </summary>
@@ -31,11 +23,10 @@ namespace Orc.Squirrel.Views
         /// <remarks>
         /// This constructor can be used to use view-model injection.
         /// </remarks>
-        public AppInstalledWindow(AppInstalledViewModel viewModel)
+        public AppInstalledWindow(AppInstalledViewModel? viewModel)
             : base(viewModel, DataWindowMode.Custom)
         {
             InitializeComponent();
         }
-        #endregion
     }
 }

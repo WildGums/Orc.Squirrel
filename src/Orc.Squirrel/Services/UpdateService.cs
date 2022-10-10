@@ -1,11 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UpdateService.cs" company="WildGums">
-//   Copyright (c) 2008 - 2015 WildGums. All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-namespace Orc.Squirrel
+﻿namespace Orc.Squirrel
 {
     using System;
     using System.Collections.Generic;
@@ -16,9 +9,7 @@ namespace Orc.Squirrel
     using Catel.Configuration;
     using Catel.Logging;
     using Catel.Reflection;
-    using Catel.Services;
     using FileSystem;
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Path = Catel.IO.Path;
 
@@ -38,9 +29,9 @@ namespace Orc.Squirrel
         public UpdateService(IConfigurationService configurationService, IFileService fileService,
             IUpdateExecutableLocationService updateExecutableLocationService)
         {
-            Argument.IsNotNull(() => configurationService);
-            Argument.IsNotNull(() => fileService);
-            Argument.IsNotNull(() => updateExecutableLocationService);
+            ArgumentNullException.ThrowIfNull(configurationService);
+            ArgumentNullException.ThrowIfNull(fileService);
+            ArgumentNullException.ThrowIfNull(updateExecutableLocationService);
 
             _configurationService = configurationService;
             _fileService = fileService;
@@ -54,38 +45,6 @@ namespace Orc.Squirrel
         /// </summary>
         /// <value>The availableChannels.</value>
         public UpdateChannel[] AvailableChannels { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the current channel.
-        /// </summary>
-        /// <value>The current channel.</value>
-        public UpdateChannel CurrentChannel
-        {
-            get
-            {
-                var channelName = _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
-
-                return (from channel in AvailableChannels
-                        where channel.Name.EqualsIgnoreCase(channelName)
-                        select channel).FirstOrDefault();
-            }
-            set
-            {
-                Argument.IsNotNull("value", value);
-
-                _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, value.Name);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to check for updates.
-        /// </summary>
-        /// <value><c>true</c> if the check for updates is enabled; otherwise, <c>false</c>.</value>
-        public bool CheckForUpdates
-        {
-            get { return _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.CheckForUpdates, false); }
-            set { _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.CheckForUpdates, value); }
-        }
 
         /// <summary>
         /// Gets a value indicating whether the update system is available.
@@ -109,17 +68,43 @@ namespace Orc.Squirrel
         /// <summary>
         /// Occurs when a new update has begun installing.
         /// </summary>
-        public event EventHandler<SquirrelEventArgs> UpdateInstalling;
+        public event EventHandler<SquirrelEventArgs>? UpdateInstalling;
 
         /// <summary>
         /// Occurs when a progress update happens.
         /// </summary>
-        public event EventHandler<SquirrelProgressEventArgs> UpdateProgress;
+        public event EventHandler<SquirrelProgressEventArgs>? UpdateProgress;
 
         /// <summary>
         /// Occurs when a new update has been installed.
         /// </summary>
-        public event EventHandler<SquirrelEventArgs> UpdateInstalled;
+        public event EventHandler<SquirrelEventArgs>? UpdateInstalled;
+
+        public async Task<UpdateChannel?> GetCurrentChannelAsync()
+        {
+            var channelName = await _configurationService.GetRoamingValueAsync(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+
+            return (from channel in AvailableChannels
+                    where channel.Name.EqualsIgnoreCase(channelName)
+                    select channel).FirstOrDefault();
+        }
+
+        public async Task SetCurrentChannelAsync(UpdateChannel updateChannel)
+        {
+            ArgumentNullException.ThrowIfNull(updateChannel);
+
+            await _configurationService.SetRoamingValueAsync(Settings.Application.AutomaticUpdates.UpdateChannel, updateChannel.Name);
+        }
+
+        public Task<bool> GetCheckForUpdatesAsync()
+        {
+            return _configurationService.GetRoamingValueAsync(Settings.Application.AutomaticUpdates.CheckForUpdates, false);
+        }
+
+        public Task SetCheckForUpdatesAsync(bool value)
+        {
+            return _configurationService.SetRoamingValueAsync(Settings.Application.AutomaticUpdates.CheckForUpdates, value);
+        }
 
         /// <summary>
         /// Initializes this instance.
@@ -127,16 +112,19 @@ namespace Orc.Squirrel
         /// <param name="availableChannels">The available channels.</param>
         /// <param name="defaultChannel">The default channel.</param>
         /// <param name="defaultCheckForUpdatesValue">The default value for the check for updates setting.</param>
-        public void Initialize(IEnumerable<UpdateChannel> availableChannels, UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue)
+        public async Task InitializeAsync(IEnumerable<UpdateChannel> availableChannels, UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue)
         {
-            InitializeConfigurationKey(Settings.Application.AutomaticUpdates.CheckForUpdates, defaultCheckForUpdatesValue);
-            InitializeConfigurationKey(Settings.Application.AutomaticUpdates.UpdateChannel, defaultChannel.Name);
+            ArgumentNullException.ThrowIfNull(availableChannels);
+            ArgumentNullException.ThrowIfNull(defaultChannel);
+
+            await InitializeConfigurationKeyAsync(Settings.Application.AutomaticUpdates.CheckForUpdates, defaultCheckForUpdatesValue);
+            await InitializeConfigurationKeyAsync(Settings.Application.AutomaticUpdates.UpdateChannel, defaultChannel.Name);
 
             var channels = availableChannels.ToArray();
 
             foreach (var channel in channels)
             {
-                InitializeConfigurationKey(Settings.Application.AutomaticUpdates.GetChannelSettingName(channel.Name), channel.DefaultUrl);
+                await InitializeConfigurationKeyAsync(Settings.Application.AutomaticUpdates.GetChannelSettingName(channel.Name), channel.DefaultUrl);
             }
 
             AvailableChannels = channels;
@@ -150,7 +138,7 @@ namespace Orc.Squirrel
         /// <returns><c>true</c> if an update is available; otherwise <c>false</c>.</returns>
         public async Task<SquirrelResult> CheckForUpdatesAsync(SquirrelContext context)
         {
-            Argument.IsNotNull(() => context);
+            ArgumentNullException.ThrowIfNull(context);
 
             var result = new SquirrelResult
             {
@@ -158,7 +146,7 @@ namespace Orc.Squirrel
                 CurrentVersion = GetCurrentApplicationVersion()
             };
 
-            var channelUrl = GetChannelUrl(context);
+            var channelUrl = await GetChannelUrlAsync(context);
             if (string.IsNullOrWhiteSpace(channelUrl))
             {
                 return result;
@@ -167,7 +155,11 @@ namespace Orc.Squirrel
             try
             {
                 var startInfo = CreateUpdateProcessStartInfo($"--checkForUpdate={channelUrl}");
-                var process = Process.Start(startInfo);
+                using var process = Process.Start(startInfo);
+                if (process is null)
+                {
+                    return result;
+                }
 
                 var output = await process.StandardOutput.ReadToEndAsync();
 
@@ -235,7 +227,7 @@ namespace Orc.Squirrel
         /// <returns>Task.</returns>
         public async Task<SquirrelResult> InstallAvailableUpdatesAsync(SquirrelContext context)
         {
-            Argument.IsNotNull(() => context);
+            ArgumentNullException.ThrowIfNull(context);
 
             var result = new SquirrelResult
             {
@@ -243,7 +235,7 @@ namespace Orc.Squirrel
                 CurrentVersion = GetCurrentApplicationVersion()
             };
 
-            var channelUrl = GetChannelUrl(context);
+            var channelUrl = await GetChannelUrlAsync(context);
             if (string.IsNullOrWhiteSpace(channelUrl))
             {
                 return result;
@@ -270,7 +262,11 @@ namespace Orc.Squirrel
 
                 // Executable wrapper
                 var startInfo = CreateUpdateProcessStartInfo($"--update={channelUrl}");
-                var process = Process.Start(startInfo);
+                using var process = Process.Start(startInfo);
+                if (process is null)
+                {
+                    return result;
+                }
 
                 var line = "0";
 
@@ -341,37 +337,36 @@ namespace Orc.Squirrel
         /// <returns></returns>
         protected virtual string GetCurrentApplicationVersion()
         {
-            return AssemblyHelper.GetEntryAssembly()?.InformationalVersion();
+            return AssemblyHelper.GetRequiredEntryAssembly()?.InformationalVersion() ?? string.Empty;
         }
 
         /// <summary>
         /// Gets the channel url for the specified context.
         /// </summary>
         /// <returns>The channel url or <c>null</c> if no channel is available.</returns>
-        protected string GetChannelUrl(SquirrelContext context)
+        protected async Task<string?> GetChannelUrlAsync(SquirrelContext context)
         {
             if (!_initialized)
             {
                 throw Log.ErrorAndCreateException<InvalidOperationException>("Service is not initialized, call Initialize first");
             }
 
-            var checkForUpdates = _configurationService.GetRoamingValue<bool>(Settings.Application.AutomaticUpdates.CheckForUpdates);
+            var checkForUpdates = await GetCheckForUpdatesAsync();
             if (!checkForUpdates)
             {
                 Log.Info("Automatic updates are disabled");
                 return null;
             }
 
-            var channelName = context.ChannelName ?? _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+            var channelName = context.ChannelName ?? await _configurationService.GetRoamingValueAsync(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
             var channelUrlSettingsName = Settings.Application.AutomaticUpdates.GetChannelSettingName(channelName);
-            var channelUrl = _configurationService.GetRoamingValue(channelUrlSettingsName, string.Empty);
+            var channelUrl = await _configurationService.GetRoamingValueAsync(channelUrlSettingsName, string.Empty);
             if (string.IsNullOrEmpty(channelUrl))
             {
                 Log.Warning("Cannot find url for channel '{0}'", channelName);
                 return null;
             }
 
-            var entryAssemblyDirectory = AssemblyHelper.GetEntryAssembly().GetDirectory();
             var updateExe = _updateExecutableLocationService.FindUpdateExecutable();
             if (!_fileService.Exists(updateExe))
             {
@@ -382,9 +377,9 @@ namespace Orc.Squirrel
             return channelUrl;
         }
 
-        private void InitializeConfigurationKey(string key, object defaultValue)
+        private async Task InitializeConfigurationKeyAsync(string key, object defaultValue)
         {
-            _configurationService.InitializeRoamingValue(key, defaultValue);
+            await _configurationService.InitializeRoamingValueAsync(key, defaultValue);
         }
     }
 }

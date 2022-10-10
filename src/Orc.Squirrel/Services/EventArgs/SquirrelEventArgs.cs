@@ -7,7 +7,7 @@
     {
         public SquirrelEventArgs(SquirrelResult result)
         {
-            Argument.IsNotNull(() => result);
+            ArgumentNullException.ThrowIfNull(result);
 
             SquirrelResult = result;
         }

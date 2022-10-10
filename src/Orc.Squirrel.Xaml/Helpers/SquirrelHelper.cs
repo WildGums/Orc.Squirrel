@@ -1,11 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SquirrelHelper.cs" company="WildGums">
-//   Copyright (c) 2008 - 2015 WildGums. All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-namespace Orc.Squirrel
+﻿namespace Orc.Squirrel
 {
     using System;
     using System.Linq;
@@ -40,7 +33,7 @@ namespace Orc.Squirrel
                     Log.Info("Application is started with squirrel argument '{0}', going to show message to user", lastArgument);
 
                     var dependencyResolver = IoCConfiguration.DefaultDependencyResolver;
-                    var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
+                    var uiVisualizerService = dependencyResolver.ResolveRequired<IUIVisualizerService>();
 
                     await uiVisualizerService.ShowDialogAsync<AppInstalledViewModel>();
 

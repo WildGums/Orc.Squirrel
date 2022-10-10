@@ -9,9 +9,6 @@ namespace Orc.Squirrel.Example.ViewModels
 {
     using System;
     using System.Threading.Tasks;
-    using Catel;
-    using Catel.Collections;
-    using Catel.IO;
     using Catel.Logging;
     using Catel.MVVM;
     using Catel.Services;
@@ -31,9 +28,9 @@ namespace Orc.Squirrel.Example.ViewModels
         public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
             IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService)
         {
-            Argument.IsNotNull(() => uiVisualizerService);
-            Argument.IsNotNull(() => dispatcherService);
-            Argument.IsNotNull(() => updateService);
+            ArgumentNullException.ThrowIfNull(uiVisualizerService);
+            ArgumentNullException.ThrowIfNull(dispatcherService);
+            ArgumentNullException.ThrowIfNull(updateService);
 
             _uiVisualizerService = uiVisualizerService;
             _dispatcherService = dispatcherService;
@@ -51,7 +48,6 @@ namespace Orc.Squirrel.Example.ViewModels
 #endif
         }
 
-        #region Properties
         public override string Title
         {
             get { return "Squirrel example"; }
@@ -66,9 +62,7 @@ namespace Orc.Squirrel.Example.ViewModels
         public string ExecutableFileName { get; set; }
 
         public int Progress { get; set; }
-        #endregion
 
-        #region Commands
         public TaskCommand CheckForUpdates { get; private set; }
 
         private bool OnCheckForUpdatesCanExecute()
@@ -88,7 +82,7 @@ namespace Orc.Squirrel.Example.ViewModels
 
         private async Task OnCheckForUpdatesExecuteAsync()
         {
-            UpdateCustomChannels();
+            await UpdateCustomChannelsAsync();
 
             var result = await _updateService.CheckForUpdatesAsync(new SquirrelContext());
             IsUpdateAvailable = result.IsUpdateInstalledOrAvailable;
@@ -113,7 +107,7 @@ namespace Orc.Squirrel.Example.ViewModels
 
         private async Task OnUpdateExecuteAsync()
         {
-            UpdateCustomChannels();
+            await UpdateCustomChannelsAsync();
 
             try
             {
@@ -140,7 +134,6 @@ namespace Orc.Squirrel.Example.ViewModels
                 await CloseViewModelAsync(null);
             });
         }
-        #endregion
 
         protected override async Task InitializeAsync()
         {
@@ -161,7 +154,7 @@ namespace Orc.Squirrel.Example.ViewModels
             Progress = e.Percentage;
         }
 
-        private void UpdateCustomChannels()
+        private async Task UpdateCustomChannelsAsync()
         {
             var channels = new UpdateChannel[]
             {
@@ -171,7 +164,7 @@ namespace Orc.Squirrel.Example.ViewModels
                 }
             };
 
-            _updateService.Initialize(channels, channels[0], true);
+            await _updateService.InitializeAsync(channels, channels[0], true);
         }
 
         private void OnExecutableFileNameChanged()

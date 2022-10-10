@@ -1,11 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IUpdateService.cs" company="WildGums">
-//   Copyright (c) 2008 - 2015 WildGums. All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-namespace Orc.Squirrel
+﻿namespace Orc.Squirrel
 {
     using System;
     using System.Collections.Generic;
@@ -23,18 +16,6 @@ namespace Orc.Squirrel
         UpdateChannel[] AvailableChannels { get; }
 
         /// <summary>
-        /// Gets or sets the current channel.
-        /// </summary>
-        /// <value>The current channel.</value>
-        UpdateChannel CurrentChannel { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to check for updates.
-        /// </summary>
-        /// <value><c>true</c> if the check for updates is enabled; otherwise, <c>false</c>.</value>
-        bool CheckForUpdates { get; set; }
-
-        /// <summary>
         /// Gets a value indicating whether the update system is available.
         /// </summary>
         /// <value><c>true</c> if the is update system is available; otherwise, <c>false</c>.</value>
@@ -49,13 +30,33 @@ namespace Orc.Squirrel
         /// <summary>
         /// Occurs when a new update has begun installing.
         /// </summary>
-        event EventHandler<SquirrelEventArgs> UpdateInstalling;
+        event EventHandler<SquirrelEventArgs>? UpdateInstalling;
 
         /// <summary>
         /// Occurs when a new update has been installed.
         /// </summary>
-        event EventHandler<SquirrelEventArgs> UpdateInstalled;
-        event EventHandler<SquirrelProgressEventArgs> UpdateProgress;
+        event EventHandler<SquirrelEventArgs>? UpdateInstalled;
+
+        /// <summary>
+        /// Occurs when the update progress changes.
+        /// </summary>
+        event EventHandler<SquirrelProgressEventArgs>? UpdateProgress;
+
+        /// <summary>
+        /// Gets the current channel.
+        /// </summary>
+        /// <returns></returns>
+        Task<UpdateChannel?> GetCurrentChannelAsync();
+
+        /// <summary>
+        /// Sets the current channel.
+        /// </summary>
+        /// <param name="updateChannel"></param>
+        Task SetCurrentChannelAsync(UpdateChannel updateChannel);
+
+        Task<bool> GetCheckForUpdatesAsync();
+
+        Task SetCheckForUpdatesAsync(bool value);
 
         /// <summary>
         /// Initializes this instance.
@@ -63,7 +64,7 @@ namespace Orc.Squirrel
         /// <param name="availableChannels">The available channels.</param>
         /// <param name="defaultChannel">The default channel.</param>
         /// <param name="defaultCheckForUpdatesValue">The default value for the check for updates setting.</param>
-        void Initialize(IEnumerable<UpdateChannel> availableChannels, UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
+        Task InitializeAsync(IEnumerable<UpdateChannel> availableChannels, UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
 
         /// <summary>
         /// Checks for any available updates.

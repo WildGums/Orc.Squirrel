@@ -15,16 +15,18 @@ namespace Orc.Squirrel
     public interface IUpdateService
     {
         Orc.Squirrel.UpdateChannel[] AvailableChannels { get; }
-        bool CheckForUpdates { get; set; }
-        Orc.Squirrel.UpdateChannel CurrentChannel { get; set; }
         bool IsUpdateSystemAvailable { get; }
         bool IsUpdatedInstalled { get; }
-        event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
-        event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
-        event System.EventHandler<Orc.Squirrel.SquirrelProgressEventArgs> UpdateProgress;
+        event System.EventHandler<Orc.Squirrel.SquirrelEventArgs>? UpdateInstalled;
+        event System.EventHandler<Orc.Squirrel.SquirrelEventArgs>? UpdateInstalling;
+        event System.EventHandler<Orc.Squirrel.SquirrelProgressEventArgs>? UpdateProgress;
         System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context);
-        void Initialize(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
+        System.Threading.Tasks.Task<bool> GetCheckForUpdatesAsync();
+        System.Threading.Tasks.Task<Orc.Squirrel.UpdateChannel?> GetCurrentChannelAsync();
+        System.Threading.Tasks.Task InitializeAsync(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
         System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context);
+        System.Threading.Tasks.Task SetCheckForUpdatesAsync(bool value);
+        System.Threading.Tasks.Task SetCurrentChannelAsync(Orc.Squirrel.UpdateChannel updateChannel);
     }
     public static class Settings
     {
@@ -88,18 +90,20 @@ namespace Orc.Squirrel
     {
         public UpdateService(Catel.Configuration.IConfigurationService configurationService, Orc.FileSystem.IFileService fileService, Orc.Squirrel.IUpdateExecutableLocationService updateExecutableLocationService) { }
         public Orc.Squirrel.UpdateChannel[] AvailableChannels { get; }
-        public bool CheckForUpdates { get; set; }
-        public Orc.Squirrel.UpdateChannel CurrentChannel { get; set; }
         public bool IsUpdateSystemAvailable { get; }
         public bool IsUpdatedInstalled { get; }
-        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalled;
-        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs> UpdateInstalling;
-        public event System.EventHandler<Orc.Squirrel.SquirrelProgressEventArgs> UpdateProgress;
+        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs>? UpdateInstalled;
+        public event System.EventHandler<Orc.Squirrel.SquirrelEventArgs>? UpdateInstalling;
+        public event System.EventHandler<Orc.Squirrel.SquirrelProgressEventArgs>? UpdateProgress;
         public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }
-        protected string GetChannelUrl(Orc.Squirrel.SquirrelContext context) { }
+        protected System.Threading.Tasks.Task<string?> GetChannelUrlAsync(Orc.Squirrel.SquirrelContext context) { }
+        public System.Threading.Tasks.Task<bool> GetCheckForUpdatesAsync() { }
         protected virtual string GetCurrentApplicationVersion() { }
-        public void Initialize(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue) { }
+        public System.Threading.Tasks.Task<Orc.Squirrel.UpdateChannel?> GetCurrentChannelAsync() { }
+        public System.Threading.Tasks.Task InitializeAsync(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue) { }
         public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }
         protected virtual void RaiseProgressChanged(int percentage) { }
+        public System.Threading.Tasks.Task SetCheckForUpdatesAsync(bool value) { }
+        public System.Threading.Tasks.Task SetCurrentChannelAsync(Orc.Squirrel.UpdateChannel updateChannel) { }
     }
 }

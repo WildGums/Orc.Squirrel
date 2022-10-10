@@ -11,10 +11,6 @@ public static class ModuleInitializer
 }
 namespace Orc.Squirrel
 {
-    public static class AccentColorHelper
-    {
-        public static System.Windows.Media.SolidColorBrush GetAccentColor() { }
-    }
     public static class SquirrelHelper
     {
         public static System.Threading.Tasks.Task<Orc.Squirrel.SquirrelLaunchResult> HandleSquirrelAutomaticallyAsync() { }
@@ -29,13 +25,11 @@ namespace Orc.Squirrel.ViewModels
 {
     public class AppInstalledViewModel : Catel.MVVM.ViewModelBase
     {
-        public static readonly Catel.Data.PropertyData AccentColorBrushProperty;
-        public static readonly Catel.Data.PropertyData AppIconProperty;
-        public static readonly Catel.Data.PropertyData AppNameProperty;
-        public static readonly Catel.Data.PropertyData AppVersionProperty;
+        public static readonly Catel.Data.IPropertyData AppIconProperty;
+        public static readonly Catel.Data.IPropertyData AppNameProperty;
+        public static readonly Catel.Data.IPropertyData AppVersionProperty;
         public AppInstalledViewModel(Catel.Services.IProcessService processService, Catel.Services.IDispatcherService dispatcherService, Catel.Services.ILanguageService languageService) { }
-        public System.Windows.Media.SolidColorBrush AccentColorBrush { get; }
-        public System.Windows.Media.Imaging.BitmapSource AppIcon { get; }
+        public System.Windows.Media.Imaging.BitmapSource? AppIcon { get; }
         public string AppName { get; }
         public string AppVersion { get; }
         public Catel.MVVM.Command RunApplication { get; }
@@ -46,7 +40,7 @@ namespace Orc.Squirrel.Views
     public class AppInstalledWindow : Catel.Windows.DataWindow, System.Windows.Markup.IComponentConnector
     {
         public AppInstalledWindow() { }
-        public AppInstalledWindow(Orc.Squirrel.ViewModels.AppInstalledViewModel viewModel) { }
+        public AppInstalledWindow(Orc.Squirrel.ViewModels.AppInstalledViewModel? viewModel) { }
         public void InitializeComponent() { }
     }
 }

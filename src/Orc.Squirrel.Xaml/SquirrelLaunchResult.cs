@@ -1,11 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SquirrelResult.cs" company="WildGums">
-//   Copyright (c) 2008 - 2015 WildGums. All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-namespace Orc.Squirrel
+﻿namespace Orc.Squirrel
 {
     /// <summary>
     /// Squirrel result enum.
@@ -15,11 +8,11 @@ namespace Orc.Squirrel
         /// <summary>
         /// Unhandled, meaning no interaction took place.
         /// </summary>
-        Unhandled,
+        Unhandled = 0,
 
         /// <summary>
         /// Squirrel has handled the application is closing it.
         /// </summary>
-        ClosingApplication,
+        ClosingApplication = 1,
     }
 }

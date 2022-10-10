@@ -13,7 +13,7 @@ public static class ModuleInitializer
     {
         var serviceLocator = ServiceLocator.Default;
 
-        var languageService = serviceLocator.ResolveType<ILanguageService>();
+        var languageService = serviceLocator.ResolveRequiredType<ILanguageService>();
         languageService.RegisterLanguageSource(new LanguageResourceSource("Orc.Squirrel.Xaml", "Orc.Squirrel.Properties", "Resources"));
     }
 }
