@@ -80,30 +80,32 @@
         /// </summary>
         public event EventHandler<SquirrelEventArgs>? UpdateInstalled;
 
-        public async Task<UpdateChannel?> GetCurrentChannelAsync()
+        public virtual async Task<UpdateChannel?> GetCurrentChannelAsync()
         {
-            var channelName = await _configurationService.GetRoamingValueAsync(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+            var channelName = _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
 
             return (from channel in AvailableChannels
                     where channel.Name.EqualsIgnoreCase(channelName)
                     select channel).FirstOrDefault();
         }
 
-        public async Task SetCurrentChannelAsync(UpdateChannel updateChannel)
+        public virtual async Task SetCurrentChannelAsync(UpdateChannel updateChannel)
         {
             ArgumentNullException.ThrowIfNull(updateChannel);
 
-            await _configurationService.SetRoamingValueAsync(Settings.Application.AutomaticUpdates.UpdateChannel, updateChannel.Name);
+            _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, updateChannel.Name);
         }
 
-        public Task<bool> GetCheckForUpdatesAsync()
+        public virtual async Task<bool> GetCheckForUpdatesAsync()
         {
-            return _configurationService.GetRoamingValueAsync(Settings.Application.AutomaticUpdates.CheckForUpdates, false);
+            return _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.CheckForUpdates, false);
         }
 
-        public Task SetCheckForUpdatesAsync(bool value)
+        public virtual Task SetCheckForUpdatesAsync(bool value)
         {
-            return _configurationService.SetRoamingValueAsync(Settings.Application.AutomaticUpdates.CheckForUpdates, value);
+            _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.CheckForUpdates, value);
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -358,9 +360,9 @@
                 return null;
             }
 
-            var channelName = context.ChannelName ?? await _configurationService.GetRoamingValueAsync(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+            var channelName = context.ChannelName ?? _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
             var channelUrlSettingsName = Settings.Application.AutomaticUpdates.GetChannelSettingName(channelName);
-            var channelUrl = await _configurationService.GetRoamingValueAsync(channelUrlSettingsName, string.Empty);
+            var channelUrl = _configurationService.GetRoamingValue(channelUrlSettingsName, string.Empty);
             if (string.IsNullOrEmpty(channelUrl))
             {
                 Log.Warning("Cannot find url for channel '{0}'", channelName);
@@ -379,7 +381,7 @@
 
         private async Task InitializeConfigurationKeyAsync(string key, object defaultValue)
         {
-            await _configurationService.InitializeRoamingValueAsync(key, defaultValue);
+            _configurationService.InitializeRoamingValue(key, defaultValue);
         }
     }
 }

@@ -97,13 +97,13 @@ namespace Orc.Squirrel
         public event System.EventHandler<Orc.Squirrel.SquirrelProgressEventArgs>? UpdateProgress;
         public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }
         protected System.Threading.Tasks.Task<string?> GetChannelUrlAsync(Orc.Squirrel.SquirrelContext context) { }
-        public System.Threading.Tasks.Task<bool> GetCheckForUpdatesAsync() { }
+        public virtual System.Threading.Tasks.Task<bool> GetCheckForUpdatesAsync() { }
         protected virtual string GetCurrentApplicationVersion() { }
-        public System.Threading.Tasks.Task<Orc.Squirrel.UpdateChannel?> GetCurrentChannelAsync() { }
+        public virtual System.Threading.Tasks.Task<Orc.Squirrel.UpdateChannel?> GetCurrentChannelAsync() { }
         public System.Threading.Tasks.Task InitializeAsync(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue) { }
         public System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context) { }
         protected virtual void RaiseProgressChanged(int percentage) { }
-        public System.Threading.Tasks.Task SetCheckForUpdatesAsync(bool value) { }
-        public System.Threading.Tasks.Task SetCurrentChannelAsync(Orc.Squirrel.UpdateChannel updateChannel) { }
+        public virtual System.Threading.Tasks.Task SetCheckForUpdatesAsync(bool value) { }
+        public virtual System.Threading.Tasks.Task SetCurrentChannelAsync(Orc.Squirrel.UpdateChannel updateChannel) { }
     }
 }

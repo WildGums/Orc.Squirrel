@@ -2,6 +2,7 @@
 {
     using System.Globalization;
     using System.Windows;
+    using Catel.Configuration;
     using Catel.IoC;
     using Catel.Services;
     using Orc.Squirrel.Example.Services;
@@ -12,11 +13,14 @@
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             var serviceLocator = ServiceLocator.Default;
 
             serviceLocator.RegisterType<IUpdateExecutableLocationService, ExampleUpdateExecutableLocationService>();
+
+            var configurationService = serviceLocator.ResolveRequiredType<IConfigurationService>();
+            await configurationService.LoadAsync();
 
             // Note: it's best to use .CurrentUICulture in actual apps since it will use the preferred language
             // of the user. But in order to demo multilingual features for devs (who mostly have en-US as .CurrentUICulture),
