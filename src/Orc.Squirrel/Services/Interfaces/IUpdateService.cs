@@ -43,20 +43,14 @@
         event EventHandler<SquirrelProgressEventArgs>? UpdateProgress;
 
         /// <summary>
-        /// Gets the current channel.
+        /// Current channel
         /// </summary>
-        /// <returns></returns>
-        Task<UpdateChannel?> GetCurrentChannelAsync();
+        UpdateChannel? CurrentChannel { get; set; }
 
         /// <summary>
-        /// Sets the current channel.
+        /// Current state for updates check
         /// </summary>
-        /// <param name="updateChannel"></param>
-        Task SetCurrentChannelAsync(UpdateChannel updateChannel);
-
-        Task<bool> GetCheckForUpdatesAsync();
-
-        Task SetCheckForUpdatesAsync(bool value);
+        bool EnableCheckForUpdate { get; set; }
 
         /// <summary>
         /// Initializes this instance.
