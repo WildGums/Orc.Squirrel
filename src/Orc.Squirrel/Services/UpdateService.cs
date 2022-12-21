@@ -102,7 +102,7 @@
             _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, updateChannel.Name);
         }
 
-        public bool EnableCheckForUpdate
+        public bool IsCheckForUpdatesEnabled
         {
             get => GetCheckForUpdatesValue();
             set => SetCheckForUpdatesValue(value);

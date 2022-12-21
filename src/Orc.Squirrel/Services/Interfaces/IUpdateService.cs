@@ -50,7 +50,7 @@
         /// <summary>
         /// Current state for updates check
         /// </summary>
-        bool EnableCheckForUpdate { get; set; }
+        bool IsCheckForUpdatesEnabled { get; set; }
 
         /// <summary>
         /// Initializes this instance.
