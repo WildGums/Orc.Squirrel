@@ -37,7 +37,7 @@
             _fileService = fileService;
             _updateExecutableLocationService = updateExecutableLocationService;
 
-            AvailableChannels = new UpdateChannel[] { };
+            AvailableChannels = Array.Empty<UpdateChannel>();
         }
 
         /// <summary>
@@ -80,7 +80,13 @@
         /// </summary>
         public event EventHandler<SquirrelEventArgs>? UpdateInstalled;
 
-        public virtual async Task<UpdateChannel?> GetCurrentChannelAsync()
+        public UpdateChannel? CurrentChannel
+        {
+            get => GetCurrentChannel();
+            set => SetCurrentChannel(value);
+        }
+
+        protected virtual UpdateChannel? GetCurrentChannel()
         {
             var channelName = _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
 
@@ -89,23 +95,27 @@
                     select channel).FirstOrDefault();
         }
 
-        public virtual async Task SetCurrentChannelAsync(UpdateChannel updateChannel)
+        protected virtual void SetCurrentChannel(UpdateChannel? updateChannel)
         {
             ArgumentNullException.ThrowIfNull(updateChannel);
 
             _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, updateChannel.Name);
         }
 
-        public virtual async Task<bool> GetCheckForUpdatesAsync()
+        public bool IsCheckForUpdatesEnabled
+        {
+            get => GetCheckForUpdatesValue();
+            set => SetCheckForUpdatesValue(value);
+        }
+
+        protected virtual bool GetCheckForUpdatesValue()
         {
             return _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.CheckForUpdates, false);
         }
 
-        public virtual Task SetCheckForUpdatesAsync(bool value)
+        protected virtual void SetCheckForUpdatesValue(bool value)
         {
             _configurationService.SetRoamingValue(Settings.Application.AutomaticUpdates.CheckForUpdates, value);
-
-            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -148,7 +158,7 @@
                 CurrentVersion = GetCurrentApplicationVersion()
             };
 
-            var channelUrl = await GetChannelUrlAsync(context);
+            var channelUrl = GetChannelUrl(context);
             if (string.IsNullOrWhiteSpace(channelUrl))
             {
                 return result;
@@ -237,7 +247,7 @@
                 CurrentVersion = GetCurrentApplicationVersion()
             };
 
-            var channelUrl = await GetChannelUrlAsync(context);
+            var channelUrl = GetChannelUrl(context);
             if (string.IsNullOrWhiteSpace(channelUrl))
             {
                 return result;
@@ -289,7 +299,7 @@
                 // Only when we knew there was an update pending, we notify
                 if (process.ExitCode == 0 && checkResult.IsUpdateInstalledOrAvailable)
                 {
-                    result.NewVersion = checkResult?.NewVersion ?? "unknown"; 
+                    result.NewVersion = checkResult?.NewVersion ?? "unknown";
                     result.IsUpdateInstalledOrAvailable = true;
 
                     Log.Info("Update installed successfully");
@@ -346,14 +356,14 @@
         /// Gets the channel url for the specified context.
         /// </summary>
         /// <returns>The channel url or <c>null</c> if no channel is available.</returns>
-        protected async Task<string?> GetChannelUrlAsync(SquirrelContext context)
+        protected string? GetChannelUrl(SquirrelContext context)
         {
             if (!_initialized)
             {
                 throw Log.ErrorAndCreateException<InvalidOperationException>("Service is not initialized, call Initialize first");
             }
 
-            var checkForUpdates = await GetCheckForUpdatesAsync();
+            var checkForUpdates = GetCheckForUpdatesValue();
             if (!checkForUpdates)
             {
                 Log.Info("Automatic updates are disabled");
