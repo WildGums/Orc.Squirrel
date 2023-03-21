@@ -1,10 +1,9 @@
-﻿namespace Orc.Squirrel.Example.Views
+﻿namespace Orc.Squirrel.Example.Views;
+
+public partial class MainWindow
 {
-    public partial class MainWindow
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

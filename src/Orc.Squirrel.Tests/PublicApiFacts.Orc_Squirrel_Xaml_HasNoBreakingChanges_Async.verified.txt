@@ -25,9 +25,6 @@ namespace Orc.Squirrel.ViewModels
 {
     public class AppInstalledViewModel : Catel.MVVM.ViewModelBase
     {
-        public static readonly Catel.Data.IPropertyData AppIconProperty;
-        public static readonly Catel.Data.IPropertyData AppNameProperty;
-        public static readonly Catel.Data.IPropertyData AppVersionProperty;
         public AppInstalledViewModel(Catel.Services.IProcessService processService, Catel.Services.IDispatcherService dispatcherService, Catel.Services.ILanguageService languageService) { }
         public System.Windows.Media.Imaging.BitmapSource? AppIcon { get; }
         public string AppName { get; }
