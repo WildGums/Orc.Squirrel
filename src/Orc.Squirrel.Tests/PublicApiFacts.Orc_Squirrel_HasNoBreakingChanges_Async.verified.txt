@@ -49,7 +49,7 @@ namespace Orc.Squirrel
     public class SquirrelContext
     {
         public SquirrelContext() { }
-        public string ChannelName { get; set; }
+        public string? ChannelName { get; set; }
     }
     public class SquirrelEventArgs : System.EventArgs
     {
@@ -66,7 +66,7 @@ namespace Orc.Squirrel
         public SquirrelResult() { }
         public string CurrentVersion { get; set; }
         public bool IsUpdateInstalledOrAvailable { get; set; }
-        public string NewVersion { get; set; }
+        public string? NewVersion { get; set; }
     }
     [System.Diagnostics.DebuggerDisplay("{Name} => {DefaultUrl}")]
     public class UpdateChannel

@@ -1,50 +1,52 @@
-﻿namespace Orc.Squirrel
+﻿namespace Orc.Squirrel;
+
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using Catel.IoC;
+using Catel.Logging;
+using Catel.Services;
+using ViewModels;
+
+public static class SquirrelHelper
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using Catel.IoC;
-    using Catel.Logging;
-    using Catel.Services;
-    using ViewModels;
+    private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-    public static class SquirrelHelper
+    public static async Task<SquirrelLaunchResult> HandleSquirrelAutomaticallyAsync()
     {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        Log.Debug("Handling squirrel");
 
-        public static async Task<SquirrelLaunchResult> HandleSquirrelAutomaticallyAsync()
+        var application = Application.Current;
+        if (application is null)
         {
-            Log.Debug("Handling squirrel");
-
-            var application = Application.Current;
-            if (application is null)
-            {
-                Log.Warning("Application is null, cannot handle squirrel");
-                return SquirrelLaunchResult.Unhandled;
-            }
-
-            var arguments = Environment.GetCommandLineArgs();
-            var lastArgument = arguments.LastOrDefault();
-            if (!string.IsNullOrWhiteSpace(lastArgument))
-            {
-                if (SquirrelArguments.IsSquirrelArgument(lastArgument))
-                {
-                    Log.Info("Application is started with squirrel argument '{0}', going to show message to user", lastArgument);
-
-                    var dependencyResolver = IoCConfiguration.DefaultDependencyResolver;
-                    var uiVisualizerService = dependencyResolver.ResolveRequired<IUIVisualizerService>();
-
-                    await uiVisualizerService.ShowDialogAsync<AppInstalledViewModel>();
-
-                    Log.Info("Closing application");
-
-                    application.Shutdown();
-                    return SquirrelLaunchResult.ClosingApplication;
-                }
-            }
-
+            Log.Warning("Application is null, cannot handle squirrel");
             return SquirrelLaunchResult.Unhandled;
         }
+
+        var arguments = Environment.GetCommandLineArgs();
+        var lastArgument = arguments.LastOrDefault();
+        if (string.IsNullOrWhiteSpace(lastArgument))
+        {
+            return SquirrelLaunchResult.Unhandled;
+        }
+
+        if (!SquirrelArguments.IsSquirrelArgument(lastArgument))
+        {
+            return SquirrelLaunchResult.Unhandled;
+        }
+
+        Log.Info("Application is started with squirrel argument '{0}', going to show message to user", lastArgument);
+
+        var dependencyResolver = IoCConfiguration.DefaultDependencyResolver;
+        var uiVisualizerService = dependencyResolver.ResolveRequired<IUIVisualizerService>();
+
+        await uiVisualizerService.ShowDialogAsync<AppInstalledViewModel>();
+
+        Log.Info("Closing application");
+
+        application.Shutdown();
+        return SquirrelLaunchResult.ClosingApplication;
+
     }
 }
