@@ -1,17 +1,15 @@
-﻿namespace Orc.Squirrel
+﻿namespace Orc.Squirrel;
+
+using System;
+
+public class SquirrelEventArgs : EventArgs
 {
-    using Catel;
-    using System;
-
-    public class SquirrelEventArgs : EventArgs
+    public SquirrelEventArgs(SquirrelResult result)
     {
-        public SquirrelEventArgs(SquirrelResult result)
-        {
-            ArgumentNullException.ThrowIfNull(result);
+        ArgumentNullException.ThrowIfNull(result);
 
-            SquirrelResult = result;
-        }
-
-        public SquirrelResult SquirrelResult { get; private set; }
+        SquirrelResult = result;
     }
+
+    public SquirrelResult SquirrelResult { get; }
 }
