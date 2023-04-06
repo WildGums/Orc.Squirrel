@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
     <TargetFrameworks>net6.0-windows</TargetFrameworks>
     <AssemblyName>Orc.Squirrel.Xaml</AssemblyName>
@@ -24,7 +24,7 @@
     </PackageReference>
     <PackageReference Include="ModuleInit.Fody" Version="2.1.1" PrivateAssets="all" />
     <PackageReference Include="Obsolete.Fody" Version="5.3.0" PrivateAssets="all" />
-    <PackageReference Include="Orc.Theming" Version="5.0.0-alpha0157" />
+    <PackageReference Include="Orc.Theming" Version="5.0.0-alpha0171" />
   </ItemGroup>
 
   <ItemGroup>
