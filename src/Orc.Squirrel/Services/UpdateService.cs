@@ -91,8 +91,8 @@ public class UpdateService : IUpdateService
         var channelName = _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
 
         return (from channel in AvailableChannels
-            where channel.Name.EqualsIgnoreCase(channelName)
-            select channel).FirstOrDefault();
+                where channel.Name.EqualsIgnoreCase(channelName)
+                select channel).FirstOrDefault();
     }
 
     protected virtual void SetCurrentChannel(UpdateChannel? updateChannel)
@@ -370,7 +370,12 @@ public class UpdateService : IUpdateService
             return null;
         }
 
-        var channelName = context.ChannelName ?? _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+        var channelName = context.ChannelName;
+        if (string.IsNullOrWhiteSpace(channelName))
+        {
+            channelName = _configurationService.GetRoamingValue(Settings.Application.AutomaticUpdates.UpdateChannel, string.Empty);
+        }
+
         var channelUrlSettingsName = Settings.Application.AutomaticUpdates.GetChannelSettingName(channelName);
         var channelUrl = _configurationService.GetRoamingValue(channelUrlSettingsName, string.Empty);
         if (string.IsNullOrEmpty(channelUrl))
