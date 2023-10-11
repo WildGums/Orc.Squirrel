@@ -234,7 +234,7 @@ public class UpdateService : IUpdateService
     }
 
     /// <summary>
-    /// Installes the available updates if there is an update available.
+    /// Installs the available updates if there is an update available.
     /// </summary>
     /// <returns>Task.</returns>
     public async Task<SquirrelResult> InstallAvailableUpdatesAsync(SquirrelContext context)

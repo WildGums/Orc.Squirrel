@@ -67,7 +67,7 @@ public interface IUpdateService
     Task<SquirrelResult> CheckForUpdatesAsync(SquirrelContext context);
 
     /// <summary>
-    /// Installes the available updates if there is an update available.
+    /// Installs the available updates if there is an update available.
     /// </summary>
     /// <returns>Task.</returns>
     Task<SquirrelResult> InstallAvailableUpdatesAsync(SquirrelContext context);
