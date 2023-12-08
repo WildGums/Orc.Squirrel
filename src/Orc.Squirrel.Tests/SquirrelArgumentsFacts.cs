@@ -13,7 +13,7 @@ public class SquirrelArgumentsFacts
         [TestCase("\\squirrel\\path\\install", false)]
         public void ReturnsExpectedValueForParameter(string argument, bool expectedValue)
         {
-            Assert.AreEqual(expectedValue, SquirrelArguments.IsSquirrelArgument(argument));
+            Assert.That(SquirrelArguments.IsSquirrelArgument(argument), Is.EqualTo(expectedValue));
         }
     }
 }
