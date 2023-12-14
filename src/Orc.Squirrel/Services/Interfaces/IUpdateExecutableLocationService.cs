@@ -1,8 +1,7 @@
-﻿namespace Orc.Squirrel
+﻿namespace Orc.Squirrel;
+
+public interface IUpdateExecutableLocationService
 {
-    public interface IUpdateExecutableLocationService
-    {
-        string GetApplicationExecutable();
-        string FindUpdateExecutable();
-    }
+    string GetApplicationExecutable();
+    string FindUpdateExecutable();
 }

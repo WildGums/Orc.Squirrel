@@ -1,11 +1,16 @@
-﻿namespace Orc.Squirrel
+﻿namespace Orc.Squirrel;
+
+public class SquirrelResult
 {
-    public class SquirrelResult
+    public SquirrelResult()
     {
-        public bool IsUpdateInstalledOrAvailable { get; set; }
-
-        public string CurrentVersion { get; set; }
-
-        public string NewVersion { get; set; }
+        CurrentVersion = string.Empty;
+        NewVersion = string.Empty;
     }
+
+    public bool IsUpdateInstalledOrAvailable { get; set; }
+
+    public string CurrentVersion { get; set; }
+
+    public string? NewVersion { get; set; }
 }

@@ -1,12 +1,11 @@
-﻿namespace Orc.Squirrel
-{
-    public class SquirrelProgressEventArgs
-    {
-        public SquirrelProgressEventArgs(int percentage)
-        {
-            Percentage = percentage;
-        }
+﻿namespace Orc.Squirrel;
 
-        public int Percentage { get; }
+public class SquirrelProgressEventArgs
+{
+    public SquirrelProgressEventArgs(int percentage)
+    {
+        Percentage = percentage;
     }
+
+    public int Percentage { get; }
 }

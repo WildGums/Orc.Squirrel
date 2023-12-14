@@ -1,80 +1,89 @@
-﻿namespace Orc.Squirrel
+﻿namespace Orc.Squirrel;
+
+using System;
+using System.IO;
+using Catel.Logging;
+using Catel.Reflection;
+using FileSystem;
+
+public class UpdateExecutableLocationService : IUpdateExecutableLocationService
 {
-    using System;
-    using System.IO;
-    using Catel;
-    using Catel.Logging;
-    using Catel.Reflection;
-    using Orc.FileSystem;
+    private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-    public class UpdateExecutableLocationService : IUpdateExecutableLocationService
+    private const string UpdateExe = "update.exe";
+    private const string NotFoundFindResult = "notfound";
+
+    private readonly IFileService _fileService;
+    private string? _updateExeLocation;
+    private bool _shownWarning = false;
+
+    public UpdateExecutableLocationService(IFileService fileService)
     {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        ArgumentNullException.ThrowIfNull(fileService);
 
-        private const string UpdateExe = "update.exe";
+        _fileService = fileService;
+    }
 
-        private readonly IFileService _fileService;
-        private string _updateExeLocation;
-        private bool _shownWarning = false;
+    public virtual string GetApplicationExecutable()
+    {
+        var entryAssemblyFileName = AssemblyHelper.GetRequiredEntryAssembly().Location;
+        return entryAssemblyFileName;
+    }
 
-        public UpdateExecutableLocationService(IFileService fileService)
+    public string FindUpdateExecutable()
+    {
+        if (!string.IsNullOrWhiteSpace(_updateExeLocation))
         {
-            Argument.IsNotNull(() => fileService);
-
-            _fileService = fileService;
+            return _updateExeLocation ?? NotFoundFindResult;
         }
 
-        public virtual string GetApplicationExecutable()
+        var applicationExecutable = GetApplicationExecutable();
+        if (string.IsNullOrEmpty(applicationExecutable))
         {
-            var entryAssemblyFileName = AssemblyHelper.GetEntryAssembly().Location;
-            return entryAssemblyFileName;
+            return _updateExeLocation ?? NotFoundFindResult;
         }
 
-        public string FindUpdateExecutable()
+        var searchDirectory = Path.GetDirectoryName(applicationExecutable);
+        if (searchDirectory is null)
         {
-            if (string.IsNullOrWhiteSpace(_updateExeLocation))
+            return _updateExeLocation ?? NotFoundFindResult;
+        }
+
+        var safetyCounter = 2;
+
+        try
+        {
+            while (safetyCounter >= 0 && searchDirectory is not null)
             {
-                var applicationExecutable = GetApplicationExecutable();
-                if (!string.IsNullOrEmpty(applicationExecutable))
+                var potentialUpdateExe = Catel.IO.Path.GetFullPath(UpdateExe, searchDirectory);
+
+                if (_fileService.Exists(potentialUpdateExe))
                 {
-                    var searchDirectory = Path.GetDirectoryName(applicationExecutable);
+                    _updateExeLocation = potentialUpdateExe;
 
-                    var safetyCounter = 2;
+                    Log.Debug($"Determined update executable path '{_updateExeLocation}'");
 
-                    try
-                    {
-                        while (safetyCounter >= 0)
-                        {
-                            var potentialUpdateExe = Catel.IO.Path.GetFullPath(UpdateExe, searchDirectory);
-
-                            if (_fileService.Exists(potentialUpdateExe))
-                            {
-                                _updateExeLocation = potentialUpdateExe;
-
-                                Log.Debug($"Determined update executable path '{_updateExeLocation}'");
-
-                                break;
-                            }
-
-                            searchDirectory = Path.GetDirectoryName(searchDirectory);
-                            safetyCounter--;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, "An error occurred while searching for the update executable");
-                    }
-
-                    if (!_shownWarning && string.IsNullOrWhiteSpace(_updateExeLocation))
-                    {
-                        Log.Info("Could not find the update executable, updates are not supported");
-                        
-                        _shownWarning = true;
-                    }
+                    break;
                 }
-            }
 
-            return _updateExeLocation ?? "notfound";
+                searchDirectory = Path.GetDirectoryName(searchDirectory);
+                safetyCounter--;
+            }
         }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "An error occurred while searching for the update executable");
+        }
+
+        if (_shownWarning || !string.IsNullOrWhiteSpace(_updateExeLocation))
+        {
+            return _updateExeLocation ?? NotFoundFindResult;
+        }
+
+        Log.Info("Could not find the update executable, updates are not supported");
+
+        _shownWarning = true;
+
+        return _updateExeLocation ?? NotFoundFindResult;
     }
 }

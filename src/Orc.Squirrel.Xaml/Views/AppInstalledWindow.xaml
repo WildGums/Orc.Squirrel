@@ -46,16 +46,16 @@
                         
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Stroke" TargetName="ButtonPath" Value="{Binding AccentColorBrush}"/>
-                                <Setter Property="Fill" TargetName="ButtonPath" Value="{Binding AccentColorBrush}"/>
-                                <Setter Property="Stroke" TargetName="ButonBorder" Value="{Binding AccentColorBrush}"/>
-                                <Setter Property="Foreground" TargetName="ButtonTextBlock" Value="{Binding AccentColorBrush}"/>
+                                <Setter Property="Stroke" TargetName="ButtonPath" Value="{DynamicResource Orc.Brushes.AccentColorBrush}"/>
+                                <Setter Property="Fill" TargetName="ButtonPath" Value="{DynamicResource Orc.Brushes.AccentColorBrush}"/>
+                                <Setter Property="Stroke" TargetName="ButonBorder" Value="{DynamicResource Orc.Brushes.AccentColorBrush}"/>
+                                <Setter Property="Foreground" TargetName="ButtonTextBlock" Value="{DynamicResource Orc.Brushes.AccentColorBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Stroke" TargetName="ButtonPath" Value="{Binding AccentColorBrush}"/>
-                                <Setter Property="Fill" TargetName="ButtonPath" Value="{Binding AccentColorBrush}"/>
-                                <Setter Property="Stroke" TargetName="ButonBorder" Value="{Binding AccentColorBrush}"/>
-                                <Setter Property="Foreground" TargetName="ButtonTextBlock" Value="{Binding AccentColorBrush}"/>
+                                <Setter Property="Stroke" TargetName="ButtonPath" Value="{DynamicResource Orc.Brushes.AccentColorBrush}"/>
+                                <Setter Property="Fill" TargetName="ButtonPath" Value="{DynamicResource Orc.Brushes.AccentColorBrush}"/>
+                                <Setter Property="Stroke" TargetName="ButonBorder" Value="{DynamicResource Orc.Brushes.AccentColorBrush}"/>
+                                <Setter Property="Foreground" TargetName="ButtonTextBlock" Value="{DynamicResource Orc.Brushes.AccentColorBrush}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Stroke" TargetName="ButtonPath" Value="#FFADADAD"/>
