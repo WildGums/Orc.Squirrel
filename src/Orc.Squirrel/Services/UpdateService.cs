@@ -29,11 +29,13 @@ public class UpdateService : IUpdateService
     private readonly IFileService _fileService;
     private readonly IUpdateExecutableLocationService _updateExecutableLocationService;
     private readonly IAppMetadataProvider _appMetadataProvider;
+    private readonly IVelopackLocator _velopackLocator;
 
     private bool _initialized;
 
     public UpdateService(IConfigurationService configurationService, IFileService fileService,
-        IUpdateExecutableLocationService updateExecutableLocationService, IAppMetadataProvider appMetadataProvider)
+        IUpdateExecutableLocationService updateExecutableLocationService,
+        IAppMetadataProvider appMetadataProvider, IVelopackLocator velopackLocator)
     {
         ArgumentNullException.ThrowIfNull(configurationService);
         ArgumentNullException.ThrowIfNull(fileService);
@@ -44,6 +46,7 @@ public class UpdateService : IUpdateService
         _fileService = fileService;
         _updateExecutableLocationService = updateExecutableLocationService;
         _appMetadataProvider = appMetadataProvider;
+        _velopackLocator = velopackLocator;
 
         AvailableChannels = Array.Empty<UpdateChannel>();
     }
@@ -175,10 +178,12 @@ public class UpdateService : IUpdateService
         // Step 1: check using Velopack
         try
         {
-            var locator = new SquirrelVelopackLocator(new NullLogger<object>());
-
-            locator.UpdateAppId(_appMetadataProvider.AppId);
-            locator.UpdateCurrentlyInstalledVersion(SemanticVersion.Parse(_appMetadataProvider.CurrentVersion));
+            var locator = _velopackLocator;
+            if (locator is SquirrelVelopackLocator squirrelVelopackLocator)
+            {
+                squirrelVelopackLocator.UpdateAppId(_appMetadataProvider.AppId);
+                squirrelVelopackLocator.UpdateCurrentlyInstalledVersion(SemanticVersion.Parse(_appMetadataProvider.CurrentVersion));
+            }
 
             var velopackUpdateManager = new UpdateManager(channelUrl, locator: locator);
 
@@ -290,6 +295,51 @@ public class UpdateService : IUpdateService
             return result;
         }
 
+        // Step 1: Velopack
+        try
+        {
+            var locator = _velopackLocator;
+            if (locator is SquirrelVelopackLocator squirrelVelopackLocator)
+            {
+                squirrelVelopackLocator.UpdateAppId(_appMetadataProvider.AppId);
+                squirrelVelopackLocator.UpdateCurrentlyInstalledVersion(SemanticVersion.Parse(_appMetadataProvider.CurrentVersion));
+            }
+
+            var velopackUpdateManager = new UpdateManager(channelUrl, locator: locator);
+
+            var newVersion = await velopackUpdateManager.CheckForUpdatesAsync();
+            if (newVersion is not null)
+            {
+                result.NewVersion = newVersion.TargetFullRelease.Version.ToString();
+
+                UpdateInstalling?.Invoke(this, new SquirrelEventArgs(result));
+
+                await velopackUpdateManager.DownloadUpdatesAsync(newVersion, x =>
+                {
+                    RaiseProgressChanged(x);
+                });
+
+                result.IsUpdateInstalledOrAvailable = true;
+                result.NewVersion = newVersion.TargetFullRelease.Version.ToString();
+
+                Log.Info("Update installed (downloaded) successfully");
+
+                IsUpdatedInstalled = true;
+
+                UpdateInstalled?.Invoke(this, new SquirrelEventArgs(result));
+
+                // No need to restart / apply, according to the docs, Velopack will automatically
+                // apply the updates when the application is restarted
+
+                return result;
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "An error occurred while checking for or installing the latest updates using Velopack");
+        }
+
+        // Step 2: Squirrel
         try
         {
             // Do we actually have an update? Do a quick one here
@@ -345,12 +395,12 @@ public class UpdateService : IUpdateService
 
                 UpdateInstalled?.Invoke(this, new SquirrelEventArgs(result));
 
-                Log.Info("Update installed successfully");
+                return result;
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occurred while checking for or installing the latest updates");
+            Log.Error(ex, "An error occurred while checking for or installing the latest updates using Squirrel");
         }
 
         return result;

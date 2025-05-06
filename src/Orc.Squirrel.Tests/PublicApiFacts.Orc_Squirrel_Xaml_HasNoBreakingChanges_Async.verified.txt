@@ -13,12 +13,18 @@ namespace Orc.Squirrel
 {
     public static class SquirrelHelper
     {
+        [System.Obsolete("Use `Consider using Velopack` instead. Will be treated as an error from version 9" +
+            "9.0.0. Will be removed in version 99.0.0.", false)]
         public static System.Threading.Tasks.Task<Orc.Squirrel.SquirrelLaunchResult> HandleSquirrelAutomaticallyAsync() { }
     }
     public enum SquirrelLaunchResult
     {
         Unhandled = 0,
         ClosingApplication = 1,
+    }
+    public static class VelopackHelper
+    {
+        public static System.Threading.Tasks.Task<Orc.Squirrel.SquirrelLaunchResult> HandleVelopackAutomaticallyAsync() { }
     }
 }
 namespace Orc.Squirrel.ViewModels
