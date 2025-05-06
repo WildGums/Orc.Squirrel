@@ -320,7 +320,6 @@ public class UpdateService : IUpdateService
                 });
 
                 result.IsUpdateInstalledOrAvailable = true;
-                result.NewVersion = newVersion.TargetFullRelease.Version.ToString();
 
                 Log.Info("Update installed (downloaded) successfully");
 
