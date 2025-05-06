@@ -10,7 +10,12 @@ using Catel.Configuration;
 using Catel.Logging;
 using Catel.Reflection;
 using FileSystem;
+using global::Velopack;
+using global::Velopack.Locators;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
+using NuGet.Versioning;
+using Velopack;
 using Path = Catel.IO.Path;
 
 /// <summary>
@@ -23,19 +28,22 @@ public class UpdateService : IUpdateService
     private readonly IConfigurationService _configurationService;
     private readonly IFileService _fileService;
     private readonly IUpdateExecutableLocationService _updateExecutableLocationService;
+    private readonly IAppMetadataProvider _appMetadataProvider;
 
     private bool _initialized;
 
     public UpdateService(IConfigurationService configurationService, IFileService fileService,
-        IUpdateExecutableLocationService updateExecutableLocationService)
+        IUpdateExecutableLocationService updateExecutableLocationService, IAppMetadataProvider appMetadataProvider)
     {
         ArgumentNullException.ThrowIfNull(configurationService);
         ArgumentNullException.ThrowIfNull(fileService);
         ArgumentNullException.ThrowIfNull(updateExecutableLocationService);
+        ArgumentNullException.ThrowIfNull(appMetadataProvider);
 
         _configurationService = configurationService;
         _fileService = fileService;
         _updateExecutableLocationService = updateExecutableLocationService;
+        _appMetadataProvider = appMetadataProvider;
 
         AvailableChannels = Array.Empty<UpdateChannel>();
     }
@@ -124,7 +132,7 @@ public class UpdateService : IUpdateService
     /// <param name="availableChannels">The available channels.</param>
     /// <param name="defaultChannel">The default channel.</param>
     /// <param name="defaultCheckForUpdatesValue">The default value for the check for updates setting.</param>
-    public async Task InitializeAsync(IEnumerable<UpdateChannel> availableChannels, UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue)
+    public virtual async Task InitializeAsync(IEnumerable<UpdateChannel> availableChannels, UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue)
     {
         ArgumentNullException.ThrowIfNull(availableChannels);
         ArgumentNullException.ThrowIfNull(defaultChannel);
@@ -148,14 +156,14 @@ public class UpdateService : IUpdateService
     /// Checks for any available updates.
     /// </summary>
     /// <returns><c>true</c> if an update is available; otherwise <c>false</c>.</returns>
-    public async Task<SquirrelResult> CheckForUpdatesAsync(SquirrelContext context)
+    public virtual async Task<SquirrelResult> CheckForUpdatesAsync(SquirrelContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
 
         var result = new SquirrelResult
         {
             IsUpdateInstalledOrAvailable = false,
-            CurrentVersion = GetCurrentApplicationVersion()
+            CurrentVersion = _appMetadataProvider.CurrentVersion
         };
 
         var channelUrl = GetChannelUrl(context);
@@ -164,70 +172,99 @@ public class UpdateService : IUpdateService
             return result;
         }
 
+        // Step 1: check using Velopack
         try
         {
-            var startInfo = CreateUpdateProcessStartInfo($"--checkForUpdate={channelUrl}");
-            using var process = Process.Start(startInfo);
-            if (process is null)
+            var locator = new SquirrelVelopackLocator(new NullLogger<object>());
+
+            locator.UpdateAppId(_appMetadataProvider.AppId);
+            locator.UpdateCurrentlyInstalledVersion(SemanticVersion.Parse(_appMetadataProvider.CurrentVersion));
+
+            var velopackUpdateManager = new UpdateManager(channelUrl, locator: locator);
+
+            var newVersion = await velopackUpdateManager.CheckForUpdatesAsync();
+            if (newVersion is not null)
             {
+                result.IsUpdateInstalledOrAvailable = true;
+                result.NewVersion = newVersion.TargetFullRelease.Version.ToString();
+
                 return result;
-            }
-
-            var output = await process.StandardOutput.ReadToEndAsync();
-
-#pragma warning disable CL0001
-            process.WaitForExit();
-#pragma warning restore CL0001
-
-            var startIndex = output.IndexOf("{");
-            if (startIndex > 0)
-            {
-                output = output[startIndex..];
-            }
-
-            // Results similar to this:
-            //{
-            //    "currentVersion": "2.3.0-alpha1013",
-            //    "futureVersion": "2.3.0-alpha1094",
-            //    "releasesToApply": [
-            //        {
-            //            "version": "2.3.0-alpha1039",
-            //            "releaseNotes": ""
-            //        },
-            //        {
-            //            "version": "2.3.0-alpha1074",
-            //            "releaseNotes": ""
-            //        },
-            //        {
-            //            "version": "2.3.0-alpha1094",
-            //            "releaseNotes": ""
-            //        }
-            //    ]
-            //}
-
-            if (!string.IsNullOrWhiteSpace(output))
-            {
-                dynamic releaseInfo = JObject.Parse(output);
-
-                foreach (var releaseToApply in releaseInfo.releasesToApply)
-                {
-                    result.IsUpdateInstalledOrAvailable = true;
-                    result.NewVersion = releaseToApply.version;
-                }
-            }
-
-            if (!result.IsUpdateInstalledOrAvailable)
-            {
-                Log.Info("No updates available");
-            }
-            else
-            {
-                Log.Info($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occurred while checking for the latest updates");
+            Log.Error(ex, "An error occurred while checking for the latest updates using Velopack");
+        }
+
+        // Step 2: check using Squirrel (only if update.exe exists)
+        var updateExe = _updateExecutableLocationService.FindUpdateExecutable();
+        if (_fileService.Exists(updateExe))
+        {
+            try
+            {
+                var startInfo = CreateUpdateProcessStartInfo($"--checkForUpdate={channelUrl}");
+                using var process = Process.Start(startInfo);
+                if (process is null)
+                {
+                    return result;
+                }
+
+                var output = await process.StandardOutput.ReadToEndAsync();
+
+#pragma warning disable CL0001
+                process.WaitForExit();
+#pragma warning restore CL0001
+
+                var startIndex = output.IndexOf("{");
+                if (startIndex > 0)
+                {
+                    output = output[startIndex..];
+                }
+
+                // Results similar to this:
+                //{
+                //    "currentVersion": "2.3.0-alpha1013",
+                //    "futureVersion": "2.3.0-alpha1094",
+                //    "releasesToApply": [
+                //        {
+                //            "version": "2.3.0-alpha1039",
+                //            "releaseNotes": ""
+                //        },
+                //        {
+                //            "version": "2.3.0-alpha1074",
+                //            "releaseNotes": ""
+                //        },
+                //        {
+                //            "version": "2.3.0-alpha1094",
+                //            "releaseNotes": ""
+                //        }
+                //    ]
+                //}
+
+                if (!string.IsNullOrWhiteSpace(output))
+                {
+                    dynamic releaseInfo = JObject.Parse(output);
+
+                    foreach (var releaseToApply in releaseInfo.releasesToApply)
+                    {
+                        result.IsUpdateInstalledOrAvailable = true;
+                        result.NewVersion = releaseToApply.version;
+                    }
+                }
+
+                if (!result.IsUpdateInstalledOrAvailable)
+                {
+                    Log.Info("No updates available");
+                }
+                else
+                {
+                    Log.Info($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while checking for the latest updates using Squirrel");
+            }
         }
 
         return result;
@@ -237,14 +274,14 @@ public class UpdateService : IUpdateService
     /// Installs the available updates if there is an update available.
     /// </summary>
     /// <returns>Task.</returns>
-    public async Task<SquirrelResult> InstallAvailableUpdatesAsync(SquirrelContext context)
+    public virtual async Task<SquirrelResult> InstallAvailableUpdatesAsync(SquirrelContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
 
         var result = new SquirrelResult
         {
             IsUpdateInstalledOrAvailable = false,
-            CurrentVersion = GetCurrentApplicationVersion()
+            CurrentVersion = _appMetadataProvider.CurrentVersion
         };
 
         var channelUrl = GetChannelUrl(context);
@@ -344,19 +381,10 @@ public class UpdateService : IUpdateService
     }
 
     /// <summary>
-    /// Gets the current application version.
-    /// </summary>
-    /// <returns></returns>
-    protected virtual string GetCurrentApplicationVersion()
-    {
-        return AssemblyHelper.GetRequiredEntryAssembly()?.InformationalVersion() ?? string.Empty;
-    }
-
-    /// <summary>
     /// Gets the channel url for the specified context.
     /// </summary>
     /// <returns>The channel url or <c>null</c> if no channel is available.</returns>
-    protected string? GetChannelUrl(SquirrelContext context)
+    protected virtual string? GetChannelUrl(SquirrelContext context)
     {
         if (!_initialized)
         {
@@ -384,14 +412,7 @@ public class UpdateService : IUpdateService
             return null;
         }
 
-        var updateExe = _updateExecutableLocationService.FindUpdateExecutable();
-        if (_fileService.Exists(updateExe))
-        {
-            return channelUrl;
-        }
-
-        Log.Warning("Cannot check for updates, update.exe is not available");
-        return null;
+        return channelUrl;
     }
 
     private async Task InitializeConfigurationKeyAsync(string key, object defaultValue)

@@ -13,8 +13,12 @@ public static class SquirrelHelper
 {
     private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
+    [ObsoleteEx(ReplacementTypeOrMember = "Consider using Velopack", RemoveInVersion = "99.0", TreatAsErrorFromVersion = "99.0")]
     public static async Task<SquirrelLaunchResult> HandleSquirrelAutomaticallyAsync()
     {
+        // Note: migrations to Squirrel should automatically be handled
+        await VelopackHelper.HandleVelopackAutomaticallyAsync();
+
         Log.Debug("Handling squirrel");
 
         var application = Application.Current;
@@ -46,7 +50,7 @@ public static class SquirrelHelper
         Log.Info("Closing application");
 
         application.Shutdown();
-        return SquirrelLaunchResult.ClosingApplication;
 
+        return SquirrelLaunchResult.ClosingApplication;
     }
 }

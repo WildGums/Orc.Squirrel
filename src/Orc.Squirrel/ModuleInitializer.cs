@@ -16,6 +16,7 @@ public static class ModuleInitializer
 
         serviceLocator.RegisterType<IUpdateExecutableLocationService, UpdateExecutableLocationService>();
         serviceLocator.RegisterType<IUpdateService, UpdateService>();
+        serviceLocator.RegisterType<IAppMetadataProvider, AppMetadataProvider>();
 
         var languageService = serviceLocator.ResolveRequiredType<ILanguageService>();
         languageService.RegisterLanguageSource(new LanguageResourceSource("Orc.Squirrel", "Orc.Squirrel.Properties", "Resources"));

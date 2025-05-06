@@ -1,0 +1,22 @@
+{
+    "Assets": [
+        {
+            "FileName": "MyApp-1.4.0-alpha1143-full.nupkg",
+            "PackageId": "MyApp",
+            "SHA1": "0E6512E620FAF5D1669F7325E17AB9774F9B86DE",
+            "SHA256": "A8E049B46963063ED4301B47359F75724BAF984176E256F8D8A69B2A4AD413E0",
+            "Size": 78957623,
+            "Type": "Full",
+            "Version": "1.4.0-alpha1143"
+        },
+        {
+            "FileName": "MyApp-1.4.0-alpha1143-delta.nupkg",
+            "PackageId": "MyApp",
+            "SHA1": "0E6512E620FAF5D1669F7325E17AB9774F9B86DE",
+            "SHA256": "A8E049B46963063ED4301B47359F75724BAF984176E256F8D8A69B2A4AD413E0",
+            "Size": 78957623,
+            "Type": "Delta",
+            "Version": "1.4.0-alpha1143"
+        }
+    ]
+}
