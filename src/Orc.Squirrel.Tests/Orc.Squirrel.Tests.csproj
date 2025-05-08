@@ -19,6 +19,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="ModuleInit.Fody" Version="2.1.1" PrivateAssets="all" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="4.3.2" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" PrivateAssets="all" />
     <PackageReference Include="PublicApiGenerator" Version="11.4.6" PrivateAssets="all" />
@@ -32,6 +33,12 @@
 
   <ItemGroup>
     <Compile Remove="*.approved.cs;*.received.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Files\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <Import Project="$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props" Condition="Exists('$(MSBuildProjectDirectory)\..\Directory.build.shared.explicit.props')" />
