@@ -13,6 +13,7 @@ using FileSystem;
 using global::Velopack;
 using global::Velopack.Locators;
 using Microsoft.Extensions.Logging.Abstractions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Versioning;
 using Velopack;
@@ -166,7 +167,7 @@ public class UpdateService : IUpdateService
         var result = new SquirrelResult
         {
             IsUpdateInstalledOrAvailable = false,
-            CurrentVersion = _appMetadataProvider.CurrentVersion
+            CurrentVersion = _appMetadataProvider.CurrentVersion ?? AssemblyHelper.GetRequiredEntryAssembly().InformationalVersion() ?? string.Empty
         };
 
         var channelUrl = GetChannelUrl(context);
@@ -175,6 +176,8 @@ public class UpdateService : IUpdateService
             return result;
         }
 
+        Log.Info($"Checking for updates, current version is '{result.CurrentVersion}'");
+
         // Step 1: check using Velopack
         try
         {
@@ -182,16 +185,30 @@ public class UpdateService : IUpdateService
             if (locator is SquirrelVelopackLocator squirrelVelopackLocator)
             {
                 squirrelVelopackLocator.UpdateAppId(_appMetadataProvider.AppId);
-                squirrelVelopackLocator.UpdateCurrentlyInstalledVersion(SemanticVersion.Parse(_appMetadataProvider.CurrentVersion));
+
+                if (_appMetadataProvider.CurrentVersion is not null)
+                {
+                    squirrelVelopackLocator.UpdateCurrentlyInstalledVersion(SemanticVersion.Parse(_appMetadataProvider.CurrentVersion));
+                }
             }
 
             var velopackUpdateManager = new UpdateManager(channelUrl, locator: locator);
 
             var newVersion = await velopackUpdateManager.CheckForUpdatesAsync();
-            if (newVersion is not null)
+            if (newVersion is not null &&
+                newVersion.TargetFullRelease.Version.ToFullString() != result.CurrentVersion)
             {
                 result.IsUpdateInstalledOrAvailable = true;
                 result.NewVersion = newVersion.TargetFullRelease.Version.ToString();
+
+                if (!result.IsUpdateInstalledOrAvailable)
+                {
+                    Log.Info("No updates available");
+                }
+                else
+                {
+                    Log.Info($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
+                }
 
                 return result;
             }
@@ -266,6 +283,10 @@ public class UpdateService : IUpdateService
                     Log.Info($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
                 }
             }
+            catch (JsonReaderException)
+            {
+                // Expected when migrating to Velopack, ignore it
+            }
             catch (Exception ex)
             {
                 Log.Error(ex, "An error occurred while checking for the latest updates using Squirrel");
@@ -286,7 +307,7 @@ public class UpdateService : IUpdateService
         var result = new SquirrelResult
         {
             IsUpdateInstalledOrAvailable = false,
-            CurrentVersion = _appMetadataProvider.CurrentVersion
+            CurrentVersion = _appMetadataProvider.CurrentVersion ?? AssemblyHelper.GetRequiredEntryAssembly().InformationalVersion() ?? string.Empty
         };
 
         var channelUrl = GetChannelUrl(context);
@@ -302,14 +323,21 @@ public class UpdateService : IUpdateService
             if (locator is SquirrelVelopackLocator squirrelVelopackLocator)
             {
                 squirrelVelopackLocator.UpdateAppId(_appMetadataProvider.AppId);
-                squirrelVelopackLocator.UpdateCurrentlyInstalledVersion(SemanticVersion.Parse(_appMetadataProvider.CurrentVersion));
+
+                if (_appMetadataProvider.CurrentVersion is not null)
+                {
+                    squirrelVelopackLocator.UpdateCurrentlyInstalledVersion(SemanticVersion.Parse(_appMetadataProvider.CurrentVersion));
+                }
             }
 
             var velopackUpdateManager = new UpdateManager(channelUrl, locator: locator);
 
             var newVersion = await velopackUpdateManager.CheckForUpdatesAsync();
-            if (newVersion is not null)
+            if (newVersion is not null &&
+                newVersion.TargetFullRelease.Version.ToFullString() != result.CurrentVersion)
             {
+                Log.Info($"Installing (downloading) {newVersion.TargetFullRelease.Version} using base release {newVersion.BaseRelease?.Version}, current version is {result.CurrentVersion}");
+
                 result.NewVersion = newVersion.TargetFullRelease.Version.ToString();
 
                 UpdateInstalling?.Invoke(this, new SquirrelEventArgs(result));

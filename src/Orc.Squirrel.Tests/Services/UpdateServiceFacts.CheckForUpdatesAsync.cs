@@ -98,6 +98,49 @@
             }
 
             [TestCase]
+            public async Task Returns_None_When_Velopack_Returns_Latest_One_Async()
+            {
+                var updateChannels = new[]
+                {
+                    new UpdateChannel("stable", @".\Resources\Files\Velopack\")
+                };
+
+                var configurationServiceMock = new Mock<IConfigurationService>();
+                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.CheckForUpdates), It.IsAny<bool>()))
+                    .Returns(true);
+                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.UpdateChannel), It.IsAny<string>()))
+                    .Returns("stable");
+                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == "AutomaticUpdates.Channels.stable"), It.IsAny<string>()))
+                    .Returns(@".\Resources\Files\Velopack\");
+
+                var fileServiceMock = new Mock<IFileService>();
+                var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
+
+                var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
+                appMetadataProviderMock.Setup(x => x.AppId)
+                    .Returns("TestApp");
+                appMetadataProviderMock.Setup(x => x.CurrentVersion)
+                    .Returns("1.4.0-alpha1143");
+
+                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object,
+                    updateExecutableServiceMock.Object, appMetadataProviderMock.Object, new SquirrelVelopackLocator());
+
+                var context = new SquirrelContext
+                {
+                    ChannelName = "stable"
+                };
+
+                // Act
+                await updateService.InitializeAsync(updateChannels, updateChannels.First(), true);
+
+                var result = await updateService.CheckForUpdatesAsync(context);
+
+                // Assert
+                Assert.That(result.IsUpdateInstalledOrAvailable, Is.False);
+                Assert.That(result.NewVersion, Is.Empty);
+            }
+
+            [TestCase]
             public async Task Returns_Update_When_Velopack_Finds_One_Async()
             {
                 var updateChannels = new[]

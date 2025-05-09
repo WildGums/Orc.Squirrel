@@ -11,12 +11,12 @@ namespace Orc.Squirrel
     {
         public AppMetadataProvider() { }
         public string AppId { get; set; }
-        public string CurrentVersion { get; set; }
+        public string? CurrentVersion { get; set; }
     }
     public interface IAppMetadataProvider
     {
         string AppId { get; set; }
-        string CurrentVersion { get; set; }
+        string? CurrentVersion { get; set; }
     }
     public interface IUpdateExecutableLocationService
     {
