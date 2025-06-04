@@ -12,7 +12,6 @@ using Catel.Reflection;
 using FileSystem;
 using global::Velopack;
 using global::Velopack.Locators;
-using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Versioning;

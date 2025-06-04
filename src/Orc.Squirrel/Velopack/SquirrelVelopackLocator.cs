@@ -1,7 +1,8 @@
 ﻿namespace Orc.Squirrel.Velopack
 {
+    using System.Diagnostics;
     using global::Velopack.Locators;
-    using Microsoft.Extensions.Logging.Abstractions;
+    using global::Velopack.Logging;
     using NuGet.Versioning;
 
     internal class SquirrelVelopackLocator : WindowsVelopackLocator
@@ -11,8 +12,14 @@
         private string? _packagesDir;
         private string? _updateExePath;
 
-        public SquirrelVelopackLocator() 
-            : base(new NullLogger<object>())
+        public SquirrelVelopackLocator()
+            : this(Process.GetCurrentProcess().MainModule?.FileName!, (uint)Process.GetCurrentProcess().Id, null)
+        {
+            
+        }
+
+        public SquirrelVelopackLocator(string currentProcessPath, uint currentProcessId, IVelopackLogger? logger) 
+            : base(currentProcessPath, currentProcessId, logger)
         {
         }
 
