@@ -3,10 +3,4 @@
     <ModuleInit />
     <Obsolete />
     <Catel />
-    <Costura DisableCleanup="true">
-        <IncludeAssemblies>
-        </IncludeAssemblies>
-        <IncludeRuntimeAssemblies>
-        </IncludeRuntimeAssemblies>
-    </Costura>
 </Weavers>
