@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Configuration;
@@ -212,6 +213,13 @@ public class UpdateService : IUpdateService
                 return result;
             }
         }
+        catch (HttpRequestException httpRequestException)
+        {
+            if (httpRequestException.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                Log.Error(httpRequestException, "An error occurred while checking for the latest updates using Velopack");
+            }
+        }
         catch (Exception ex)
         {
             Log.Error(ex, "An error occurred while checking for the latest updates using Velopack");
@@ -285,6 +293,13 @@ public class UpdateService : IUpdateService
             catch (JsonReaderException)
             {
                 // Expected when migrating to Velopack, ignore it
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                if (httpRequestException.StatusCode != System.Net.HttpStatusCode.NotFound)
+                {
+                    Log.Error(httpRequestException, "An error occurred while checking for the latest updates using Squirrel");
+                }
             }
             catch (Exception ex)
             {
@@ -360,6 +375,13 @@ public class UpdateService : IUpdateService
                 return result;
             }
         }
+        catch (HttpRequestException httpRequestException)
+        {
+            if (httpRequestException.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                Log.Error(httpRequestException, "An error occurred while checking for or installing the latest updates using Velopack");
+            }
+        }
         catch (Exception ex)
         {
             Log.Error(ex, "An error occurred while checking for or installing the latest updates using Velopack");
@@ -422,6 +444,13 @@ public class UpdateService : IUpdateService
                 UpdateInstalled?.Invoke(this, new SquirrelEventArgs(result));
 
                 return result;
+            }
+        }
+        catch (HttpRequestException httpRequestException)
+        {
+            if (httpRequestException.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                Log.Error(httpRequestException, "An error occurred while checking for or installing the latest updates using Squirrel");
             }
         }
         catch (Exception ex)
