@@ -22,7 +22,7 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Obsolete.Fody" Version="5.3.1" PrivateAssets="all" />
-    <PackageReference Include="Orc.FileSystem" Version="5.1.0-alpha0848" />
+    <PackageReference Include="Orc.FileSystem" Version="5.1.0" />
     <PackageReference Include="Velopack" Version="0.0.1298" />
   </ItemGroup>
 
