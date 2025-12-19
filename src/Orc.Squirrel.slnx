@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/misc/">
+    <File Path="Directory.build.project.props" />
+    <File Path="Directory.build.props" />
+    <File Path="Directory.build.shared.explicit.props" />
+    <File Path="Directory.build.shared.implicit.props" />
+    <File Path="Directory.build.shared.mat.props" />
+    <File Path="Directory.build.targets" />
+    <File Path="GlobalSuppressions.cs" />
+    <File Path="nuget.config" />
+    <File Path="Orc.Squirrel.sln.DotSettings" />
+    <File Path="SolutionAssemblyInfo.cs" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Core/">
+    <Project Path="Orc.Squirrel.Xaml/Orc.Squirrel.Xaml.csproj" />
+    <Project Path="Orc.Squirrel/Orc.Squirrel.csproj" />
+  </Folder>
+  <Folder Name="/src/Example/">
+    <Project Path="Orc.Squirrel.Example/Orc.Squirrel.Example.csproj" />
+  </Folder>
+  <Folder Name="/src/Tests/">
+    <Project Path="Orc.Squirrel.Tests/Orc.Squirrel.Tests.csproj" />
+  </Folder>
+</Solution>
