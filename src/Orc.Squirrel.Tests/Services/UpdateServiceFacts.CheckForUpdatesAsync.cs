@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Catel.Configuration;
+    using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
     using NUnit.Framework;
     using Orc.FileSystem;
@@ -38,7 +39,8 @@
                 appMetadataProviderMock.Setup(x => x.CurrentVersion)
                     .Returns("1.4.0-alpha1143");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object, 
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object, 
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, new SquirrelVelopackLocator());
 
                 var context = new SquirrelContext
@@ -80,7 +82,8 @@
                 appMetadataProviderMock.Setup(x => x.CurrentVersion)
                     .Returns("1.4.0-alpha1143");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object,
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object,
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, new SquirrelVelopackLocator());
 
                 var context = new SquirrelContext
@@ -122,7 +125,8 @@
                 appMetadataProviderMock.Setup(x => x.CurrentVersion)
                     .Returns("1.4.0-alpha1143");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object,
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object,
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, new SquirrelVelopackLocator());
 
                 var context = new SquirrelContext
@@ -165,7 +169,8 @@
                 appMetadataProviderMock.Setup(x => x.CurrentVersion)
                     .Returns("1.0.0");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object, 
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object, 
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, new SquirrelVelopackLocator());
 
                 var context = new SquirrelContext
@@ -196,7 +201,8 @@
                 appMetadataProviderMock.Setup(x => x.CurrentVersion)
                     .Returns("1.0.0");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object, 
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object, 
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, new SquirrelVelopackLocator());
 
                 var context = new SquirrelContext

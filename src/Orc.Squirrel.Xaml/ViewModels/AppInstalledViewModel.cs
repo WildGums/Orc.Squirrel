@@ -15,7 +15,9 @@ public class AppInstalledViewModel : ViewModelBase
 
     private readonly Assembly _entryAssembly = AssemblyHelper.GetRequiredEntryAssembly();
 
-    public AppInstalledViewModel(IProcessService processService, IDispatcherService dispatcherService, ILanguageService languageService)
+    public AppInstalledViewModel(IServiceProvider serviceProvider, IProcessService processService, 
+        IDispatcherService dispatcherService, ILanguageService languageService)
+        : base(serviceProvider)
     {
         ArgumentNullException.ThrowIfNull(processService);
         ArgumentNullException.ThrowIfNull(dispatcherService);
@@ -23,7 +25,7 @@ public class AppInstalledViewModel : ViewModelBase
         _processService = processService;
         _dispatcherService = dispatcherService;
             
-        RunApplication = new Command(OnRunApplicationExecute);
+        RunApplication = new Command(serviceProvider, OnRunApplicationExecute);
 
         var appName = _entryAssembly.Title() ?? string.Empty;
         var appVersion = _entryAssembly.InformationalVersion() ?? _entryAssembly.Version();

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Catel.Configuration;
+    using Microsoft.Extensions.Logging.Abstractions;
     using Moq;
     using NUnit.Framework;
     using Orc.FileSystem;
@@ -45,7 +46,8 @@
 
                 Directory.CreateDirectory(@".\Velopack\Tools\");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object, 
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object, 
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
 
                 var context = new SquirrelContext
@@ -93,7 +95,8 @@
 
                 Directory.CreateDirectory(@".\Velopack\Tools\");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object,
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object,
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
 
                 var context = new SquirrelContext
@@ -141,7 +144,8 @@
 
                 Directory.CreateDirectory(@".\Velopack\Tools\");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object, 
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object, 
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
 
                 var context = new SquirrelContext
@@ -178,7 +182,8 @@
 
                 Directory.CreateDirectory(@".\Velopack\Tools\");
 
-                var updateService = new UpdateService(configurationServiceMock.Object, fileServiceMock.Object, 
+                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                    configurationServiceMock.Object, fileServiceMock.Object, 
                     updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
 
                 var context = new SquirrelContext
