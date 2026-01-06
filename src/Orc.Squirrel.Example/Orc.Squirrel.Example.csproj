@@ -33,7 +33,6 @@
     <ProjectReference Include="..\..\..\Orc.LogViewer\src\Orc.LogViewer\Orc.LogViewer.csproj" />
   </ItemGroup>
 
-
   <ItemGroup>
     <ProjectReference Include="..\Orc.Squirrel\Orc.Squirrel.csproj" />
     <ProjectReference Include="..\Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.csproj" />
