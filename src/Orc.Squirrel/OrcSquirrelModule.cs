@@ -1,10 +1,11 @@
-﻿namespace Orc.Squirrel
+﻿namespace Orc
 {
     using Catel.Services;
     using Catel.ThirdPartyNotices;
     using global::Velopack.Locators;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Orc.Squirrel;
     using Orc.Squirrel.Velopack;
 
     /// <summary>
