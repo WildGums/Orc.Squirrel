@@ -11,27 +11,24 @@ using Squirrel.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
     private readonly IUIVisualizerService _uiVisualizerService;
     private readonly IDispatcherService _dispatcherService;
     private readonly IUpdateService _updateService;
     private readonly IUpdateExecutableLocationService _updateExecutableLocationService;
 
     public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
-        IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService)
+        IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService,
+        IServiceProvider serviceProvider)
+        : base(serviceProvider)
     {
-        ArgumentNullException.ThrowIfNull(uiVisualizerService);
-        ArgumentNullException.ThrowIfNull(dispatcherService);
-        ArgumentNullException.ThrowIfNull(updateService);
-
         _uiVisualizerService = uiVisualizerService;
         _dispatcherService = dispatcherService;
         _updateService = updateService;
         _updateExecutableLocationService = updateExecutableLocationService;
-        CheckForUpdates = new TaskCommand(OnCheckForUpdatesExecuteAsync, OnCheckForUpdatesCanExecute);
-        Update = new TaskCommand(OnUpdateExecuteAsync, OnUpdateCanExecute);
-        ShowInstalledDialog = new Command(OnShowInstalledDialogExecute);
+
+        CheckForUpdates = new TaskCommand(serviceProvider, OnCheckForUpdatesExecuteAsync, OnCheckForUpdatesCanExecute);
+        Update = new TaskCommand(serviceProvider, OnUpdateExecuteAsync, OnUpdateCanExecute);
+        ShowInstalledDialog = new Command(serviceProvider, OnShowInstalledDialogExecute);
 
         Title = "Orc.Squirrel example";
 
