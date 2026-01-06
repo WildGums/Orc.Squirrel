@@ -6,6 +6,13 @@ public static class ModuleInitializer
     [System.Runtime.CompilerServices.ModuleInitializer]
     public static void Initialize() { }
 }
+namespace Orc
+{
+    public static class OrcSquirrelModule
+    {
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddOrcSquirrel(this Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection) { }
+    }
+}
 namespace Orc.Squirrel
 {
     public class AppMetadataProvider : Orc.Squirrel.IAppMetadataProvider
@@ -37,10 +44,6 @@ namespace Orc.Squirrel
         System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> CheckForUpdatesAsync(Orc.Squirrel.SquirrelContext context);
         System.Threading.Tasks.Task InitializeAsync(System.Collections.Generic.IEnumerable<Orc.Squirrel.UpdateChannel> availableChannels, Orc.Squirrel.UpdateChannel defaultChannel, bool defaultCheckForUpdatesValue);
         System.Threading.Tasks.Task<Orc.Squirrel.SquirrelResult> InstallAvailableUpdatesAsync(Orc.Squirrel.SquirrelContext context);
-    }
-    public static class OrcSquirrelModule
-    {
-        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddOrcSquirrel(this Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection) { }
     }
     public static class Settings
     {

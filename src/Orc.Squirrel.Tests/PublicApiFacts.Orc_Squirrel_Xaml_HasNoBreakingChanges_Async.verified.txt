@@ -10,12 +10,15 @@ public static class ModuleInitializer
     [System.Runtime.CompilerServices.ModuleInitializer]
     public static void Initialize() { }
 }
-namespace Orc.Squirrel
+namespace Orc
 {
     public static class OrcSquirrelXamlModule
     {
         public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddOrcSquirrelXaml(this Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection) { }
     }
+}
+namespace Orc.Squirrel
+{
     public static class SquirrelHelper
     {
         [System.Obsolete("Use `Consider using Velopack` instead. Will be treated as an error from version 9" +
