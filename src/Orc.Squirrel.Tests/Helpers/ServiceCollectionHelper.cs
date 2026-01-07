@@ -1,4 +1,4 @@
-﻿namespace Orc.Wizard.Tests
+﻿namespace Orc.Squirrel.Tests
 {
     using Catel;
     using Microsoft.Extensions.DependencyInjection;
