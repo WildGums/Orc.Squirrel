@@ -51,7 +51,6 @@ namespace Orc.Squirrel.Views
     public class AppInstalledWindow : Catel.Windows.DataWindow, System.Windows.Markup.IComponentConnector
     {
         public AppInstalledWindow() { }
-        [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
         public AppInstalledWindow(System.IServiceProvider serviceProvider, Catel.Services.IWrapControlService wrapControlService, Catel.Services.ILanguageService languageService) { }
         public AppInstalledWindow(Catel.MVVM.IViewModel? viewModel, System.IServiceProvider serviceProvider, Catel.Services.IWrapControlService wrapControlService, Catel.Services.ILanguageService languageService) { }
         public void InitializeComponent() { }
