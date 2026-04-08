@@ -1,203 +1,202 @@
-﻿namespace Orc.Squirrel.Tests.Services
+﻿namespace Orc.Squirrel.Tests.Services;
+
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Catel.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
+using NUnit.Framework;
+using Orc.FileSystem;
+using Orc.Squirrel.Velopack;
+
+public partial class UpdateServiceFacts
 {
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Catel.Configuration;
-    using Microsoft.Extensions.Logging.Abstractions;
-    using Moq;
-    using NUnit.Framework;
-    using Orc.FileSystem;
-    using Orc.Squirrel.Velopack;
-
-    public partial class UpdateServiceFacts
+    [TestFixture]
+    public class The_InstallAvailableUpdatesAsync_Method
     {
-        [TestFixture]
-        public class The_InstallAvailableUpdatesAsync_Method
+        [TestCase]
+        public async Task Installs_No_Update_When_None_Available_Async()
         {
-            [TestCase]
-            public async Task Installs_No_Update_When_None_Available_Async()
+            var updateChannels = new[]
             {
-                var updateChannels = new[]
-                {
-                    new UpdateChannel("stable", @".\Resources\Files\Velopack\")
-                };
+                new UpdateChannel("stable", @".\Resources\Files\Velopack\")
+            };
 
-                var configurationServiceMock = new Mock<IConfigurationService>();
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.CheckForUpdates), It.IsAny<bool>()))
-                    .Returns(true);
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.UpdateChannel), It.IsAny<string>()))
-                    .Returns("stable");
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == "AutomaticUpdates.Channels.stable"), It.IsAny<string>()))
-                    .Returns(@".\Resources\Files\Velopack\");
+            var configurationServiceMock = new Mock<IConfigurationService>();
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.CheckForUpdates), It.IsAny<bool>()))
+                .Returns(true);
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.UpdateChannel), It.IsAny<string>()))
+                .Returns("stable");
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == "AutomaticUpdates.Channels.stable"), It.IsAny<string>()))
+                .Returns(@".\Resources\Files\Velopack\");
 
-                var fileServiceMock = new Mock<IFileService>();
-                var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
+            var fileServiceMock = new Mock<IFileService>();
+            var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
 
-                var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
-                appMetadataProviderMock.Setup(x => x.AppId)
-                    .Returns("TestApp");
-                appMetadataProviderMock.Setup(x => x.CurrentVersion)
-                    .Returns("1.4.0-alpha1143");
+            var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
+            appMetadataProviderMock.Setup(x => x.AppId)
+                .Returns("TestApp");
+            appMetadataProviderMock.Setup(x => x.CurrentVersion)
+                .Returns("1.4.0-alpha1143");
 
-                var velopackLocator = new SquirrelVelopackLocator();
-                velopackLocator.UpdatePackagesDir(@".\Velopack\Packages\TestApp\");
-                velopackLocator.UpdateUpdateExePath(@".\Velopack\Tools\update.exe");
+            var velopackLocator = new SquirrelVelopackLocator();
+            velopackLocator.UpdatePackagesDir(@".\Velopack\Packages\TestApp\");
+            velopackLocator.UpdateUpdateExePath(@".\Velopack\Tools\update.exe");
 
-                Directory.CreateDirectory(@".\Velopack\Tools\");
+            Directory.CreateDirectory(@".\Velopack\Tools\");
 
-                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
-                    configurationServiceMock.Object, fileServiceMock.Object, 
-                    updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
+            var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                configurationServiceMock.Object, fileServiceMock.Object, 
+                updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
 
-                var context = new SquirrelContext
-                {
-                    ChannelName = "stable"
-                };
-
-                // Act
-                await updateService.InitializeAsync(updateChannels, updateChannels.First(), true);
-
-                var result = await updateService.InstallAvailableUpdatesAsync(context);
-
-                // Assert
-                Assert.That(result.IsUpdateInstalledOrAvailable, Is.False);
-            }
-
-            [TestCase]
-            public async Task Installs_No_Update_When_Velopack_Is_Unavailable_Async()
+            var context = new SquirrelContext
             {
-                var updateChannels = new[]
-                {
-                    new UpdateChannel("stable", @".\Resources\Files\Velopack\")
-                };
+                ChannelName = "stable"
+            };
 
-                var configurationServiceMock = new Mock<IConfigurationService>();
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.CheckForUpdates), It.IsAny<bool>()))
-                    .Returns(true);
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.UpdateChannel), It.IsAny<string>()))
-                    .Returns("stable");
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == "AutomaticUpdates.Channels.stable"), It.IsAny<string>()))
-                    .Returns(@".\Resources\Files\Velopack-non-existing\");
+            // Act
+            await updateService.InitializeAsync(updateChannels, updateChannels.First(), true);
 
-                var fileServiceMock = new Mock<IFileService>();
-                var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
+            var result = await updateService.InstallAvailableUpdatesAsync(context);
 
-                var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
-                appMetadataProviderMock.Setup(x => x.AppId)
-                    .Returns("TestApp");
-                appMetadataProviderMock.Setup(x => x.CurrentVersion)
-                    .Returns("1.4.0-alpha1143");
+            // Assert
+            Assert.That(result.IsUpdateInstalledOrAvailable, Is.False);
+        }
 
-                var velopackLocator = new SquirrelVelopackLocator();
-                velopackLocator.UpdatePackagesDir(@".\Velopack\Packages\TestApp\");
-                velopackLocator.UpdateUpdateExePath(@".\Velopack\Tools\update.exe");
-
-                Directory.CreateDirectory(@".\Velopack\Tools\");
-
-                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
-                    configurationServiceMock.Object, fileServiceMock.Object,
-                    updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
-
-                var context = new SquirrelContext
-                {
-                    ChannelName = "stable"
-                };
-
-                // Act
-                await updateService.InitializeAsync(updateChannels, updateChannels.First(), true);
-
-                var result = await updateService.InstallAvailableUpdatesAsync(context);
-
-                // Assert
-                Assert.That(result.IsUpdateInstalledOrAvailable, Is.False);
-            }
-
-            [TestCase]
-            public async Task Installs_Update_When_Velopack_Finds_One_Async()
+        [TestCase]
+        public async Task Installs_No_Update_When_Velopack_Is_Unavailable_Async()
+        {
+            var updateChannels = new[]
             {
-                var updateChannels = new[]
-                {
-                    new UpdateChannel("stable", @".\Resources\Files\Velopack\")
-                };
+                new UpdateChannel("stable", @".\Resources\Files\Velopack\")
+            };
 
-                var configurationServiceMock = new Mock<IConfigurationService>();
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.CheckForUpdates), It.IsAny<bool>()))
-                    .Returns(true);
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.UpdateChannel), It.IsAny<string>()))
-                    .Returns("stable");
-                configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == "AutomaticUpdates.Channels.stable"), It.IsAny<string>()))
-                    .Returns(@".\Resources\Files\Velopack\");
+            var configurationServiceMock = new Mock<IConfigurationService>();
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.CheckForUpdates), It.IsAny<bool>()))
+                .Returns(true);
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.UpdateChannel), It.IsAny<string>()))
+                .Returns("stable");
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == "AutomaticUpdates.Channels.stable"), It.IsAny<string>()))
+                .Returns(@".\Resources\Files\Velopack-non-existing\");
 
-                var fileServiceMock = new Mock<IFileService>();
-                var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
+            var fileServiceMock = new Mock<IFileService>();
+            var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
 
-                var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
-                appMetadataProviderMock.Setup(x => x.AppId)
-                    .Returns("TestApp");
-                appMetadataProviderMock.Setup(x => x.CurrentVersion)
-                    .Returns("1.0.0");
+            var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
+            appMetadataProviderMock.Setup(x => x.AppId)
+                .Returns("TestApp");
+            appMetadataProviderMock.Setup(x => x.CurrentVersion)
+                .Returns("1.4.0-alpha1143");
 
-                var velopackLocator = new SquirrelVelopackLocator();
-                velopackLocator.UpdatePackagesDir(@".\Velopack\Packages\TestApp\");
-                velopackLocator.UpdateUpdateExePath(@".\Velopack\Tools\update.exe");
+            var velopackLocator = new SquirrelVelopackLocator();
+            velopackLocator.UpdatePackagesDir(@".\Velopack\Packages\TestApp\");
+            velopackLocator.UpdateUpdateExePath(@".\Velopack\Tools\update.exe");
 
-                Directory.CreateDirectory(@".\Velopack\Tools\");
+            Directory.CreateDirectory(@".\Velopack\Tools\");
 
-                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
-                    configurationServiceMock.Object, fileServiceMock.Object, 
-                    updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
+            var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                configurationServiceMock.Object, fileServiceMock.Object,
+                updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
 
-                var context = new SquirrelContext
-                {
-                    ChannelName = "stable"
-                };
-
-                // Act
-                await updateService.InitializeAsync(updateChannels, updateChannels.First(), true);
-
-                var result = await updateService.InstallAvailableUpdatesAsync(context);
-
-                // Assert
-                Assert.That(result.IsUpdateInstalledOrAvailable, Is.True);
-                Assert.That(result.NewVersion, Is.EqualTo("1.4.0-alpha1143"));
-            }
-
-            [TestCase, Explicit]
-            public async Task Installs_Update_When_Squirrel_Finds_One_Async()
+            var context = new SquirrelContext
             {
-                var configurationServiceMock = new Mock<IConfigurationService>();
-                var fileServiceMock = new Mock<IFileService>();
-                var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
+                ChannelName = "stable"
+            };
 
-                var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
-                appMetadataProviderMock.Setup(x => x.AppId)
-                    .Returns("TestApp");
-                appMetadataProviderMock.Setup(x => x.CurrentVersion)
-                    .Returns("1.0.0");
+            // Act
+            await updateService.InitializeAsync(updateChannels, updateChannels.First(), true);
 
-                var velopackLocator = new SquirrelVelopackLocator();
-                velopackLocator.UpdatePackagesDir(@".\Velopack\Packages\TestApp\");
-                velopackLocator.UpdateUpdateExePath(@".\Velopack\Tools\update.exe");
+            var result = await updateService.InstallAvailableUpdatesAsync(context);
 
-                Directory.CreateDirectory(@".\Velopack\Tools\");
+            // Assert
+            Assert.That(result.IsUpdateInstalledOrAvailable, Is.False);
+        }
 
-                var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
-                    configurationServiceMock.Object, fileServiceMock.Object, 
-                    updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
+        [TestCase]
+        public async Task Installs_Update_When_Velopack_Finds_One_Async()
+        {
+            var updateChannels = new[]
+            {
+                new UpdateChannel("stable", @".\Resources\Files\Velopack\")
+            };
 
-                var context = new SquirrelContext
-                {
-                    ChannelName = "stable"
-                };
+            var configurationServiceMock = new Mock<IConfigurationService>();
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.CheckForUpdates), It.IsAny<bool>()))
+                .Returns(true);
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == Settings.Application.AutomaticUpdates.UpdateChannel), It.IsAny<string>()))
+                .Returns("stable");
+            configurationServiceMock.Setup(x => x.GetValue(It.IsAny<ConfigurationContainer>(), It.Is<string>(y => y == "AutomaticUpdates.Channels.stable"), It.IsAny<string>()))
+                .Returns(@".\Resources\Files\Velopack\");
 
-                // Act
-                var result = await updateService.InstallAvailableUpdatesAsync(context);
+            var fileServiceMock = new Mock<IFileService>();
+            var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
 
-                // Assert
-                Assert.That(result.IsUpdateInstalledOrAvailable, Is.True);
-                Assert.That(result.NewVersion, Is.EqualTo("2.0.0"));
-            }
+            var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
+            appMetadataProviderMock.Setup(x => x.AppId)
+                .Returns("TestApp");
+            appMetadataProviderMock.Setup(x => x.CurrentVersion)
+                .Returns("1.0.0");
+
+            var velopackLocator = new SquirrelVelopackLocator();
+            velopackLocator.UpdatePackagesDir(@".\Velopack\Packages\TestApp\");
+            velopackLocator.UpdateUpdateExePath(@".\Velopack\Tools\update.exe");
+
+            Directory.CreateDirectory(@".\Velopack\Tools\");
+
+            var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                configurationServiceMock.Object, fileServiceMock.Object, 
+                updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
+
+            var context = new SquirrelContext
+            {
+                ChannelName = "stable"
+            };
+
+            // Act
+            await updateService.InitializeAsync(updateChannels, updateChannels.First(), true);
+
+            var result = await updateService.InstallAvailableUpdatesAsync(context);
+
+            // Assert
+            Assert.That(result.IsUpdateInstalledOrAvailable, Is.True);
+            Assert.That(result.NewVersion, Is.EqualTo("1.4.0-alpha1143"));
+        }
+
+        [TestCase, Explicit]
+        public async Task Installs_Update_When_Squirrel_Finds_One_Async()
+        {
+            var configurationServiceMock = new Mock<IConfigurationService>();
+            var fileServiceMock = new Mock<IFileService>();
+            var updateExecutableServiceMock = new Mock<IUpdateExecutableLocationService>();
+
+            var appMetadataProviderMock = new Mock<IAppMetadataProvider>();
+            appMetadataProviderMock.Setup(x => x.AppId)
+                .Returns("TestApp");
+            appMetadataProviderMock.Setup(x => x.CurrentVersion)
+                .Returns("1.0.0");
+
+            var velopackLocator = new SquirrelVelopackLocator();
+            velopackLocator.UpdatePackagesDir(@".\Velopack\Packages\TestApp\");
+            velopackLocator.UpdateUpdateExePath(@".\Velopack\Tools\update.exe");
+
+            Directory.CreateDirectory(@".\Velopack\Tools\");
+
+            var updateService = new UpdateService(NullLogger<UpdateService>.Instance, 
+                configurationServiceMock.Object, fileServiceMock.Object, 
+                updateExecutableServiceMock.Object, appMetadataProviderMock.Object, velopackLocator);
+
+            var context = new SquirrelContext
+            {
+                ChannelName = "stable"
+            };
+
+            // Act
+            var result = await updateService.InstallAvailableUpdatesAsync(context);
+
+            // Assert
+            Assert.That(result.IsUpdateInstalledOrAvailable, Is.True);
+            Assert.That(result.NewVersion, Is.EqualTo("2.0.0"));
         }
     }
 }
