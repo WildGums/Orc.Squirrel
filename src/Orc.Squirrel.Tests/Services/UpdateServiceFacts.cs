@@ -1,6 +1,5 @@
-﻿namespace Orc.Squirrel.Tests.Services
+﻿namespace Orc.Squirrel.Tests.Services;
+
+public partial class UpdateServiceFacts
 {
-    public partial class UpdateServiceFacts
-    {
-    }
 }

@@ -1,11 +1,13 @@
 ﻿namespace Orc.Squirrel.Example.Services;
 
 using FileSystem;
+using Microsoft.Extensions.Logging;
 
 public class ExampleUpdateExecutableLocationService : UpdateExecutableLocationService
 {
-    public ExampleUpdateExecutableLocationService(IFileService fileService) 
-        : base(fileService)
+    public ExampleUpdateExecutableLocationService(ILogger<UpdateExecutableLocationService> logger,
+        IFileService fileService) 
+        : base(logger, fileService)
     {
     }
 

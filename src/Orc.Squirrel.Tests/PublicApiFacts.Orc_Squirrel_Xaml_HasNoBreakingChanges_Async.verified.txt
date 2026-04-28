@@ -10,6 +10,13 @@ public static class ModuleInitializer
     [System.Runtime.CompilerServices.ModuleInitializer]
     public static void Initialize() { }
 }
+namespace Orc
+{
+    public static class OrcSquirrelXamlModule
+    {
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddOrcSquirrelXaml(this Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection) { }
+    }
+}
 namespace Orc.Squirrel
 {
     public static class SquirrelHelper
@@ -32,7 +39,7 @@ namespace Orc.Squirrel.ViewModels
 {
     public class AppInstalledViewModel : Catel.MVVM.ViewModelBase
     {
-        public AppInstalledViewModel(Catel.Services.IProcessService processService, Catel.Services.IDispatcherService dispatcherService, Catel.Services.ILanguageService languageService) { }
+        public AppInstalledViewModel(System.IServiceProvider serviceProvider, Catel.Services.IProcessService processService, Catel.Services.IDispatcherService dispatcherService, Catel.Services.ILanguageService languageService) { }
         public System.Windows.Media.Imaging.BitmapSource? AppIcon { get; }
         public string AppName { get; }
         public string AppVersion { get; }
@@ -44,7 +51,8 @@ namespace Orc.Squirrel.Views
     public class AppInstalledWindow : Catel.Windows.DataWindow, System.Windows.Markup.IComponentConnector
     {
         public AppInstalledWindow() { }
-        public AppInstalledWindow(Orc.Squirrel.ViewModels.AppInstalledViewModel? viewModel) { }
+        public AppInstalledWindow(System.IServiceProvider serviceProvider, Catel.Services.IWrapControlService wrapControlService, Catel.Services.ILanguageService languageService) { }
+        public AppInstalledWindow(Catel.MVVM.IViewModel? viewModel, System.IServiceProvider serviceProvider, Catel.Services.IWrapControlService wrapControlService, Catel.Services.ILanguageService languageService) { }
         public void InitializeComponent() { }
     }
 }

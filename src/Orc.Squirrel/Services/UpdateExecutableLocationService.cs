@@ -5,22 +5,22 @@ using System.IO;
 using Catel.Logging;
 using Catel.Reflection;
 using FileSystem;
+using Microsoft.Extensions.Logging;
 
 public class UpdateExecutableLocationService : IUpdateExecutableLocationService
 {
-    private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
     private const string UpdateExe = "update.exe";
     private const string NotFoundFindResult = "notfound";
 
+    private readonly ILogger<UpdateExecutableLocationService> _logger;
     private readonly IFileService _fileService;
+
     private string? _updateExeLocation;
     private bool _shownWarning = false;
 
-    public UpdateExecutableLocationService(IFileService fileService)
+    public UpdateExecutableLocationService(ILogger<UpdateExecutableLocationService> logger, IFileService fileService)
     {
-        ArgumentNullException.ThrowIfNull(fileService);
-
+        _logger = logger;
         _fileService = fileService;
     }
 
@@ -61,7 +61,7 @@ public class UpdateExecutableLocationService : IUpdateExecutableLocationService
                 {
                     _updateExeLocation = potentialUpdateExe;
 
-                    Log.Debug($"Determined update executable path '{_updateExeLocation}'");
+                    _logger.LogDebug($"Determined update executable path '{_updateExeLocation}'");
 
                     break;
                 }
@@ -72,7 +72,7 @@ public class UpdateExecutableLocationService : IUpdateExecutableLocationService
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occurred while searching for the update executable");
+            _logger.LogError(ex, "An error occurred while searching for the update executable");
         }
 
         if (_shownWarning || !string.IsNullOrWhiteSpace(_updateExeLocation))
@@ -80,7 +80,7 @@ public class UpdateExecutableLocationService : IUpdateExecutableLocationService
             return _updateExeLocation ?? NotFoundFindResult;
         }
 
-        Log.Info("Could not find the update executable, updates are not supported");
+        _logger.LogInformation("Could not find the update executable, updates are not supported");
 
         _shownWarning = true;
 

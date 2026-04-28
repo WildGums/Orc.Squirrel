@@ -6,6 +6,13 @@ public static class ModuleInitializer
     [System.Runtime.CompilerServices.ModuleInitializer]
     public static void Initialize() { }
 }
+namespace Orc
+{
+    public static class OrcSquirrelModule
+    {
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddOrcSquirrel(this Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection) { }
+    }
+}
 namespace Orc.Squirrel
 {
     public class AppMetadataProvider : Orc.Squirrel.IAppMetadataProvider
@@ -92,13 +99,13 @@ namespace Orc.Squirrel
     }
     public class UpdateExecutableLocationService : Orc.Squirrel.IUpdateExecutableLocationService
     {
-        public UpdateExecutableLocationService(Orc.FileSystem.IFileService fileService) { }
+        public UpdateExecutableLocationService(Microsoft.Extensions.Logging.ILogger<Orc.Squirrel.UpdateExecutableLocationService> logger, Orc.FileSystem.IFileService fileService) { }
         public string FindUpdateExecutable() { }
         public virtual string GetApplicationExecutable() { }
     }
     public class UpdateService : Orc.Squirrel.IUpdateService
     {
-        public UpdateService(Catel.Configuration.IConfigurationService configurationService, Orc.FileSystem.IFileService fileService, Orc.Squirrel.IUpdateExecutableLocationService updateExecutableLocationService, Orc.Squirrel.IAppMetadataProvider appMetadataProvider, Velopack.Locators.IVelopackLocator velopackLocator) { }
+        public UpdateService(Microsoft.Extensions.Logging.ILogger<Orc.Squirrel.UpdateService> logger, Catel.Configuration.IConfigurationService configurationService, Orc.FileSystem.IFileService fileService, Orc.Squirrel.IUpdateExecutableLocationService updateExecutableLocationService, Orc.Squirrel.IAppMetadataProvider appMetadataProvider, Velopack.Locators.IVelopackLocator velopackLocator) { }
         public Orc.Squirrel.UpdateChannel[] AvailableChannels { get; }
         public Orc.Squirrel.UpdateChannel? CurrentChannel { get; set; }
         public bool IsCheckForUpdatesEnabled { get; set; }

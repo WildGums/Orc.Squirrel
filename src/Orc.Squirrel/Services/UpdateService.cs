@@ -13,6 +13,7 @@ using Catel.Reflection;
 using FileSystem;
 using global::Velopack;
 using global::Velopack.Locators;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Versioning;
@@ -24,8 +25,7 @@ using Path = Catel.IO.Path;
 /// </summary>
 public class UpdateService : IUpdateService
 {
-    private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
+    private readonly ILogger<UpdateService> _logger;
     private readonly IConfigurationService _configurationService;
     private readonly IFileService _fileService;
     private readonly IUpdateExecutableLocationService _updateExecutableLocationService;
@@ -34,15 +34,11 @@ public class UpdateService : IUpdateService
 
     private bool _initialized;
 
-    public UpdateService(IConfigurationService configurationService, IFileService fileService,
-        IUpdateExecutableLocationService updateExecutableLocationService,
+    public UpdateService(ILogger<UpdateService> logger, IConfigurationService configurationService, 
+        IFileService fileService, IUpdateExecutableLocationService updateExecutableLocationService,
         IAppMetadataProvider appMetadataProvider, IVelopackLocator velopackLocator)
     {
-        ArgumentNullException.ThrowIfNull(configurationService);
-        ArgumentNullException.ThrowIfNull(fileService);
-        ArgumentNullException.ThrowIfNull(updateExecutableLocationService);
-        ArgumentNullException.ThrowIfNull(appMetadataProvider);
-
+        _logger = logger;
         _configurationService = configurationService;
         _fileService = fileService;
         _updateExecutableLocationService = updateExecutableLocationService;
@@ -176,7 +172,7 @@ public class UpdateService : IUpdateService
             return result;
         }
 
-        Log.Info($"Checking for updates, current version is '{result.CurrentVersion}'");
+        _logger.LogInformation($"Checking for updates, current version is '{result.CurrentVersion}'");
 
         // Step 1: check using Velopack
         try
@@ -203,11 +199,11 @@ public class UpdateService : IUpdateService
 
                 if (!result.IsUpdateInstalledOrAvailable)
                 {
-                    Log.Info("No updates available");
+                    _logger.LogInformation("No updates available");
                 }
                 else
                 {
-                    Log.Info($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
+                    _logger.LogInformation($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
                 }
 
                 return result;
@@ -217,12 +213,12 @@ public class UpdateService : IUpdateService
         {
             if (httpRequestException.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
-                Log.Error(httpRequestException, "An error occurred while checking for the latest updates using Velopack");
+                _logger.LogError(httpRequestException, "An error occurred while checking for the latest updates using Velopack");
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occurred while checking for the latest updates using Velopack");
+            _logger.LogError(ex, "An error occurred while checking for the latest updates using Velopack");
         }
 
         // Step 2: check using Squirrel (only if update.exe exists)
@@ -283,11 +279,11 @@ public class UpdateService : IUpdateService
 
                 if (!result.IsUpdateInstalledOrAvailable)
                 {
-                    Log.Info("No updates available");
+                    _logger.LogInformation("No updates available");
                 }
                 else
                 {
-                    Log.Info($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
+                    _logger.LogInformation($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
                 }
             }
             catch (JsonReaderException)
@@ -298,12 +294,12 @@ public class UpdateService : IUpdateService
             {
                 if (httpRequestException.StatusCode != System.Net.HttpStatusCode.NotFound)
                 {
-                    Log.Error(httpRequestException, "An error occurred while checking for the latest updates using Squirrel");
+                    _logger.LogError(httpRequestException, "An error occurred while checking for the latest updates using Squirrel");
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "An error occurred while checking for the latest updates using Squirrel");
+                _logger.LogError(ex, "An error occurred while checking for the latest updates using Squirrel");
             }
         }
 
@@ -350,7 +346,7 @@ public class UpdateService : IUpdateService
             if (newVersion is not null &&
                 newVersion.TargetFullRelease.Version.ToFullString() != result.CurrentVersion)
             {
-                Log.Info($"Installing (downloading) {newVersion.TargetFullRelease.Version} using base release {newVersion.BaseRelease?.Version}, current version is {result.CurrentVersion}");
+                _logger.LogInformation($"Installing (downloading) {newVersion.TargetFullRelease.Version} using base release {newVersion.BaseRelease?.Version}, current version is {result.CurrentVersion}");
 
                 result.NewVersion = newVersion.TargetFullRelease.Version.ToString();
 
@@ -363,7 +359,7 @@ public class UpdateService : IUpdateService
 
                 result.IsUpdateInstalledOrAvailable = true;
 
-                Log.Info("Update installed (downloaded) successfully");
+                _logger.LogInformation("Update installed (downloaded) successfully");
 
                 IsUpdatedInstalled = true;
 
@@ -379,12 +375,12 @@ public class UpdateService : IUpdateService
         {
             if (httpRequestException.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
-                Log.Error(httpRequestException, "An error occurred while checking for or installing the latest updates using Velopack");
+                _logger.LogError(httpRequestException, "An error occurred while checking for or installing the latest updates using Velopack");
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occurred while checking for or installing the latest updates using Velopack");
+            _logger.LogError(ex, "An error occurred while checking for or installing the latest updates using Velopack");
         }
 
         // Step 2: Squirrel
@@ -396,7 +392,7 @@ public class UpdateService : IUpdateService
             // Note that we don't want the process to stop updating, we only want to invoke
             if (checkResult.IsUpdateInstalledOrAvailable)
             {
-                Log.Info($"Found new version '{checkResult.NewVersion}' using url '{channelUrl}', installing update...");
+                _logger.LogInformation($"Found new version '{checkResult.NewVersion}' using url '{channelUrl}', installing update...");
 
                 result.NewVersion = checkResult.NewVersion;
 
@@ -404,7 +400,7 @@ public class UpdateService : IUpdateService
             }
             else
             {
-                Log.Info($"Could not determine whether a new version was available for certain, going to run update anyway...");
+                _logger.LogInformation($"Could not determine whether a new version was available for certain, going to run update anyway...");
             }
 
             // Executable wrapper
@@ -437,7 +433,7 @@ public class UpdateService : IUpdateService
                 result.NewVersion = checkResult.NewVersion ?? "unknown";
                 result.IsUpdateInstalledOrAvailable = true;
 
-                Log.Info("Update installed successfully");
+                _logger.LogInformation("Update installed successfully");
 
                 IsUpdatedInstalled = true;
 
@@ -450,12 +446,12 @@ public class UpdateService : IUpdateService
         {
             if (httpRequestException.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
-                Log.Error(httpRequestException, "An error occurred while checking for or installing the latest updates using Squirrel");
+                _logger.LogError(httpRequestException, "An error occurred while checking for or installing the latest updates using Squirrel");
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occurred while checking for or installing the latest updates using Squirrel");
+            _logger.LogError(ex, "An error occurred while checking for or installing the latest updates using Squirrel");
         }
 
         return result;
@@ -480,7 +476,7 @@ public class UpdateService : IUpdateService
 
     protected virtual void RaiseProgressChanged(int percentage)
     {
-        Log.Debug($"Update progress: {percentage}%");
+        _logger.LogDebug($"Update progress: {percentage}%");
 
         UpdateProgress?.Invoke(this, new SquirrelProgressEventArgs(percentage));
     }
@@ -493,13 +489,13 @@ public class UpdateService : IUpdateService
     {
         if (!_initialized)
         {
-            throw Log.ErrorAndCreateException<InvalidOperationException>("Service is not initialized, call Initialize first");
+            throw _logger.LogErrorAndCreateException<InvalidOperationException>("Service is not initialized, call Initialize first");
         }
 
         var checkForUpdates = GetCheckForUpdatesValue();
         if (!checkForUpdates)
         {
-            Log.Info("Automatic updates are disabled");
+            _logger.LogInformation("Automatic updates are disabled");
             return null;
         }
 
@@ -513,7 +509,7 @@ public class UpdateService : IUpdateService
         var channelUrl = _configurationService.GetRoamingValue(channelUrlSettingsName, string.Empty);
         if (string.IsNullOrEmpty(channelUrl))
         {
-            Log.Warning("Cannot find url for channel '{0}'", channelName);
+            _logger.LogWarning("Cannot find url for channel '{0}'", channelName);
             return null;
         }
 
