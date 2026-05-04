@@ -172,7 +172,7 @@ public class UpdateService : IUpdateService
             return result;
         }
 
-        _logger.LogInformation($"Checking for updates, current version is '{result.CurrentVersion}'");
+        _logger.LogInformation("Checking for updates, current version is '{CurrentVersion}'", result.CurrentVersion);
 
         // Step 1: check using Velopack
         try
@@ -203,7 +203,7 @@ public class UpdateService : IUpdateService
                 }
                 else
                 {
-                    _logger.LogInformation($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
+                    _logger.LogInformation("Found new version '{NewVersion}' using url '{ChannelUrl}'", result.NewVersion, channelUrl);
                 }
 
                 return result;
@@ -283,7 +283,7 @@ public class UpdateService : IUpdateService
                 }
                 else
                 {
-                    _logger.LogInformation($"Found new version '{result.NewVersion}' using url '{channelUrl}'");
+                    _logger.LogInformation("Found new version '{NewVersion}' using url '{ChannelUrl}'", result.NewVersion, channelUrl);
                 }
             }
             catch (JsonReaderException)
@@ -346,7 +346,7 @@ public class UpdateService : IUpdateService
             if (newVersion is not null &&
                 newVersion.TargetFullRelease.Version.ToFullString() != result.CurrentVersion)
             {
-                _logger.LogInformation($"Installing (downloading) {newVersion.TargetFullRelease.Version} using base release {newVersion.BaseRelease?.Version}, current version is {result.CurrentVersion}");
+                _logger.LogInformation("Installing (downloading) {TargetVersion} using base release {BaseVersion}, current version is {CurrentVersion}", newVersion.TargetFullRelease.Version, newVersion.BaseRelease?.Version, result.CurrentVersion);
 
                 result.NewVersion = newVersion.TargetFullRelease.Version.ToString();
 
@@ -392,7 +392,7 @@ public class UpdateService : IUpdateService
             // Note that we don't want the process to stop updating, we only want to invoke
             if (checkResult.IsUpdateInstalledOrAvailable)
             {
-                _logger.LogInformation($"Found new version '{checkResult.NewVersion}' using url '{channelUrl}', installing update...");
+                _logger.LogInformation("Found new version '{NewVersion}' using url '{ChannelUrl}', installing update...", checkResult.NewVersion, channelUrl);
 
                 result.NewVersion = checkResult.NewVersion;
 
@@ -400,7 +400,7 @@ public class UpdateService : IUpdateService
             }
             else
             {
-                _logger.LogInformation($"Could not determine whether a new version was available for certain, going to run update anyway...");
+                _logger.LogInformation("Could not determine whether a new version was available for certain, going to run update anyway...");
             }
 
             // Executable wrapper
@@ -476,7 +476,7 @@ public class UpdateService : IUpdateService
 
     protected virtual void RaiseProgressChanged(int percentage)
     {
-        _logger.LogDebug($"Update progress: {percentage}%");
+        _logger.LogDebug("Update progress: {Percentage}%", percentage);
 
         UpdateProgress?.Invoke(this, new SquirrelProgressEventArgs(percentage));
     }
@@ -509,7 +509,7 @@ public class UpdateService : IUpdateService
         var channelUrl = _configurationService.GetRoamingValue(channelUrlSettingsName, string.Empty);
         if (string.IsNullOrEmpty(channelUrl))
         {
-            _logger.LogWarning("Cannot find url for channel '{0}'", channelName);
+            _logger.LogWarning("Cannot find url for channel '{ChannelName}'", channelName);
             return null;
         }
 
