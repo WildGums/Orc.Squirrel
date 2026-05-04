@@ -61,7 +61,7 @@ public class UpdateExecutableLocationService : IUpdateExecutableLocationService
                 {
                     _updateExeLocation = potentialUpdateExe;
 
-                    _logger.LogDebug($"Determined update executable path '{_updateExeLocation}'");
+                    _logger.LogDebug("Determined update executable path '{UpdateExeLocation}'", _updateExeLocation);
 
                     break;
                 }

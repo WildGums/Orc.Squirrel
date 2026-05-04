@@ -42,7 +42,7 @@ public static class SquirrelHelper
             return SquirrelLaunchResult.Unhandled;
         }
 
-        Logger.LogInformation("Application is started with squirrel argument '{0}', going to show message to user", lastArgument);
+        Logger.LogInformation("Application is started with squirrel argument '{LastArgument}', going to show message to user", lastArgument);
 
         var serviceProvider = IoCContainer.ServiceProvider;
         var uiVisualizerService = serviceProvider.GetRequiredService<IUIVisualizerService>();
