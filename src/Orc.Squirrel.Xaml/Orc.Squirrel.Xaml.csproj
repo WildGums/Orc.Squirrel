@@ -23,7 +23,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Obsolete.Fody" Version="5.3.1" PrivateAssets="all" />
-    <PackageReference Include="Orc.Theming" Version="6.0.0-alpha0107" />
+    <PackageReference Include="Orc.Theming" Version="6.0.0-alpha0133" />
   </ItemGroup>
 
   <ItemGroup>
