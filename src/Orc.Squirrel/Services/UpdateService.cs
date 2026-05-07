@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Configuration;
@@ -14,8 +15,6 @@ using FileSystem;
 using global::Velopack;
 using global::Velopack.Locators;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NuGet.Versioning;
 using Velopack;
 using Path = Catel.IO.Path;
@@ -34,7 +33,7 @@ public class UpdateService : IUpdateService
 
     private bool _initialized;
 
-    public UpdateService(ILogger<UpdateService> logger, IConfigurationService configurationService, 
+    public UpdateService(ILogger<UpdateService> logger, IConfigurationService configurationService,
         IFileService fileService, IUpdateExecutableLocationService updateExecutableLocationService,
         IAppMetadataProvider appMetadataProvider, IVelopackLocator velopackLocator)
     {
@@ -268,25 +267,38 @@ public class UpdateService : IUpdateService
 
                 if (!string.IsNullOrWhiteSpace(output))
                 {
-                    dynamic releaseInfo = JObject.Parse(output);
+                    var jsonDocument = System.Text.Json.JsonDocument.Parse(output);
 
-                    foreach (var releaseToApply in releaseInfo.releasesToApply)
+                    var releasesToApplyElement = jsonDocument.RootElement.GetProperty("releasesToApply");
+
+                    var releasesToApply = new List<(string version, string releaseNotes)>();
+
+                    using var arrayEnumerator = releasesToApplyElement.EnumerateArray();
+
+                    foreach (var releaseToApplyElement in arrayEnumerator)
+                    {
+                        var version = releaseToApplyElement.GetProperty("version").GetString() ?? string.Empty;
+                        var releaseNotes = releaseToApplyElement.GetProperty("releaseNotes").GetString() ?? string.Empty;
+                        releasesToApply.Add((version, releaseNotes));
+                    }
+
+                    if (releasesToApply.Count > 0)
                     {
                         result.IsUpdateInstalledOrAvailable = true;
-                        result.NewVersion = releaseToApply.version;
+                        result.NewVersion = releasesToApply.Last().version;
+                    }
+
+                    if (!result.IsUpdateInstalledOrAvailable)
+                    {
+                        _logger.LogInformation("No updates available");
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Found new version '{NewVersion}' using url '{ChannelUrl}'", result.NewVersion, channelUrl);
                     }
                 }
-
-                if (!result.IsUpdateInstalledOrAvailable)
-                {
-                    _logger.LogInformation("No updates available");
-                }
-                else
-                {
-                    _logger.LogInformation("Found new version '{NewVersion}' using url '{ChannelUrl}'", result.NewVersion, channelUrl);
-                }
             }
-            catch (JsonReaderException)
+            catch (JsonException)
             {
                 // Expected when migrating to Velopack, ignore it
             }
