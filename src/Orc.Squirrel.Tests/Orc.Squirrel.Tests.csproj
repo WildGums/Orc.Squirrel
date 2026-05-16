@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Orc.Squirrel.Example\Orc.Squirrel.Example.csproj" />
     <ProjectReference Include="..\Orc.Squirrel\Orc.Squirrel.csproj" />
     <ProjectReference Include="..\Orc.Squirrel.Xaml\Orc.Squirrel.Xaml.csproj" />
   </ItemGroup>

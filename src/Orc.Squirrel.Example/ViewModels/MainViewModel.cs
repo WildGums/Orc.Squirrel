@@ -1,21 +1,16 @@
 namespace Orc.Squirrel.Example.ViewModels;
 
 using System;
-using System.Globalization;
-using System.Resources;
 using System.Threading.Tasks;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Squirrel;
 using Services;
 using Squirrel.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    private static readonly ResourceManager ResourceManager = new("Orc.Squirrel.Example.Properties.Resources", typeof(MainViewModel).Assembly);
-
     private readonly IUIVisualizerService _uiVisualizerService;
     private readonly IDispatcherService _dispatcherService;
     private readonly IUpdateService _updateService;
@@ -24,23 +19,6 @@ public class MainViewModel : ViewModelBase
     private TaskCommand _update;
     private Command _showInstalledDialog;
     private readonly string _title;
-
-    public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
-        IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService,
-        IServiceProvider serviceProvider)
-        : base(serviceProvider)
-    {
-        _uiVisualizerService = uiVisualizerService;
-        _dispatcherService = dispatcherService;
-        _updateService = updateService;
-        _updateExecutableLocationService = updateExecutableLocationService;
-        _title = serviceProvider.GetService<ILanguageService>()?.GetRequiredString("Orc_Squirrel_Example_MainViewModel_Title")
-            ?? ResourceManager.GetString("Orc_Squirrel_Example_MainViewModel_Title", CultureInfo.CurrentUICulture)
-            ?? "Squirrel example";
-
-        InitializeCommands(serviceProvider);
-        InitializeDebugValues();
-    }
 
     public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
         IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService,
