@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Squirrel;
 using Services;
 using Squirrel.ViewModels;
@@ -15,22 +16,30 @@ public class MainViewModel : ViewModelBase
     private readonly IDispatcherService _dispatcherService;
     private readonly IUpdateService _updateService;
     private readonly IUpdateExecutableLocationService _updateExecutableLocationService;
+    private readonly string _title;
 
     public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
         IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService,
         IServiceProvider serviceProvider)
+        : this(uiVisualizerService, dispatcherService, updateService, updateExecutableLocationService,
+            serviceProvider.GetRequiredService<ILanguageService>(), serviceProvider)
+    {
+    }
+
+    public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
+        IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService,
+        ILanguageService languageService, IServiceProvider serviceProvider)
         : base(serviceProvider)
     {
         _uiVisualizerService = uiVisualizerService;
         _dispatcherService = dispatcherService;
         _updateService = updateService;
         _updateExecutableLocationService = updateExecutableLocationService;
+        _title = languageService.GetRequiredString("Orc_Squirrel_Example_MainViewModel_Title");
 
         CheckForUpdates = new TaskCommand(serviceProvider, OnCheckForUpdatesExecuteAsync, OnCheckForUpdatesCanExecute);
         Update = new TaskCommand(serviceProvider, OnUpdateExecuteAsync, OnUpdateCanExecute);
         ShowInstalledDialog = new Command(serviceProvider, OnShowInstalledDialogExecute);
-
-        Title = "Orc.Squirrel example";
 
 #if DEBUG
         UpdateUrl = "https://downloads.wildgums.com/flexgrid/alpha";
@@ -40,7 +49,7 @@ public class MainViewModel : ViewModelBase
 
     public override string Title
     {
-        get { return "Squirrel example"; }
+        get { return _title; }
     }
 
     public bool IsInstallingUpdate { get; private set; }
