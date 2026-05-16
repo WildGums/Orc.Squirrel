@@ -1,4 +1,4 @@
-﻿namespace Orc.Squirrel.Example.ViewModels;
+namespace Orc.Squirrel.Example.ViewModels;
 
 using System;
 using System.Threading.Tasks;
@@ -15,32 +15,29 @@ public class MainViewModel : ViewModelBase
     private readonly IDispatcherService _dispatcherService;
     private readonly IUpdateService _updateService;
     private readonly IUpdateExecutableLocationService _updateExecutableLocationService;
+    private TaskCommand _checkForUpdates;
+    private TaskCommand _update;
+    private Command _showInstalledDialog;
+    private readonly string _title;
 
     public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
         IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService,
-        IServiceProvider serviceProvider)
+        ILanguageService languageService, IServiceProvider serviceProvider)
         : base(serviceProvider)
     {
         _uiVisualizerService = uiVisualizerService;
         _dispatcherService = dispatcherService;
         _updateService = updateService;
         _updateExecutableLocationService = updateExecutableLocationService;
+        _title = languageService.GetRequiredString("Orc_Squirrel_Example_MainViewModel_Title");
 
-        CheckForUpdates = new TaskCommand(serviceProvider, OnCheckForUpdatesExecuteAsync, OnCheckForUpdatesCanExecute);
-        Update = new TaskCommand(serviceProvider, OnUpdateExecuteAsync, OnUpdateCanExecute);
-        ShowInstalledDialog = new Command(serviceProvider, OnShowInstalledDialogExecute);
-
-        Title = "Orc.Squirrel example";
-
-#if DEBUG
-        UpdateUrl = "https://downloads.wildgums.com/flexgrid/alpha";
-        ExecutableFileName = Environment.ExpandEnvironmentVariables("%localappdata%\\WildGums\\Flex Grid_alpha\\FlexGrid.exe");
-#endif
+        InitializeCommands(serviceProvider);
+        InitializeDebugValues();
     }
 
     public override string Title
     {
-        get { return "Squirrel example"; }
+        get { return _title; }
     }
 
     public bool IsInstallingUpdate { get; private set; }
@@ -53,7 +50,26 @@ public class MainViewModel : ViewModelBase
 
     public int Progress { get; set; }
 
-    public TaskCommand CheckForUpdates { get; }
+    public TaskCommand CheckForUpdates => _checkForUpdates;
+
+    public TaskCommand Update => _update;
+
+    public Command ShowInstalledDialog => _showInstalledDialog;
+
+    private void InitializeCommands(IServiceProvider serviceProvider)
+    {
+        _checkForUpdates = new TaskCommand(serviceProvider, OnCheckForUpdatesExecuteAsync, OnCheckForUpdatesCanExecute);
+        _update = new TaskCommand(serviceProvider, OnUpdateExecuteAsync, OnUpdateCanExecute);
+        _showInstalledDialog = new Command(serviceProvider, OnShowInstalledDialogExecute);
+    }
+
+    private void InitializeDebugValues()
+    {
+#if DEBUG
+        UpdateUrl = "https://downloads.wildgums.com/flexgrid/alpha";
+        ExecutableFileName = Environment.ExpandEnvironmentVariables("%localappdata%\\WildGums\\Flex Grid_alpha\\FlexGrid.exe");
+#endif
+    }
 
     private bool OnCheckForUpdatesCanExecute()
     {
@@ -72,8 +88,6 @@ public class MainViewModel : ViewModelBase
         var result = await _updateService.CheckForUpdatesAsync(new SquirrelContext());
         IsUpdateAvailable = result.IsUpdateInstalledOrAvailable;
     }
-
-    public TaskCommand Update { get; }
 
     private bool OnUpdateCanExecute()
     {
@@ -102,8 +116,6 @@ public class MainViewModel : ViewModelBase
             IsInstallingUpdate = false;
         }
     }
-
-    public Command ShowInstalledDialog { get; }
 
     private void OnShowInstalledDialogExecute()
     {

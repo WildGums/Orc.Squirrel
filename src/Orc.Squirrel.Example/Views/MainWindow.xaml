@@ -30,20 +30,20 @@
         </StackPanel>
 
         <orccontrols:OpenFilePicker Grid.ColumnSpan="2"
-                                    LabelText="Executable directory (optional)"
+                                    LabelText="{catel:LanguageBinding Orc_Squirrel_Example_MainWindow_ExecutableDirectoryOptional}"
                                     SelectedFile="{Binding ExecutableFileName}" />
 
-        <Label Content="Update url" />
+        <Label Content="{catel:LanguageBinding Orc_Squirrel_Example_MainWindow_UpdateUrl}" />
         <TextBox Text="{Binding UpdateUrl}" />
 
         <Button Grid.ColumnSpan="2"
-                Content="Check for updates"
+                Content="{catel:LanguageBinding Orc_Squirrel_Example_MainWindow_CheckForUpdates}"
                 Command="{Binding CheckForUpdates}" />
         <Button Grid.ColumnSpan="2"
-                Content="Update"
+                Content="{catel:LanguageBinding Orc_Squirrel_Example_MainWindow_Update}"
                 Command="{Binding Update}" />
         <Button Grid.ColumnSpan="2"
-                Content="Show installation window"
+                Content="{catel:LanguageBinding Orc_Squirrel_Example_MainWindow_ShowInstallationWindow}"
                 Command="{Binding ShowInstalledDialog}" />
 
         <ProgressBar Grid.ColumnSpan="2"

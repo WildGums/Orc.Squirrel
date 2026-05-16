@@ -40,6 +40,7 @@ public partial class App : Application
                 services.AddOrcSystemInfo();
                 services.AddOrcTheming();
                 services.AddOrchestraCore();
+                services.AddSingleton<ILanguageSource>(new LanguageResourceSource("Orc.Squirrel.Example", "Orc.Squirrel.Example.Properties", "Resources"));
 
                 services.AddSingleton<IUpdateExecutableLocationService, ExampleUpdateExecutableLocationService>();
 
