@@ -1,6 +1,8 @@
-﻿namespace Orc.Squirrel.Example.ViewModels;
+namespace Orc.Squirrel.Example.ViewModels;
 
 using System;
+using System.Globalization;
+using System.Resources;
 using System.Threading.Tasks;
 using Catel.Logging;
 using Catel.MVVM;
@@ -12,6 +14,8 @@ using Squirrel.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
+    private static readonly ResourceManager ResourceManager = new("Orc.Squirrel.Example.Properties.Resources", typeof(MainViewModel).Assembly);
+
     private readonly IUIVisualizerService _uiVisualizerService;
     private readonly IDispatcherService _dispatcherService;
     private readonly IUpdateService _updateService;
@@ -21,9 +25,24 @@ public class MainViewModel : ViewModelBase
     public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
         IUpdateService updateService, IUpdateExecutableLocationService updateExecutableLocationService,
         IServiceProvider serviceProvider)
-        : this(uiVisualizerService, dispatcherService, updateService, updateExecutableLocationService,
-            serviceProvider.GetRequiredService<ILanguageService>(), serviceProvider)
+        : base(serviceProvider)
     {
+        _uiVisualizerService = uiVisualizerService;
+        _dispatcherService = dispatcherService;
+        _updateService = updateService;
+        _updateExecutableLocationService = updateExecutableLocationService;
+        _title = serviceProvider.GetService<ILanguageService>()?.GetRequiredString("Orc_Squirrel_Example_MainViewModel_Title")
+            ?? ResourceManager.GetString("Orc_Squirrel_Example_MainViewModel_Title", CultureInfo.CurrentUICulture)
+            ?? "Squirrel example";
+
+        CheckForUpdates = new TaskCommand(serviceProvider, OnCheckForUpdatesExecuteAsync, OnCheckForUpdatesCanExecute);
+        Update = new TaskCommand(serviceProvider, OnUpdateExecuteAsync, OnUpdateCanExecute);
+        ShowInstalledDialog = new Command(serviceProvider, OnShowInstalledDialogExecute);
+
+#if DEBUG
+        UpdateUrl = "https://downloads.wildgums.com/flexgrid/alpha";
+        ExecutableFileName = Environment.ExpandEnvironmentVariables("%localappdata%\\WildGums\\Flex Grid_alpha\\FlexGrid.exe");
+#endif
     }
 
     public MainViewModel(IUIVisualizerService uiVisualizerService, IDispatcherService dispatcherService,
