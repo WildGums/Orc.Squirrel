@@ -15,7 +15,6 @@ using FileSystem;
 using global::Velopack;
 using global::Velopack.Locators;
 using Microsoft.Extensions.Logging;
-using NuGet.Versioning;
 using Velopack;
 using Path = Catel.IO.Path;
 
