@@ -16,13 +16,13 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Catel.Fody" Version="7.0.0" PrivateAssets="all" />
-    <PackageReference Include="Catel.SourceGenerators" Version="7.0.1" PrivateAssets="all" />
+    <PackageReference Include="Catel.Fody" Version="7.1.0" PrivateAssets="all" />
+    <PackageReference Include="Catel.SourceGenerators" Version="7.1.0" PrivateAssets="all" />
     <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Obsolete.Fody" Version="5.3.1" PrivateAssets="all" />
-    <PackageReference Include="Orc.FileSystem" Version="6.0.0-alpha0123" />
+    <PackageReference Include="Orc.FileSystem" Version="6.0.0" />
     <PackageReference Include="Velopack" Version="1.2.0" />
   </ItemGroup>
 

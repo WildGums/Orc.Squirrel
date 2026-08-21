@@ -52,8 +52,7 @@
                      Value="{Binding Progress}"
                      Visibility="{Binding IsInstallingUpdate, Converter={catel:BooleanToHidingVisibilityConverter}}" />
 
-        <orclogviewer:AdvancedLogViewerControl Grid.ColumnSpan="2"
-                                               Level="Debug,Info,Warning,Error" />
+        <orclogviewer:AdvancedLogViewerControl Grid.ColumnSpan="2" />
     </orccontrols:StackGrid>
 
 </catel:Window>
