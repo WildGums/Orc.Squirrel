@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="nl" original="ORC.SQUIRREL.EXAMPLE/PROPERTIES/RESOURCES.RESX">
+    <body>
+      <group id="ORC.SQUIRREL.EXAMPLE/PROPERTIES/RESOURCES.RESX" datatype="resx">
+        <trans-unit id="Orc_Squirrel_Example_MainViewModel_Title" translate="yes" xml:space="preserve">
+          <source>Squirrel example</source>
+          <target state="new">Squirrel voorbeeld</target>
+        </trans-unit>
+        <trans-unit id="Orc_Squirrel_Example_MainWindow_CheckForUpdates" translate="yes" xml:space="preserve">
+          <source>Check for updates</source>
+          <target state="new">Controleer op updates</target>
+        </trans-unit>
+        <trans-unit id="Orc_Squirrel_Example_MainWindow_ExecutableDirectoryOptional" translate="yes" xml:space="preserve">
+          <source>Executable directory (optional)</source>
+          <target state="new">Uitvoerbare map (optioneel)</target>
+        </trans-unit>
+        <trans-unit id="Orc_Squirrel_Example_MainWindow_ShowInstallationWindow" translate="yes" xml:space="preserve">
+          <source>Show installation window</source>
+          <target state="new">Toon installatievenster</target>
+        </trans-unit>
+        <trans-unit id="Orc_Squirrel_Example_MainWindow_Update" translate="yes" xml:space="preserve">
+          <source>Update</source>
+          <target state="new">Update</target>
+        </trans-unit>
+        <trans-unit id="Orc_Squirrel_Example_MainWindow_UpdateUrl" translate="yes" xml:space="preserve">
+          <source>Update url</source>
+          <target state="new">Update URL</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

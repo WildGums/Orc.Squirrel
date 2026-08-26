@@ -16,7 +16,7 @@
         </trans-unit>
         <trans-unit id="Squirrel_RunViaShortcutOnDesktop" translate="yes" xml:space="preserve">
           <source>You can now run the application via the shortcut that is created on the desktop.</source>
-          <target state="translated">Je kunt vanaf nu de applicatie starten via de snelkoppeling op het bureaublad. </target>
+          <target state="needs-review-translation">Je kunt vanaf nu de applicatie starten via de snelkoppeling op het bureaublad.</target>
         </trans-unit>
       </group>
     </body>

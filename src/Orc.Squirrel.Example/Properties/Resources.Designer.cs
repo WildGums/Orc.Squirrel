@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Orc.Squirrel.Properties {
+namespace Orc.Squirrel.Example.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Orc.Squirrel.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Orc.Squirrel.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Orc.Squirrel.Example.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,56 @@ namespace Orc.Squirrel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} v{1} is installed.
+        ///   Looks up a localized string similar to Squirrel example.
         /// </summary>
-        internal static string Squirrel_AppInstalled {
+        internal static string Orc_Squirrel_Example_MainViewModel_Title {
             get {
-                return ResourceManager.GetString("Squirrel_AppInstalled", resourceCulture);
+                return ResourceManager.GetString("Orc_Squirrel_Example_MainViewModel_Title", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run the application now.
+        ///   Looks up a localized string similar to Check for updates.
         /// </summary>
-        internal static string Squirrel_RunApplicationNow {
+        internal static string Orc_Squirrel_Example_MainWindow_CheckForUpdates {
             get {
-                return ResourceManager.GetString("Squirrel_RunApplicationNow", resourceCulture);
+                return ResourceManager.GetString("Orc_Squirrel_Example_MainWindow_CheckForUpdates", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can now run the application via the shortcut that is created on the desktop..
+        ///   Looks up a localized string similar to Executable directory (optional).
         /// </summary>
-        internal static string Squirrel_RunViaShortcutOnDesktop {
+        internal static string Orc_Squirrel_Example_MainWindow_ExecutableDirectoryOptional {
             get {
-                return ResourceManager.GetString("Squirrel_RunViaShortcutOnDesktop", resourceCulture);
+                return ResourceManager.GetString("Orc_Squirrel_Example_MainWindow_ExecutableDirectoryOptional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show installation window.
+        /// </summary>
+        internal static string Orc_Squirrel_Example_MainWindow_ShowInstallationWindow {
+            get {
+                return ResourceManager.GetString("Orc_Squirrel_Example_MainWindow_ShowInstallationWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        internal static string Orc_Squirrel_Example_MainWindow_Update {
+            get {
+                return ResourceManager.GetString("Orc_Squirrel_Example_MainWindow_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update url.
+        /// </summary>
+        internal static string Orc_Squirrel_Example_MainWindow_UpdateUrl {
+            get {
+                return ResourceManager.GetString("Orc_Squirrel_Example_MainWindow_UpdateUrl", resourceCulture);
             }
         }
     }
