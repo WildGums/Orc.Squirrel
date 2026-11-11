@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net10.0-windows</TargetFrameworks>
+    <TargetFrameworks>net11.0-windows</TargetFrameworks>
     <AssemblyName>Orc.Squirrel.Example</AssemblyName>
     <RootNamespace>Orc.Squirrel.Example</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
